@@ -4,7 +4,10 @@
     <nav class="manager-nav" aria-label="Розділи менеджера">
       <a class="manager-nav-item" routerLink="/manager/bookings" routerLinkActive="manager-nav-active"
         ariaCurrentWhenActive="page">Бронювання</a>
-      <span class="manager-nav-item" role="link" aria-disabled="true">Звітність</span>
+      <a class="manager-nav-item" routerLink="/manager/reports" routerLinkActive="manager-nav-active"
+        ariaCurrentWhenActive="page">Звітність</a>
+      <a class="manager-nav-item" routerLink="/manager/check-in" routerLinkActive="manager-nav-active"
+        ariaCurrentWhenActive="page">Перепустки</a>
     </nav>
     <div class="manager-session-controls">
       <button class="manager-sign-out" type="button" [disabled]="signingOut()" (click)="signOut()">

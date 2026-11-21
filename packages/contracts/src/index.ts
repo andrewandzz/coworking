@@ -1,6 +1,45 @@
 export const DESK_ZONES = ['open', 'quiet', 'window'] as const;
 export const BOOKING_TIME_ZONE = 'Europe/Kyiv';
 export const BOOKING_DAYS_AHEAD = 30;
+export const COWORKING_OPENING_HOUR = 9;
+export const COWORKING_CLOSING_HOUR = 18;
+
+export const SPACE_TYPE_LABELS = {
+  desk: { singular: 'Робочий стіл', plural: 'Робочі столи' },
+  'meeting-room': { singular: 'Переговорна кімната', plural: 'Переговорні кімнати' },
+  'skype-booth': { singular: 'Skype-кабіна', plural: 'Skype-кабіни' },
+} as const;
+
+export type SpaceType = keyof typeof SPACE_TYPE_LABELS;
+
+export const BOOKING_PASS_PREFIX = 'coworking:';
+export const BOOKING_PASS_TOKEN_PATTERN = /^[a-f0-9]{32}$/;
+
+export interface IssueBookingPassRequest {
+  token: string;
+  spaceId: string;
+  date: string;
+  startHour: number;
+  endHour: number;
+}
+
+export interface IssuedBookingPass {
+  bookingNumber: string;
+  spaceLabel: string;
+  date: string;
+  startHour: number;
+  endHour: number;
+}
+
+export interface BookingCheckIn extends IssuedBookingPass {
+  usedAt: string;
+}
+
+export function parseBookingPassToken(value: string): string | undefined {
+  const code = value.trim().toLowerCase();
+  const token = code.startsWith(BOOKING_PASS_PREFIX) ? code.slice(BOOKING_PASS_PREFIX.length) : code;
+  return BOOKING_PASS_TOKEN_PATTERN.test(token) ? token : undefined;
+}
 
 export type DeskZone = (typeof DESK_ZONES)[number];
 
@@ -67,6 +106,22 @@ export interface ManagerBookingsResult {
   page: number;
   pageSize: number;
   total: number;
+}
+
+export interface ManagerReportPeriod {
+  from: string;
+  to: string;
+}
+
+export type ManagerReportBooking = Pick<ManagerBookingDetails, 'bookingNumber' | 'customerName' | 'phone' | 'amountInKopiykas'>;
+
+export interface ManagerRevenueReport {
+  period: ManagerReportPeriod;
+  bookings: ManagerReportBooking[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalRevenueInKopiykas: number;
 }
 
 const kyivDateFormatter = new Intl.DateTimeFormat('en-GB', {

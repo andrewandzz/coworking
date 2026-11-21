@@ -1,0 +1,40 @@
+<section class="manager-check-in" aria-labelledby="manager-check-in-title">
+  <h1 class="manager-check-in-title font-extrabold" id="manager-check-in-title">Перевірка перепустки</h1>
+
+  <form class="manager-check-in-form" (submit)="checkIn($event, codeInput)" [attr.aria-busy]="busy()">
+    <label class="manager-check-in-label font-bold" for="manager-check-in-code">Код перепустки</label>
+    <input #codeInput id="manager-check-in-code" class="manager-check-in-input" type="text" autocomplete="off"
+      autocapitalize="off" spellcheck="false" maxlength="128" placeholder="Вставте або відскануйте код"
+      [value]="code()" [readOnly]="busy()" (input)="updateCode(codeInput.value)" />
+
+    <div class="manager-check-in-actions">
+      <label class="manager-check-in-button manager-check-in-upload font-bold">
+        <input #imageInput type="file" class="sr-only" accept="image/*" [disabled]="busy()" (change)="readImage(imageInput)" />
+        <svg lucideQrCode size="22" strokeWidth="1.75" aria-hidden="true"></svg>
+        {{ readingImage() ? 'Зчитуємо QR…' : 'Зчитати QR із зображення' }}
+      </label>
+      <button class="manager-check-in-button manager-check-in-submit font-bold" type="submit" [disabled]="busy() || !code().trim()">
+        {{ submitting() ? 'Перевіряємо…' : 'Підтвердити вхід' }}
+      </button>
+    </div>
+    @if (error(); as message) {
+      <p class="manager-check-in-error" role="alert">{{ message }}</p>
+    }
+  </form>
+
+  @if (result(); as pass) {
+    <div class="manager-check-in-result" role="status">
+      <h2 class="manager-check-in-result-heading font-bold">
+        <svg lucideCheck size="24" strokeWidth="2" aria-hidden="true"></svg>
+        Вхід підтверджено
+      </h2>
+      <dl class="manager-check-in-details">
+        <dt>Бронювання</dt><dd>{{ pass.bookingNumber }}</dd>
+        <dt>Простір</dt><dd>{{ pass.spaceLabel }}</dd>
+        <dt>Дата й час</dt>
+        <dd>{{ formatBookingDate(pass.date) }}, {{ formatBookingHour(pass.startHour) }}–{{ formatBookingHour(pass.endHour) }}</dd>
+        <dt>Перепустку використано</dt><dd><time [attr.datetime]="pass.usedAt">{{ checkInTime() }}</time></dd>
+      </dl>
+    </div>
+  }
+</section>

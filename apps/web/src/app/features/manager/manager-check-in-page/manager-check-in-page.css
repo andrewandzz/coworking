@@ -1,0 +1,139 @@
+.manager-check-in {
+  container-type: inline-size;
+}
+
+.manager-check-in-title {
+  margin-inline-start: clamp(0rem, 0.35cqi, 0.3125rem);
+  font-size: clamp(1.875rem, 3.375cqi, 3rem);
+  line-height: 1.25;
+}
+
+.manager-check-in-form,
+.manager-check-in-result {
+  inline-size: min(100%, 52rem);
+  padding: clamp(1rem, 2.25cqi, 2rem);
+  border: 1px solid var(--manager-line);
+  border-radius: 1.25rem;
+}
+
+.manager-check-in-form {
+  margin-block-start: clamp(1.25rem, 3.03cqi, 2.6875rem);
+  background: #fff;
+}
+
+.manager-check-in-label {
+  display: block;
+  margin-block-end: 0.625rem;
+  font-size: clamp(1rem, 1.4cqi, 1.25rem);
+}
+
+.manager-check-in-input {
+  inline-size: 100%;
+  min-block-size: 3.4375rem;
+  padding-inline: 0.875rem;
+  border: 1px solid var(--manager-line);
+  border-radius: 0.9375rem;
+  background: #fff;
+  font-size: clamp(1rem, 1.4cqi, 1.25rem);
+}
+
+.manager-check-in-input::placeholder {
+  color: var(--manager-muted);
+}
+
+.manager-check-in-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-block-start: 1.25rem;
+}
+
+.manager-check-in-button {
+  display: inline-flex;
+  min-block-size: 3.125rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.375rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+.manager-check-in-upload {
+  border-color: var(--manager-line);
+  color: var(--manager-accent);
+  cursor: pointer;
+}
+
+.manager-check-in-upload:not(:has(:disabled)):hover {
+  background: var(--manager-page);
+}
+
+.manager-check-in-submit {
+  background: var(--manager-accent);
+  color: #fff;
+}
+
+.manager-check-in-submit:enabled:hover {
+  background: #285326;
+}
+
+.manager-check-in-button:disabled,
+.manager-check-in-upload:has(:disabled) {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.manager-check-in-input:focus-visible,
+.manager-check-in-submit:focus-visible,
+.manager-check-in-upload:has(:focus-visible) {
+  outline: 3px solid var(--manager-accent);
+  outline-offset: 3px;
+}
+
+.manager-check-in-error {
+  margin-block-start: 1rem;
+  color: #a3273b;
+}
+
+.manager-check-in-result {
+  margin-block-start: 1.25rem;
+  border-color: transparent;
+  background: var(--manager-accent-soft);
+}
+
+.manager-check-in-result-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: var(--manager-accent);
+  font-size: clamp(1.25rem, 1.69cqi, 1.5rem);
+}
+
+.manager-check-in-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: 0.625rem 1rem;
+  margin-block-start: 1.25rem;
+}
+
+.manager-check-in-details dt {
+  font-weight: 700;
+}
+
+@container (max-width: 32rem) {
+  .manager-check-in-button {
+    inline-size: 100%;
+  }
+
+  .manager-check-in-details {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .manager-check-in-details dd + dt {
+    margin-block-start: 0.5rem;
+  }
+}

@@ -26,7 +26,7 @@ function isUnauthorized(error: unknown): boolean {
   selector: 'app-manager-bookings-page',
   imports: [LucideChevronDown, LucideSearch, ManagerPagination, ManagerBookingDetailsDialog, ManagerCancelBookingDialog],
   templateUrl: './manager-bookings-page.html',
-  styleUrl: './manager-bookings-page.css',
+  styleUrls: ['../manager-booking-table.css', './manager-bookings-page.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ManagerBookingsPage {

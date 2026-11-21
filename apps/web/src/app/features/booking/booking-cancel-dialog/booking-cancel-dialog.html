@@ -1,0 +1,23 @@
+<dialog appModalDialog class="booking-cancel-dialog" aria-labelledby="booking-cancel-title"
+    aria-describedby="booking-cancel-description" (dialogClosed)="closed.emit()">
+  <div class="booking-cancel-panel relative text-center">
+    <button type="button" class="booking-cancel-close absolute grid size-11 place-items-center rounded-lg"
+        aria-label="Закрити" (click)="close()">
+      <svg lucideX size="40" strokeWidth="1.5" aria-hidden="true"></svg>
+    </button>
+
+    <span class="booking-cancel-icon relative mx-auto grid place-items-center rounded-full" aria-hidden="true">
+      <svg lucideCalendar class="booking-cancel-calendar" strokeWidth="1.5"></svg>
+      <svg lucideCircleX class="booking-cancel-calendar-mark absolute" strokeWidth="1.85"></svg>
+    </span>
+    <h2 id="booking-cancel-title" class="booking-cancel-title font-bold">Скасувати бронювання?</h2>
+    <p id="booking-cancel-description" class="booking-cancel-description">Поточне бронювання буде скасоване.</p>
+
+    <div class="booking-cancel-actions grid">
+      <button type="button" class="booking-cancel-button booking-cancel-confirm font-bold"
+          (click)="confirmed.emit()">Скасувати бронювання</button>
+      <button type="button" class="booking-cancel-button booking-cancel-resume font-bold"
+          autofocus (click)="close()">Продовжити бронювання</button>
+    </div>
+  </div>
+</dialog>

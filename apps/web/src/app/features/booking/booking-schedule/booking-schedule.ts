@@ -1,7 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, output, signal, untracked } from '@angular/core';
-import { addCalendarDays, BOOKING_TIME_ZONE, getBookingWindow } from '@coworking/contracts';
+import {
+  addCalendarDays, BOOKING_TIME_ZONE, COWORKING_CLOSING_HOUR as CLOSING_HOUR,
+  COWORKING_OPENING_HOUR as OPENING_HOUR, getBookingWindow,
+} from '@coworking/contracts';
 import { LucideCalendarDays, LucideX } from '@lucide/angular';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
+import { showDatePicker } from '../../../shared/ui/native-date-picker';
 import type { BookingMode, SpaceDetails } from '../../spaces/space-details-dialog/space-details-dialog';
 import { SPACE_TYPE_LABELS } from '../../spaces/space-types';
 import { formatBookingAmount, formatBookingDate, formatBookingHour } from '../booking-format';
@@ -25,8 +29,6 @@ interface HourSelection {
   readonly end: number;
 }
 
-const OPENING_HOUR = 9;
-const CLOSING_HOUR = 18;
 const WORKDAY_HOURS = CLOSING_HOUR - OPENING_HOUR;
 const TIME_SLOTS = Array.from({ length: WORKDAY_HOURS }, (_, index) => {
   const hour = OPENING_HOUR + index;
@@ -61,6 +63,7 @@ export class BookingSchedule {
   private readonly selectedHours = signal<HourSelection | null>(null);
 
   protected readonly today = getBookingWindow(this.openedAt).today;
+  protected readonly showDatePicker = showDatePicker;
   protected readonly mode = linkedSignal(() => this.initialMode());
   protected readonly date = linkedSignal(() => {
     const mode = this.initialMode();
@@ -118,14 +121,6 @@ export class BookingSchedule {
 
     this.date.set(input.value);
     this.selectedHours.set(null);
-  }
-
-  protected showDatePicker(input: HTMLInputElement): void {
-    try {
-      input.showPicker?.();
-    } catch {
-      // Keep the native field available for keyboard entry.
-    }
   }
 
   protected selectHour(hour: number): void {

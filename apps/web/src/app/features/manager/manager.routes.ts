@@ -40,6 +40,18 @@ export const managerRoutes: Routes = [
         loadComponent: () => import('./manager-bookings-page/manager-bookings-page')
           .then(({ ManagerBookingsPage }) => ManagerBookingsPage),
       },
+      {
+        path: 'reports',
+        title: 'Звітність · Coworking',
+        loadComponent: () => import('./manager-reports-page/manager-reports-page')
+          .then(({ ManagerReportsPage }) => ManagerReportsPage),
+      },
+      {
+        path: 'check-in',
+        title: 'Перевірка перепустки · Coworking',
+        loadComponent: () => import('./manager-check-in-page/manager-check-in-page')
+          .then(({ ManagerCheckInPage }) => ManagerCheckInPage),
+      },
     ],
   },
 ];

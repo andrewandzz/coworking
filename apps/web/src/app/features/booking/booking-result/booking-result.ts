@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { BOOKING_PASS_PREFIX } from '@coworking/contracts';
 import { LucideCheck, LucideX } from '@lucide/angular';
 import { encode } from 'uqr';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
@@ -20,7 +21,7 @@ export class BookingResult {
 
   private readonly document = inject(DOCUMENT);
   private readonly qrModules = computed(() => encode(
-    `coworking:${this.confirmation().checkInToken}`,
+    `${BOOKING_PASS_PREFIX}${this.confirmation().checkInToken}`,
     { border: 4, ecc: 'M' },
   ).data);
 

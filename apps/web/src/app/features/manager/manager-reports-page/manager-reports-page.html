@@ -1,0 +1,91 @@
+<section class="manager-reports" aria-labelledby="manager-reports-title">
+  <h1 class="manager-reports-title font-extrabold" id="manager-reports-title">Звітність</h1>
+
+  <form class="manager-report-form" novalidate (submit)="generateReport($event, fromInput, toInput)">
+    <div class="manager-report-controls">
+      <fieldset class="manager-report-period min-w-0">
+        <legend class="sr-only">Період</legend>
+        <span class="manager-report-period-label" aria-hidden="true">Період</span>
+        <div class="manager-report-range grid min-w-0 items-center">
+          <label class="manager-report-date relative">
+            <span class="sr-only">Початкова дата</span>
+            <input #fromInput class="manager-report-date-input absolute inset-0 size-full cursor-pointer"
+              type="date" lang="uk" required min="0001-01-01" max="9999-12-31" [value]="initialPeriod.from"
+              [attr.aria-invalid]="periodError()?.field === 'from' ? 'true' : null"
+              [attr.aria-describedby]="periodError()?.field === 'from' ? 'manager-report-period-error' : null"
+              (click)="showDatePicker(fromInput)" (input)="fromDate.set(fromInput.value); periodError.set(null)">
+            <span class="manager-report-date-label pointer-events-none" aria-hidden="true">{{ formatDate(fromDate()) }}</span>
+            <svg lucideCalendarDays class="manager-report-date-icon pointer-events-none absolute" size="26" strokeWidth="1.5"
+              aria-hidden="true"></svg>
+          </label>
+          <span class="manager-report-range-separator" aria-hidden="true">–</span>
+          <label class="manager-report-date relative">
+            <span class="sr-only">Кінцева дата</span>
+            <input #toInput class="manager-report-date-input absolute inset-0 size-full cursor-pointer"
+              type="date" lang="uk" required min="0001-01-01" max="9999-12-31" [value]="initialPeriod.to"
+              [attr.aria-invalid]="periodError()?.field === 'to' ? 'true' : null"
+              [attr.aria-describedby]="periodError()?.field === 'to' ? 'manager-report-period-error' : null"
+              (click)="showDatePicker(toInput)" (input)="toDate.set(toInput.value); periodError.set(null)">
+            <span class="manager-report-date-label pointer-events-none" aria-hidden="true">{{ formatDate(toDate()) }}</span>
+            <svg lucideCalendarDays class="manager-report-date-icon pointer-events-none absolute" size="26" strokeWidth="1.5"
+              aria-hidden="true"></svg>
+          </label>
+        </div>
+      </fieldset>
+      <button class="manager-report-generate font-bold" type="submit">Згенерувати звіт</button>
+    </div>
+    @if (periodError(); as error) {
+      <p class="manager-report-form-error" id="manager-report-period-error" role="alert">{{ error.message }}</p>
+    }
+  </form>
+
+  <div class="manager-report-results" [attr.aria-busy]="report.isLoading()">
+    @if (report.error()) {
+      <div class="manager-report-notice">
+        <p role="alert">Не вдалося завантажити звіт.</p>
+        <button type="button" (click)="report.reload()">Спробувати знову</button>
+      </div>
+    } @else if (result(); as revenue) {
+      @if (revenue.bookings.length) {
+        <table class="manager-bookings-table manager-report-table" role="table" aria-label="Завершені бронювання за період">
+          <colgroup>
+            <col class="manager-number-column" />
+            <col class="manager-customer-column" />
+            <col class="manager-phone-column" />
+            <col />
+          </colgroup>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th scope="col" role="columnheader">№</th>
+              <th scope="col" role="columnheader">Користувач</th>
+              <th scope="col" role="columnheader">Номер телефону</th>
+              <th class="manager-report-price" scope="col" role="columnheader">Ціна</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            @for (booking of revenue.bookings; track booking.bookingNumber) {
+              <tr role="row">
+                <td class="manager-booking-number" role="cell">{{ booking.bookingNumber }}</td>
+                <td class="manager-booking-customer" role="cell">{{ booking.customerName }}</td>
+                <td class="manager-booking-phone" role="cell">{{ booking.phone }}</td>
+                <td class="manager-report-price" role="cell">{{ formatBookingAmount(booking.amountInKopiykas) }} грн</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <app-manager-pagination class="manager-report-pagination block" [page]="revenue.page"
+          [pageSize]="revenue.pageSize" [total]="revenue.total" (pageChanged)="page.set($event)" />
+      } @else {
+        <p class="manager-report-notice" role="status">За цей період немає завершених бронювань.</p>
+      }
+
+      <div class="manager-report-total" aria-live="polite">
+        <span class="manager-report-total-label">Загальний дохід за період</span>
+        <strong class="manager-report-total-amount">{{ formatBookingAmount(revenue.totalRevenueInKopiykas) }} грн</strong>
+      </div>
+    } @else {
+      <p class="manager-report-notice" role="status">Завантажуємо звіт…</p>
+    }
+  </div>
+</section>

@@ -15,7 +15,6 @@ import { SpaceDetailsDialog } from '../space-details-dialog/space-details-dialog
 import type { BookingMode, SpaceBookingRequest, SpaceDetails } from '../space-details-dialog/space-details-dialog';
 import { DEFAULT_SPACE_FILTERS, SpaceFilters } from '../space-filters/space-filters';
 import type { SpaceFiltersValue } from '../space-filters/space-filters';
-import { SPACE_TYPE_LABELS } from '../space-types';
 import type { SpaceAmenity } from '../space-types';
 
 interface CoworkingSpace extends FloorPlanSpace {
@@ -67,8 +66,6 @@ export class CoworkingPage {
   readonly scheduleSelected = output<BookingScheduleSelection>();
   readonly contactSubmitted = output<BookingContactSubmission>();
   readonly paymentSucceeded = output<BookingPayment>();
-
-  private nextBookingNumber = 1;
 
   protected readonly selectedSpace = signal<SpaceDetails | null>(null);
   protected readonly scheduleContext = signal<ScheduleContext | null>(null);
@@ -133,18 +130,7 @@ export class CoworkingPage {
     const context = this.paymentContext();
     if (context?.submission.reservation !== payment.reservation || this.confirmation()) return;
 
-    const { type, number } = context.scheduleContext.space;
-    const bookingNumber = `CW-${String(this.nextBookingNumber).padStart(4, '0')}`;
-    const checkInToken = Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
-      byte.toString(16).padStart(2, '0'),
-    ).join('');
-    this.nextBookingNumber += 1;
-    this.confirmation.set({
-      bookingNumber,
-      checkInToken,
-      spaceLabel: `${SPACE_TYPE_LABELS[type].singular} ${number}`,
-      schedule: payment.reservation.schedule,
-    });
+    this.confirmation.set(payment.confirmation);
     this.paymentSucceeded.emit(payment);
   }
 }

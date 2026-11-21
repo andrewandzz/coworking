@@ -1,5 +1,5 @@
 <dialog appModalDialog #dialog="appModalDialog" class="booking-payment-dialog"
-    [class.booking-payment-notice]="showsNotice()"
+    [class.booking-payment-notice]="showsNotice()" [appModalDialogDismissible]="!pending()"
     [attr.aria-labelledby]="showsNotice() ? 'booking-notice-title' : 'booking-payment-title'"
     (dialogClosed)="closed.emit()">
   @if (phase() === 'expired') {
@@ -14,7 +14,7 @@
           <app-reservation-timer class="booking-payment-timer" [expiresAt]="expiresAt()" (expired)="expire()" />
         }
         <button type="button" class="booking-payment-close grid size-11 place-items-center rounded-lg"
-            aria-label="Закрити" (click)="dialog.close()">
+            aria-label="Закрити" [disabled]="pending()" (click)="dialog.close()">
           <svg lucideX size="30" strokeWidth="1.5" aria-hidden="true"></svg>
         </button>
       </header>
@@ -26,13 +26,16 @@
         <dt class="font-bold">Вартість:</dt><dd>{{ price() }} грн</dd>
       </dl>
 
+      @if (issueError(); as message) {
+        <p class="booking-payment-issue-error" role="alert">{{ message }}</p>
+      }
       <div class="booking-payment-actions grid">
         <button type="button" class="booking-payment-button booking-payment-primary font-bold"
-            (click)="pay(dialog)">Оплатити {{ price() }} грн</button>
+            [disabled]="pending()" (click)="pay(dialog)">{{ pending() ? 'Створюємо перепустку…' : 'Оплатити ' + price() + ' грн' }}</button>
         <button type="button" class="booking-payment-button booking-payment-secondary booking-payment-cancel font-bold"
-            (click)="dialog.close()">Скасувати бронювання</button>
+            aria-haspopup="dialog" [disabled]="pending()" (click)="requestCancellation()">Скасувати бронювання</button>
         <button type="button" class="booking-payment-button booking-payment-secondary booking-payment-simulate font-bold"
-            (click)="simulateError()">Імітація помилки оплати</button>
+            [disabled]="pending()" (click)="simulateError()">Імітація помилки оплати</button>
       </div>
     </div>
 
@@ -41,3 +44,7 @@
     }
   }
 </dialog>
+
+@if (confirmingCancellation()) {
+  <app-booking-cancel-dialog (confirmed)="confirmCancellation(dialog)" (closed)="resumeBooking()" />
+}

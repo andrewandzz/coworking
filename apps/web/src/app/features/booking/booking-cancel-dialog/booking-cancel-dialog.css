@@ -1,0 +1,104 @@
+.booking-cancel-dialog {
+  --booking-cancel-accent: #346831;
+  --booking-cancel-amber: #bd8c51;
+  --booking-cancel-amber-soft: #fff1dc;
+  position: fixed;
+  inset: 0;
+  inline-size: min(calc(100% - 2rem), 27.8125rem);
+  max-inline-size: none;
+  max-block-size: calc(100dvh - 2rem);
+  margin: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 1.5625rem;
+  background: #f6f1eb;
+  color: #222821;
+  container-type: inline-size;
+}
+
+.booking-cancel-dialog::backdrop {
+  background: rgb(34 40 33 / 36%);
+}
+
+.booking-cancel-panel {
+  padding: clamp(1.25rem, 6.75cqi, 1.875rem) clamp(1rem, 5.85cqi, 1.625rem)
+    clamp(1.25rem, 8.32cqi, 2.3125rem);
+}
+
+.booking-cancel-close {
+  inset-block-start: 0.8125rem;
+  inset-inline-end: clamp(0.5rem, 2.58cqi, 0.75rem);
+  color: #97938c;
+}
+
+.booking-cancel-icon {
+  inline-size: clamp(3.625rem, 16cqi, 4.4375rem);
+  aspect-ratio: 1;
+  border: 2px solid #c9995c;
+  background: var(--booking-cancel-amber-soft);
+  color: var(--booking-cancel-amber);
+}
+
+.booking-cancel-calendar {
+  inline-size: 69%;
+  block-size: auto;
+  translate: -0.125rem -0.125rem;
+}
+
+.booking-cancel-calendar-mark {
+  inset-inline-end: 13%;
+  inset-block-end: 12%;
+  inline-size: 41%;
+  block-size: auto;
+  border-radius: 50%;
+  background: var(--booking-cancel-amber-soft);
+}
+
+.booking-cancel-title {
+  margin-block-start: 0.75rem;
+  font-size: clamp(1.25rem, 5.4cqi, 1.5rem);
+  line-height: 1.25;
+}
+
+.booking-cancel-description {
+  margin-block-start: clamp(0.875rem, 5.17cqi, 1.4375rem);
+  color: #6c746a;
+  line-height: 1.375;
+}
+
+.booking-cancel-actions {
+  gap: clamp(0.625rem, 3.38cqi, 0.9375rem);
+  margin-block-start: clamp(1.25rem, 8.77cqi, 2.4375rem);
+}
+
+.booking-cancel-button {
+  min-block-size: clamp(2.75rem, 11.25cqi, 3.125rem);
+  padding: 0.375rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  font-size: clamp(1rem, 4.5cqi, 1.25rem);
+  line-height: 1.25;
+}
+
+.booking-cancel-confirm {
+  background: var(--booking-cancel-accent);
+  color: #fff;
+}
+
+.booking-cancel-confirm:hover {
+  background: #285326;
+}
+
+.booking-cancel-resume {
+  border-color: #a6a29a;
+  color: #6c746a;
+}
+
+.booking-cancel-resume:hover {
+  background: #f0ebe4;
+}
+
+.booking-cancel-panel button:focus-visible {
+  outline: 3px solid var(--booking-cancel-accent);
+  outline-offset: 3px;
+}

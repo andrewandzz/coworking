@@ -89,6 +89,16 @@
   color: #626b61;
 }
 
+.booking-payment-panel button:disabled {
+  opacity: 0.65;
+}
+
+.booking-payment-issue-error {
+  margin-block-start: 1rem;
+  color: #a3273b;
+  font-size: 1rem;
+}
+
 .booking-payment-panel button:focus-visible {
   outline: 3px solid var(--payment-accent);
   outline-offset: 3px;

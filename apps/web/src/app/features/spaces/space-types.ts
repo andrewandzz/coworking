@@ -1,10 +1,5 @@
-export const SPACE_TYPE_LABELS = {
-  desk: { singular: 'Робочий стіл', plural: 'Робочі столи' },
-  'meeting-room': { singular: 'Переговорна кімната', plural: 'Переговорні кімнати' },
-  'skype-booth': { singular: 'Skype-кабіна', plural: 'Skype-кабіни' },
-} as const;
-
-export type SpaceType = keyof typeof SPACE_TYPE_LABELS;
+export { SPACE_TYPE_LABELS } from '@coworking/contracts';
+export type { SpaceType } from '@coworking/contracts';
 
 export const SPACE_AMENITIES = [
   { id: 'generator', label: 'Генератор', filterLabel: 'Генератори' },

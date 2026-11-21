@@ -2,14 +2,16 @@ import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { BookingPassEntity } from './booking-passes/booking-pass.entity.js';
 import { BookingEntity, DeskEntity } from './bookings/entities.js';
 import { parsePort, requiredEnv } from './config.js';
 import { CreateBookings1763668800000 } from './migrations/1763668800000-create-bookings.js';
+import { CreateBookingPasses1795305600000 } from './migrations/1795305600000-create-booking-passes.js';
 
 export function databaseOptions(): TypeOrmModuleOptions {
   const options = {
-    entities: [DeskEntity, BookingEntity],
-    migrations: [CreateBookings1763668800000],
+    entities: [DeskEntity, BookingEntity, BookingPassEntity],
+    migrations: [CreateBookings1763668800000, CreateBookingPasses1795305600000],
     migrationsRun: true,
     synchronize: false,
     retryAttempts: 1,

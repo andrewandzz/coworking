@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { ManagerSessionGuard } from '../manager-auth/manager-session.guard.js';
 import { requireJson } from '../manager-auth/require-json.js';
 import { DEMO_MANAGER_BOOKINGS } from './demo-bookings.js';
+import { pageSchema, paginateBookings } from './paginate-bookings.js';
 
 const pageSize = 7;
 const bookingNumberSchema = z.string().max(32).regex(/^CW-\d{4,}$/);
@@ -14,7 +15,7 @@ const bookingNumberSchema = z.string().max(32).regex(/^CW-\d{4,}$/);
 const querySchema = z.strictObject({
   q: z.string().trim().max(120).default(''),
   status: z.enum(MANAGER_BOOKING_STATUSES).optional(),
-  page: z.string().regex(/^[1-9]\d*$/).transform(Number).pipe(z.int()).optional(),
+  page: pageSchema,
 });
 
 function phoneDigits(value: string): string {
@@ -36,14 +37,13 @@ export class ManagerBookingsController {
       const name = booking.customerName.toLocaleLowerCase('uk-UA');
       return nameParts.every((part) => name.includes(part));
     });
-    const total = matching.length;
-    const currentPage = Math.min(page, Math.max(1, Math.ceil(total / pageSize)));
-    const start = (currentPage - 1) * pageSize;
-    const bookings = matching.slice(start, start + pageSize).map(({ bookingNumber, customerName, phone, status }) => ({
-      bookingNumber, customerName, phone, status,
-    }));
-
-    return { bookings, page: currentPage, pageSize, total };
+    const { bookings, ...pagination } = paginateBookings(matching, page, pageSize);
+    return {
+      ...pagination,
+      bookings: bookings.map(({ bookingNumber, customerName, phone, status }) => ({
+        bookingNumber, customerName, phone, status,
+      })),
+    };
   }
 
   @Get(':bookingNumber')

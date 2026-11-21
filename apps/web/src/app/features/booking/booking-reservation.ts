@@ -20,6 +20,7 @@ export interface BookingContactSubmission {
 
 export interface BookingPayment extends BookingContactSubmission {
   readonly paidAt: number;
+  readonly confirmation: BookingConfirmation;
 }
 
 export interface BookingConfirmation {
