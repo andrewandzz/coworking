@@ -1,0 +1,17 @@
+[data-state='available'] {
+  --space-status-fill: #d9e8ca;
+  --space-status-border: #80b746;
+  --space-status-indicator: #346831;
+}
+
+[data-state='occupied'] {
+  --space-status-fill: #f5e2de;
+  --space-status-border: #ff5145;
+  --space-status-indicator: #d4574e;
+}
+
+[data-state='filtered'] {
+  --space-status-fill: #e7e4df;
+  --space-status-border: #a6a29a;
+  --space-status-indicator: #222821;
+}

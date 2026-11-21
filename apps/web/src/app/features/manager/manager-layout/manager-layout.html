@@ -1,0 +1,21 @@
+<div class="manager-layout grid min-h-dvh">
+  <aside class="manager-sidebar">
+    <app-coworking-brand class="manager-brand" />
+    <nav class="manager-nav" aria-label="Розділи менеджера">
+      <a class="manager-nav-item" routerLink="/manager/bookings" routerLinkActive="manager-nav-active"
+        ariaCurrentWhenActive="page">Бронювання</a>
+      <span class="manager-nav-item" role="link" aria-disabled="true">Звітність</span>
+    </nav>
+    <div class="manager-session-controls">
+      <button class="manager-sign-out" type="button" [disabled]="signingOut()" (click)="signOut()">
+        {{ signingOut() ? 'Виходимо…' : 'Вийти' }}
+      </button>
+      @if (signOutError(); as message) {
+        <p class="manager-sign-out-error" role="alert">{{ message }}</p>
+      }
+    </div>
+  </aside>
+  <main class="manager-content min-w-0">
+    <router-outlet />
+  </main>
+</div>

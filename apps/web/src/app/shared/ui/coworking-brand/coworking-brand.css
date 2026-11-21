@@ -1,0 +1,41 @@
+:host {
+  display: flex;
+  inline-size: fit-content;
+  align-items: center;
+  gap: 0.125rem;
+  color: #080a08;
+  font-size: var(--coworking-brand-font-size, 2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.mark {
+  position: relative;
+  flex: none;
+  inline-size: var(--coworking-brand-mark-width, 3.375rem);
+  block-size: var(--coworking-brand-mark-height, 3.125rem);
+}
+
+.mark::before,
+.mark::after {
+  position: absolute;
+  aspect-ratio: 1;
+  background-color: #90c846;
+  content: '';
+}
+
+.mark::before {
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: calc(100% - var(--coworking-brand-mark-inset, 0.4375rem));
+  border-radius: 50%;
+}
+
+.mark::after {
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: 52%;
+  border: var(--coworking-brand-mark-border, 4px) solid #16531c;
+  border-radius: 0.5rem;
+}

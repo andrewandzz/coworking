@@ -7,18 +7,34 @@ bootstrapApplication(App, {
   providers: [
     provideHttpClient(),
     provideRouter([
-      { path: '', pathMatch: 'full', redirectTo: 'desks' },
       {
-        path: 'desks',
-        title: 'Робочі місця · Коворкінг',
-        loadComponent: () => import('./app/desks/desks-page').then(({ DesksPage }) => DesksPage),
+        path: '',
+        pathMatch: 'full',
+        title: 'Coworking · Бронювання просторів',
+        loadComponent: () => import('./app/features/spaces/coworking-page/coworking-page')
+          .then(({ CoworkingPage }) => CoworkingPage),
       },
       {
-        path: 'bookings',
-        title: 'Мої бронювання · Коворкінг',
-        loadComponent: () => import('./app/bookings/bookings-page').then(({ BookingsPage }) => BookingsPage),
+        path: 'manager',
+        loadChildren: () => import('./app/features/manager/manager.routes').then(({ managerRoutes }) => managerRoutes),
       },
-      { path: '**', redirectTo: 'desks' },
+      {
+        path: '',
+        loadComponent: () => import('./app/booking-layout').then(({ BookingLayout }) => BookingLayout),
+        children: [
+          {
+            path: 'desks',
+            title: 'Робочі місця · Коворкінг',
+            loadComponent: () => import('./app/desks/desks-page').then(({ DesksPage }) => DesksPage),
+          },
+          {
+            path: 'bookings',
+            title: 'Мої бронювання · Коворкінг',
+            loadComponent: () => import('./app/bookings/bookings-page').then(({ BookingsPage }) => BookingsPage),
+          },
+        ],
+      },
+      { path: '**', redirectTo: '' },
     ], withHashLocation()),
   ],
 }).catch((error: unknown) => console.error(error));

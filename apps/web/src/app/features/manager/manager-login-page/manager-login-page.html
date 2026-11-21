@@ -1,0 +1,28 @@
+<main class="manager-login grid min-h-dvh place-items-center p-4" aria-labelledby="manager-login-title">
+  <div class="manager-login-card w-full">
+    <app-coworking-brand class="manager-login-brand mx-auto" />
+
+    <h1 class="manager-login-title text-center font-extrabold" id="manager-login-title">Вхід</h1>
+    <form #loginForm class="manager-login-form" (submit)="signIn($event, loginForm)" (input)="error.set('')">
+      <div class="manager-login-fields grid">
+        <div>
+          <label for="manager-email">Логін</label>
+          <input id="manager-email" name="email" type="email" autocomplete="username"
+            placeholder="Введіть Ваш email" maxlength="254" required [readOnly]="pending()" />
+        </div>
+        <div>
+          <label for="manager-password">Пароль</label>
+          <input id="manager-password" name="password" type="password" autocomplete="current-password"
+            placeholder="Введіть Ваш пароль" maxlength="256" required [readOnly]="pending()" />
+        </div>
+      </div>
+      <button class="manager-login-action w-full font-bold" type="submit" [disabled]="pending()">
+        {{ pending() ? 'Входимо…' : 'Увійти' }}
+      </button>
+    </form>
+
+    @if (error(); as message) {
+      <p class="manager-login-error" role="alert">{{ message }}</p>
+    }
+  </div>
+</main>

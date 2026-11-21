@@ -1,0 +1,65 @@
+<dialog appModalDialog #dialog="appModalDialog" class="booking-contact-dialog"
+    [class.booking-contact-expired]="expired()"
+    [attr.aria-labelledby]="expired() ? 'booking-notice-title' : 'booking-contact-title'"
+    (dialogClosed)="closed.emit()">
+  @if (expired()) {
+    <app-booking-notice kind="expired" (actionRequested)="retry(dialog)" (dismissed)="dialog.close()" />
+  } @else {
+    <div class="booking-contact-panel">
+      <header class="booking-contact-header grid items-center">
+        <h2 id="booking-contact-title" class="booking-contact-title font-bold" tabindex="-1" autofocus>
+          Контактні дані
+        </h2>
+        <app-reservation-timer class="booking-contact-timer" [expiresAt]="reservation().expiresAt" (expired)="expired.set(true)" />
+        <button type="button" class="booking-contact-close grid size-11 place-items-center rounded-lg"
+            aria-label="Закрити" (click)="dialog.close()">
+          <svg lucideX size="30" strokeWidth="1.5" aria-hidden="true"></svg>
+        </button>
+      </header>
+
+      <p class="booking-contact-hint">Завершіть бронювання до закінчення таймера.</p>
+
+      <form #contactForm class="booking-contact-form" novalidate (submit)="submit($event, contactForm, dialog)">
+        <div class="booking-contact-fields grid">
+          <div>
+            <label class="block font-bold" for="booking-contact-first-name">Ім’я <span aria-hidden="true">*</span></label>
+            <input id="booking-contact-first-name" class="booking-contact-input block w-full" name="firstName"
+                type="text" autocomplete="given-name" required placeholder="Введіть Ваше ім’я"
+                [attr.aria-invalid]="errors().firstName ? 'true' : null"
+                [attr.aria-describedby]="errors().firstName ? 'booking-contact-first-name-error' : null"
+                (input)="clearError('firstName')">
+            @if (errors().firstName; as error) {
+              <p class="booking-contact-error" id="booking-contact-first-name-error" role="alert">{{ error }}</p>
+            }
+          </div>
+
+          <div>
+            <label class="block font-bold" for="booking-contact-last-name">Прізвище <span aria-hidden="true">*</span></label>
+            <input id="booking-contact-last-name" class="booking-contact-input block w-full" name="lastName"
+                type="text" autocomplete="family-name" required placeholder="Введіть Ваше прізвище"
+                [attr.aria-invalid]="errors().lastName ? 'true' : null"
+                [attr.aria-describedby]="errors().lastName ? 'booking-contact-last-name-error' : null"
+                (input)="clearError('lastName')">
+            @if (errors().lastName; as error) {
+              <p class="booking-contact-error" id="booking-contact-last-name-error" role="alert">{{ error }}</p>
+            }
+          </div>
+
+          <div>
+            <label class="block font-bold" for="booking-contact-phone">Телефон <span aria-hidden="true">*</span></label>
+            <input id="booking-contact-phone" class="booking-contact-input block w-full" name="phone"
+                type="tel" inputmode="tel" autocomplete="tel" required placeholder="Введіть номер телефону"
+                [attr.aria-invalid]="errors().phone ? 'true' : null"
+                [attr.aria-describedby]="errors().phone ? 'booking-contact-phone-error' : null"
+                (input)="clearError('phone')">
+            @if (errors().phone; as error) {
+              <p class="booking-contact-error" id="booking-contact-phone-error" role="alert">{{ error }}</p>
+            }
+          </div>
+        </div>
+
+        <button type="submit" class="booking-contact-submit w-full font-bold">Продовжити</button>
+      </form>
+    </div>
+  }
+</dialog>

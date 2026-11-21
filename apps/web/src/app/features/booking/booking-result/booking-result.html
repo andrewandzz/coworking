@@ -1,0 +1,42 @@
+<dialog appModalDialog #dialog="appModalDialog" class="booking-result-dialog" aria-labelledby="booking-result-title"
+    (dialogClosed)="closed.emit()">
+  <div class="booking-result-panel relative">
+    <button type="button" class="booking-result-close absolute grid size-11 place-items-center rounded-lg"
+        aria-label="Закрити" (click)="dialog.close()">
+      <svg lucideX size="30" strokeWidth="1.5" aria-hidden="true"></svg>
+    </button>
+    <div class="text-center">
+      <span class="booking-result-icon mx-auto grid place-items-center rounded-full" aria-hidden="true">
+        <svg lucideCheck class="booking-result-check" size="74" strokeWidth="3" aria-hidden="true"></svg>
+      </span>
+      <h2 id="booking-result-title" class="booking-result-title font-bold" tabindex="-1" autofocus>
+        Бронювання підтверджено!
+      </h2>
+      <p class="booking-result-message">Дякуємо! Ваше місце успішно заброньовано.</p>
+    </div>
+
+    <div class="booking-result-details grid items-center">
+      <div class="booking-result-qr grid place-items-center bg-white">
+        @if (qrImage(); as qr) {
+          <img class="booking-result-qr-image" [src]="qr" alt="QR-код перепустки">
+        } @else {
+          <p class="booking-result-qr-error" role="alert">QR-код недоступний.</p>
+        }
+      </div>
+      <div class="booking-result-data grid">
+        <p>№ бронювання: <strong>{{ details().bookingNumber }}</strong></p>
+        <p class="font-bold">{{ details().spaceLabel }}</p>
+        <p>{{ details().date }}</p>
+        <p class="font-bold">{{ details().time }}</p>
+      </div>
+    </div>
+
+    <a #downloadLink hidden [attr.download]="details().bookingNumber + '.png'"></a>
+    <button type="button" class="booking-result-download w-full font-bold" (click)="downloadConfirmation(downloadLink)">
+      Завантажити підтвердження
+    </button>
+    @if (downloadError()) {
+      <p class="booking-result-download-error" role="alert">Не вдалося створити файл підтвердження.</p>
+    }
+  </div>
+</dialog>

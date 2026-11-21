@@ -1,0 +1,124 @@
+.manager-layout {
+  --manager-page: #f6f1eb;
+  --manager-ink: #222821;
+  --manager-muted: #6c746a;
+  --manager-line: #a6a29a;
+  --manager-accent: #346831;
+  --manager-accent-soft: #d9e7c8;
+
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  background: var(--manager-page);
+  color: var(--manager-ink);
+}
+
+.manager-sidebar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem 0.5rem;
+  padding: 1rem;
+  border-block-end: 1px solid var(--manager-line);
+}
+
+.manager-brand {
+  --coworking-brand-font-size: clamp(1.375rem, 5vw, 1.6875rem);
+  --coworking-brand-mark-width: 2.875rem;
+  --coworking-brand-mark-height: 2.6875rem;
+  --coworking-brand-mark-border: 3px;
+}
+
+.manager-nav {
+  display: flex;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  flex-wrap: wrap;
+  gap: 0.4375rem;
+}
+
+.manager-nav-item {
+  display: flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  padding-inline: clamp(0.75rem, 1.36vw, 1.625rem);
+  border-radius: 1rem;
+  font-size: clamp(1rem, 1.25vw, 1.5rem);
+  font-weight: 600;
+}
+
+.manager-nav-active {
+  background: var(--manager-accent-soft);
+  font-weight: 800;
+}
+
+.manager-session-controls {
+  min-inline-size: 0;
+}
+
+.manager-sign-out {
+  min-block-size: 2.75rem;
+  padding-inline: 0.5rem;
+  color: var(--manager-muted);
+  font-weight: 700;
+}
+
+.manager-sign-out:enabled:hover {
+  color: var(--manager-accent);
+  text-decoration: underline;
+}
+
+.manager-sign-out-error {
+  max-inline-size: 15rem;
+  color: #a3273b;
+  font-size: 0.875rem;
+}
+
+.manager-content {
+  padding: clamp(1.5rem, 1.7vw, 2rem) 1rem 2.25rem;
+}
+
+@media (min-width: 64rem) {
+  .manager-layout {
+    grid-template-columns: clamp(12rem, 19.4271vw, 23.3125rem) minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .manager-sidebar {
+    position: sticky;
+    inset-block-start: 0;
+    display: flex;
+    block-size: 100dvh;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    overflow-y: auto;
+    padding: clamp(1.5rem, 1.98vw, 2.375rem) clamp(1rem, 1.93vw, 2.3125rem) 1.25rem
+      clamp(1rem, 2.24vw, 2.6875rem);
+    border-block-end: 0;
+    border-inline-end: 2px solid var(--manager-line);
+  }
+
+  .manager-brand {
+    margin-inline-start: clamp(0rem, 0.94vw, 1.125rem);
+  }
+
+  .manager-nav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin-block-start: clamp(1.5rem, 2.66vw, 3.1875rem);
+  }
+
+  .manager-nav-item {
+    min-block-size: clamp(2.75rem, 3.23vw, 3.875rem);
+  }
+
+  .manager-session-controls {
+    margin-block-start: auto;
+    padding-block-start: 1.5rem;
+    padding-inline-start: clamp(0.25rem, 0.94vw, 1.125rem);
+  }
+
+  .manager-content {
+    padding-inline: clamp(1.5rem, 3.49vw, 4.1875rem) clamp(1.5rem, 2.97vw, 3.5625rem);
+  }
+}

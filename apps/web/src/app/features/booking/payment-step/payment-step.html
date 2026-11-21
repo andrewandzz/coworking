@@ -1,0 +1,43 @@
+<dialog appModalDialog #dialog="appModalDialog" class="booking-payment-dialog"
+    [class.booking-payment-notice]="showsNotice()"
+    [attr.aria-labelledby]="showsNotice() ? 'booking-notice-title' : 'booking-payment-title'"
+    (dialogClosed)="closed.emit()">
+  @if (phase() === 'expired') {
+    <app-booking-notice kind="expired" (actionRequested)="retryBooking(dialog)" (dismissed)="dialog.close()" />
+  } @else {
+    <div class="booking-payment-panel" [hidden]="phase() === 'payment-failed'">
+      <header class="booking-payment-header grid items-center">
+        <h2 #paymentHeading id="booking-payment-title" class="booking-payment-title font-bold" tabindex="-1" autofocus>
+          Оплата бронювання
+        </h2>
+        @if (reservationActive()) {
+          <app-reservation-timer class="booking-payment-timer" [expiresAt]="expiresAt()" (expired)="expire()" />
+        }
+        <button type="button" class="booking-payment-close grid size-11 place-items-center rounded-lg"
+            aria-label="Закрити" (click)="dialog.close()">
+          <svg lucideX size="30" strokeWidth="1.5" aria-hidden="true"></svg>
+        </button>
+      </header>
+
+      <h3 class="booking-payment-space font-bold">{{ spaceLabel() }}</h3>
+      <dl class="booking-payment-summary grid">
+        <dt class="font-bold">Дата:</dt><dd>{{ date() }}</dd>
+        <dt class="font-bold">Час:</dt><dd>{{ time() }}</dd>
+        <dt class="font-bold">Вартість:</dt><dd>{{ price() }} грн</dd>
+      </dl>
+
+      <div class="booking-payment-actions grid">
+        <button type="button" class="booking-payment-button booking-payment-primary font-bold"
+            (click)="pay(dialog)">Оплатити {{ price() }} грн</button>
+        <button type="button" class="booking-payment-button booking-payment-secondary booking-payment-cancel font-bold"
+            (click)="dialog.close()">Скасувати бронювання</button>
+        <button type="button" class="booking-payment-button booking-payment-secondary booking-payment-simulate font-bold"
+            (click)="simulateError()">Імітація помилки оплати</button>
+      </div>
+    </div>
+
+    @if (phase() === 'payment-failed') {
+      <app-booking-notice kind="payment-failed" (actionRequested)="retryPayment()" (dismissed)="dialog.close()" />
+    }
+  }
+</dialog>

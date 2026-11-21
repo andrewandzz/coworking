@@ -1,0 +1,52 @@
+<dialog appModalDialog #dialog="appModalDialog" class="manager-booking-details-dialog"
+  aria-labelledby="manager-booking-details-title" (dialogClosed)="closed.emit()">
+  <div class="manager-booking-details-panel relative">
+    <h2 #heading id="manager-booking-details-title" class="manager-booking-details-title font-bold" tabindex="-1" autofocus>
+      Бронювання {{ bookingNumber() }}
+    </h2>
+    <button type="button" class="manager-booking-details-close absolute grid size-11 place-items-center rounded-lg"
+      aria-label="Закрити" (click)="dialog.close()">
+      <svg lucideX size="32" strokeWidth="1.5" aria-hidden="true"></svg>
+    </button>
+
+    @if (loadError(); as message) {
+      <p class="manager-booking-details-notice" role="alert">{{ message }}</p>
+      <button type="button" class="manager-booking-details-retry" (click)="retryRequested.emit()">Спробувати знову</button>
+    } @else if (booking(); as details) {
+      <dl class="manager-booking-details-data">
+        <div class="manager-booking-details-row">
+          <dt>Користувач</dt><dd>{{ details.customerName }}</dd>
+        </div>
+        <div class="manager-booking-details-row">
+          <dt>Телефон</dt><dd>{{ details.phone }}</dd>
+        </div>
+        <div class="manager-booking-details-row">
+          <dt>Простір</dt><dd>{{ details.spaceLabel }}</dd>
+        </div>
+        <div class="manager-booking-details-row">
+          <dt>Дата і час</dt>
+          <dd>
+            <time [attr.datetime]="details.date">{{ formatBookingDate(details.date) }}</time>,
+            <span class="whitespace-nowrap">{{ formatBookingHour(details.startHour) }} – {{ formatBookingHour(details.endHour) }}</span>
+          </dd>
+        </div>
+        <div class="manager-booking-details-row">
+          <dt>Вартість</dt><dd>{{ formatBookingAmount(details.amountInKopiykas) }} грн</dd>
+        </div>
+        <div class="manager-booking-details-row manager-booking-details-status-row">
+          <dt>Статус</dt>
+          <dd aria-live="polite">
+            <span class="manager-booking-details-pill" [attr.data-status]="details.status">{{ statusLabels[details.status] }}</span>
+          </dd>
+        </div>
+      </dl>
+
+      @if (details.status === 'booked') {
+        <button type="button" class="manager-booking-details-action" aria-haspopup="dialog"
+          (click)="cancelRequested.emit(details.bookingNumber)">Скасувати бронювання</button>
+      }
+    } @else {
+      <p class="manager-booking-details-notice" role="status">Завантажуємо деталі бронювання…</p>
+    }
+  </div>
+</dialog>

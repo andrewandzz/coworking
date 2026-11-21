@@ -1,0 +1,86 @@
+<section class="manager-bookings" aria-labelledby="manager-bookings-title">
+  <h1 class="manager-bookings-title font-extrabold" id="manager-bookings-title">Бронювання</h1>
+
+  <div class="manager-bookings-filters grid">
+    <label class="relative block min-w-0">
+      <span class="sr-only">Пошук за ім’ям або номером телефону</span>
+      <svg lucideSearch size="24" strokeWidth="1.75" class="manager-search-icon pointer-events-none absolute"
+        aria-hidden="true"></svg>
+      <input #searchInput class="manager-bookings-control manager-bookings-search block w-full" type="search"
+        placeholder="Пошук за ім’ям або номером телефону" maxlength="120" [value]="searchText()"
+        (input)="searchText.set(searchInput.value)" />
+    </label>
+    <label class="relative block min-w-0">
+      <span class="sr-only">Статус бронювання</span>
+      <select #statusSelect class="manager-bookings-control manager-bookings-status block w-full appearance-none"
+        (change)="selectStatus(statusSelect.value)">
+        <option value="all" [selected]="status() === 'all'">Усі статуси</option>
+        @for (option of statuses; track option) {
+          <option [value]="option" [selected]="status() === option">{{ statusLabels[option] }}</option>
+        }
+      </select>
+      <svg lucideChevronDown size="22" strokeWidth="1.5" class="manager-status-icon pointer-events-none absolute"
+        aria-hidden="true"></svg>
+    </label>
+  </div>
+
+  <div class="manager-bookings-results" [attr.aria-busy]="bookings.isLoading()">
+    @if (bookings.error()) {
+      <div class="manager-bookings-notice">
+        <p role="alert">Не вдалося завантажити бронювання.</p>
+        <button type="button" (click)="bookings.reload()">Спробувати знову</button>
+      </div>
+    } @else if (table(); as result) {
+      @if (result.bookings.length) {
+        <table class="manager-bookings-table" role="table" aria-label="Список бронювань">
+          <colgroup>
+            <col class="manager-number-column" />
+            <col class="manager-customer-column" />
+            <col class="manager-phone-column" />
+            <col />
+          </colgroup>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th scope="col" role="columnheader">№</th>
+              <th scope="col" role="columnheader">Користувач</th>
+              <th scope="col" role="columnheader">Номер телефону</th>
+              <th scope="col" role="columnheader">Статус</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            @for (booking of result.bookings; track booking.bookingNumber) {
+              <tr role="row">
+                <td class="manager-booking-number" role="cell">
+                  <button class="manager-booking-number-button" type="button" aria-haspopup="dialog"
+                    [attr.aria-label]="'Деталі бронювання ' + booking.bookingNumber"
+                    (click)="openDetails(booking.bookingNumber)">{{ booking.bookingNumber }}</button>
+                </td>
+                <td class="manager-booking-customer" role="cell">{{ booking.customerName }}</td>
+                <td class="manager-booking-phone" role="cell">{{ booking.phone }}</td>
+                <td class="manager-booking-status-cell" role="cell">
+                  <span class="manager-status-pill" [attr.data-status]="booking.status">{{ statusLabels[booking.status] }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <app-manager-pagination class="manager-bookings-pagination block" [page]="result.page"
+          [pageSize]="result.pageSize" [total]="result.total" (pageChanged)="page.set($event)" />
+      } @else {
+        <p class="manager-bookings-notice" role="status">Бронювань за цими фільтрами немає.</p>
+      }
+    } @else {
+      <p class="manager-bookings-notice" role="status">Завантажуємо бронювання…</p>
+    }
+  </div>
+
+  @if (selectedNumber(); as number) {
+    <app-manager-booking-details-dialog [bookingNumber]="number" [booking]="selectedBooking()" [loadError]="detailsError()"
+      (closed)="selectedNumber.set(null)" (retryRequested)="bookingDetails.reload()" (cancelRequested)="requestCancellation($event)" />
+  }
+  @if (cancellationNumber(); as number) {
+    <app-manager-cancel-booking-dialog [bookingNumber]="number" [pending]="cancelling()" [error]="cancellationError()"
+      (closed)="cancellationNumber.set(null)" (confirmed)="confirmCancellation()" />
+  }
+</section>

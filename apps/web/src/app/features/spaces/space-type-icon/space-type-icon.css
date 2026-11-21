@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+.space-desk-icon,
+.meeting-icon {
+  position: relative;
+  display: block;
+}
+
+.space-desk-icon {
+  aspect-ratio: 7 / 5;
+}
+
+.space-desk-icon::before,
+.space-desk-icon::after,
+.space-desk-icon span::before,
+.space-desk-icon span::after,
+.meeting-icon span::before,
+.meeting-icon span::after {
+  position: absolute;
+  border: var(--space-icon-stroke, 1.5px) solid currentColor;
+  content: '';
+}
+
+.space-desk-icon::before {
+  inset: 0 13% auto;
+  block-size: 33%;
+  border-bottom: 0;
+  border-radius: 0.1875rem 0.1875rem 0 0;
+}
+
+.space-desk-icon::after {
+  inset: 29% 0 auto;
+  block-size: 34%;
+  border-radius: 999px;
+}
+
+.space-desk-icon span::before,
+.space-desk-icon span::after {
+  inset-block-end: 0;
+  inline-size: 16%;
+  block-size: 40%;
+  border-top: 0;
+  border-radius: 0 0 0.1875rem 0.1875rem;
+}
+
+.space-desk-icon span::before {
+  inset-inline-start: 12%;
+}
+
+.space-desk-icon span::after {
+  inset-inline-end: 12%;
+}
+
+.meeting-icon {
+  aspect-ratio: 3 / 2;
+}
+
+.meeting-icon span {
+  position: absolute;
+  inset-block-start: 14%;
+  inline-size: 37%;
+  block-size: 75%;
+}
+
+.meeting-icon span:first-child {
+  inset-inline-start: 0;
+}
+
+.meeting-icon span:last-child {
+  inset-inline-end: 0;
+}
+
+.meeting-icon span:nth-child(2) {
+  z-index: 1;
+  inset: 0 22%;
+  inline-size: auto;
+  block-size: 100%;
+}
+
+.meeting-icon span::before {
+  inset: 0 21% auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.meeting-icon span::after {
+  inset: auto 0 0;
+  block-size: 48%;
+  border-radius: 50% 50% 0.125rem 0.125rem;
+  background-color: var(--space-status-fill, #fff);
+}
+
+.booth-icon {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}

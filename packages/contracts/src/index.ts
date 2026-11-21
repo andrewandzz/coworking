@@ -34,6 +34,41 @@ export interface Booking {
   desk: Desk;
 }
 
+export interface ManagerCredentials {
+  email: string;
+  password: string;
+}
+
+export interface ManagerSession {
+  manager: { email: string } | null;
+}
+
+export const MANAGER_BOOKING_STATUSES = ['booked', 'completed', 'cancelled'] as const;
+
+export type ManagerBookingStatus = (typeof MANAGER_BOOKING_STATUSES)[number];
+
+export interface ManagerBookingSummary {
+  bookingNumber: string;
+  customerName: string;
+  phone: string;
+  status: ManagerBookingStatus;
+}
+
+export interface ManagerBookingDetails extends ManagerBookingSummary {
+  spaceLabel: string;
+  date: string;
+  startHour: number;
+  endHour: number;
+  amountInKopiykas: number;
+}
+
+export interface ManagerBookingsResult {
+  bookings: ManagerBookingSummary[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
 const kyivDateFormatter = new Intl.DateTimeFormat('en-GB', {
   timeZone: BOOKING_TIME_ZONE,
   year: 'numeric',

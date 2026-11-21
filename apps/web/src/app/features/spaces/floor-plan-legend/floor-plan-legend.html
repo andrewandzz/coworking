@@ -1,0 +1,24 @@
+<aside class="floor-plan-legend border bg-white" aria-label="Умовні позначення"
+    [attr.data-filters-active]="filtersActive()">
+  <h3 class="legend-title font-bold">Умовні позначення</h3>
+
+  <ul class="legend-statuses grid" role="list">
+    @for (status of statuses; track status.state) {
+      <li class="legend-item grid items-center">
+        <span class="legend-status-mark relative rounded-full" [attr.data-state]="status.state" aria-hidden="true"></span>
+        <span>{{ status.label }}</span>
+      </li>
+    }
+  </ul>
+
+  <hr class="legend-divider">
+
+  <ul class="legend-types grid" role="list">
+    @for (type of spaceTypes; track type) {
+      <li class="legend-item grid items-center">
+        <app-space-type-icon class="legend-type-icon" [type]="type" />
+        <span>{{ spaceTypeLabels[type].plural }}</span>
+      </li>
+    }
+  </ul>
+</aside>

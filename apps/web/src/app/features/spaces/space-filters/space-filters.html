@@ -1,0 +1,40 @@
+<div class="space-filters grid border bg-white" role="group" aria-label="Фільтри просторів">
+  <label class="type-filter relative block min-w-0">
+    <span class="filter-label block font-bold">Тип простору</span>
+    <span class="relative block">
+      <select #typeSelect class="filter-control space-type-select block w-full appearance-none"
+          (change)="selectType(typeSelect.value)">
+        <option value="all" [selected]="filters().type === 'all'">Усі простори</option>
+        @for (type of spaceTypes; track type) {
+          <option [value]="type" [selected]="filters().type === type">
+            {{ spaceTypeLabels[type].plural }}
+          </option>
+        }
+      </select>
+      <svg lucideChevronDown size="20" strokeWidth="1.5"
+          class="select-chevron pointer-events-none absolute" aria-hidden="true"></svg>
+    </span>
+  </label>
+
+  <fieldset class="min-w-0">
+    <legend class="filter-label font-bold">Зручності</legend>
+    <div class="amenity-options flex flex-wrap">
+      @for (amenity of amenities; track amenity.id) {
+        <label class="filter-control amenity-option inline-flex max-w-full cursor-pointer items-center">
+          <input #amenityInput class="amenity-input sr-only" type="checkbox"
+              [checked]="filters().amenities.includes(amenity.id)"
+              (change)="toggleAmenity(amenity.id, amenityInput.checked)">
+          <span class="amenity-mark grid shrink-0 place-items-center" aria-hidden="true">
+            <svg lucideCheck size="19" strokeWidth="2.5" class="amenity-check-icon"></svg>
+          </span>
+          {{ amenity.filterLabel }}
+        </label>
+      }
+    </div>
+  </fieldset>
+
+  <button type="button" class="filter-reset inline-flex w-fit items-center gap-1.5 font-bold" (click)="resetFilters()">
+    <svg lucideRefreshCw size="24" strokeWidth="1.75" class="shrink-0" aria-hidden="true"></svg>
+    Скинути фільтри
+  </button>
+</div>

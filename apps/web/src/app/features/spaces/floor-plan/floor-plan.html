@@ -1,0 +1,26 @@
+<div class="floor-plan-scroll max-w-full overflow-auto" role="region" aria-label="План коворкінгу" tabindex="0">
+  <div class="floor-plan bg-white">
+    @for (slot of slots(); track slot.key) {
+      <div
+        class="floor-plan-slot"
+        [attr.data-walls]="slot.walls"
+        [style.left.px]="slot.left"
+        [style.top.px]="slot.top"
+        [style.width.px]="slot.width"
+        [style.height.px]="slot.height"
+      >
+        @if (slot.space; as space) {
+          <app-space-marker
+            class="size-full"
+            [spaceId]="space.id"
+            [type]="space.type"
+            [number]="space.number"
+            [occupied]="space.occupied"
+            [matchesFilters]="space.matchesFilters ?? true"
+            (spaceSelected)="spaceSelected.emit($event)"
+          />
+        }
+      </div>
+    }
+  </div>
+</div>

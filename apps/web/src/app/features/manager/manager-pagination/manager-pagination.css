@@ -1,0 +1,46 @@
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  font-size: clamp(0.9375rem, 1.43cqi, 1.25rem);
+  font-weight: 600;
+}
+
+.pagination-range {
+  color: var(--manager-muted);
+}
+
+.pagination-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.25rem, 0.65cqi, 0.625rem);
+}
+
+.pagination-controls button {
+  display: grid;
+  inline-size: clamp(2.25rem, 10vw, 3.1875rem);
+  min-block-size: clamp(2.75rem, 3.4cqi, 3rem);
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 0.9375rem;
+  font-weight: 700;
+}
+
+.pagination-controls .pagination-arrow {
+  border-color: var(--manager-line);
+}
+
+.pagination-controls button[aria-current='page'],
+.pagination-controls button:enabled:hover {
+  background: var(--manager-accent-soft);
+}
+
+.pagination-controls button:disabled {
+  color: var(--manager-line);
+}
+
+.pagination-controls button:focus-visible {
+  outline-color: var(--manager-accent);
+}

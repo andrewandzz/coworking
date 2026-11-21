@@ -1,0 +1,127 @@
+.booking-contact-dialog {
+  --contact-accent: #346831;
+  --contact-border: #a6a29a;
+  --contact-error: #a3273b;
+  position: fixed;
+  inset: 0;
+  inline-size: min(calc(100% - 2rem), 45.8125rem);
+  max-inline-size: none;
+  max-block-size: calc(100dvh - 2rem);
+  margin: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 1.5625rem;
+  background: #f6f1eb;
+  color: #222821;
+  container-type: inline-size;
+}
+
+.booking-contact-dialog::backdrop {
+  background: rgb(34 40 33 / 48%);
+}
+
+.booking-contact-panel {
+  padding-block: clamp(1rem, 4.64cqi, 2.125rem);
+  padding-inline: clamp(1rem, 5.19cqi, 2.375rem) clamp(1rem, 6.83cqi, 3.125rem);
+  font-size: clamp(1rem, 2.73cqi, 1.25rem);
+  line-height: 1.25;
+}
+
+.booking-contact-header {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: clamp(0.5rem, 3.69cqi, 1.6875rem);
+}
+
+.booking-contact-title {
+  font-size: clamp(1.375rem, 4.38cqi, 2rem);
+  line-height: 1.25;
+}
+
+.booking-contact-title:focus {
+  outline: none;
+}
+
+.booking-contact-close {
+  margin-inline-end: clamp(-1.375rem, -3cqi, -0.5rem);
+  color: #777c73;
+}
+
+.booking-contact-hint {
+  margin-block-start: clamp(0.625rem, 1.775cqi, 0.8125rem);
+  color: #a26428;
+  line-height: 1.35;
+}
+
+.booking-contact-form {
+  margin-block-start: 1rem;
+}
+
+.booking-contact-fields {
+  gap: 0.875rem;
+}
+
+.booking-contact-fields label span {
+  color: var(--contact-error);
+}
+
+.booking-contact-input {
+  min-block-size: clamp(2.75rem, 7.51cqi, 3.4375rem);
+  margin-block-start: clamp(0.5rem, 2.73cqi, 1.25rem);
+  padding-inline: clamp(0.875rem, 4.37cqi, 2rem);
+  border: 1px solid var(--contact-border);
+  border-radius: 0.9375rem;
+  background: #fff;
+  font-size: 1rem;
+}
+
+.booking-contact-input::placeholder {
+  color: #848079;
+}
+
+.booking-contact-input[aria-invalid='true'] {
+  border-color: var(--contact-error);
+}
+
+.booking-contact-error {
+  margin-block-start: 0.375rem;
+  color: var(--contact-error);
+  font-size: 0.875rem;
+}
+
+.booking-contact-submit {
+  min-block-size: clamp(2.75rem, 8.6cqi, 3.9375rem);
+  margin-block-start: clamp(1.125rem, 4.92cqi, 2.25rem);
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.75rem;
+  background: var(--contact-accent);
+  color: #fff;
+  font-size: clamp(1rem, 2.73cqi, 1.25rem);
+}
+
+.booking-contact-dialog :is(button, input):focus-visible {
+  outline: 3px solid var(--contact-accent);
+  outline-offset: 3px;
+}
+
+.booking-contact-expired {
+  inline-size: min(calc(100% - 2rem), 27.8125rem);
+}
+
+@container (max-width: 32rem) {
+  .booking-contact-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .booking-contact-title {
+    grid-area: 1 / 1;
+  }
+
+  .booking-contact-timer {
+    grid-area: 2 / 1;
+    justify-self: start;
+  }
+
+  .booking-contact-close {
+    grid-area: 1 / 2;
+  }
+}

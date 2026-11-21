@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  min-inline-size: 0;
+}
+
+.floor-plan-scroll {
+  overscroll-behavior-x: contain;
+}
+
+.floor-plan-scroll:focus-visible {
+  outline: 3px solid #346831;
+  outline-offset: -3px;
+}
+
+.floor-plan {
+  --wall-width: 10px;
+  --wall-color: #a6a29a;
+  position: relative;
+  box-sizing: border-box;
+  width: 1253px;
+  height: 451px;
+  overflow: hidden;
+  border: var(--wall-width) solid var(--wall-color);
+  border-radius: 25px;
+}
+
+.floor-plan::before,
+.floor-plan::after {
+  position: absolute;
+  inset-block: 0;
+  width: var(--wall-width);
+  background-color: var(--wall-color);
+  pointer-events: none;
+  content: '';
+}
+
+.floor-plan::before {
+  left: 575px;
+}
+
+.floor-plan::after {
+  left: 994px;
+}
+
+.floor-plan-slot {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.floor-plan-slot[data-walls='bottom'],
+.floor-plan-slot[data-walls='bottom-right'] {
+  border-bottom: var(--wall-width) solid var(--wall-color);
+}
+
+.floor-plan-slot[data-walls='bottom-right'],
+.floor-plan-slot[data-walls='top-right'] {
+  border-right: var(--wall-width) solid var(--wall-color);
+}
+
+.floor-plan-slot[data-walls='bottom-right'] {
+  border-bottom-right-radius: 5px;
+}
+
+.floor-plan-slot[data-walls='top-right'] {
+  border-top: var(--wall-width) solid var(--wall-color);
+  border-top-right-radius: 5px;
+}

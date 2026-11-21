@@ -1,0 +1,27 @@
+<dialog appModalDialog class="manager-cancel-booking-dialog" aria-labelledby="manager-cancel-booking-title"
+  aria-describedby="manager-cancel-booking-description" [appModalDialogDismissible]="!pending()"
+  (dialogClosed)="closed.emit()">
+  <div class="manager-cancel-booking-panel relative text-center">
+    <button type="button" class="manager-cancel-booking-close absolute grid size-11 place-items-center rounded-lg"
+      aria-label="Закрити" [disabled]="pending()" (click)="close()">
+      <svg lucideX size="38" strokeWidth="1.5" aria-hidden="true"></svg>
+    </button>
+
+    <h2 id="manager-cancel-booking-title" class="manager-cancel-booking-title font-bold">Скасувати бронювання?</h2>
+    <p id="manager-cancel-booking-description" class="manager-cancel-booking-description">
+      Бронювання {{ bookingNumber() }} буде скасовано назавжди.
+    </p>
+    @if (error(); as message) {
+      <p class="manager-cancel-booking-error" role="alert">{{ message }}</p>
+    }
+
+    <div class="manager-cancel-booking-actions grid" [attr.aria-busy]="pending()">
+      <button type="button" class="manager-cancel-booking-button manager-cancel-booking-confirm font-bold"
+        [disabled]="pending()" (click)="confirmed.emit()">
+        {{ pending() ? 'Скасовуємо…' : 'Скасувати бронювання' }}
+      </button>
+      <button type="button" class="manager-cancel-booking-button manager-cancel-booking-dismiss font-bold"
+        [disabled]="pending()" autofocus (click)="close()">Відмінити</button>
+    </div>
+  </div>
+</dialog>

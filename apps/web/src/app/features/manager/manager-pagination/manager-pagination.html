@@ -1,0 +1,19 @@
+<div class="pagination">
+  <p class="pagination-range" role="status">Показано {{ first() }}–{{ last() }} з {{ total() }}</p>
+  @if (pageCount() > 1) {
+    <nav class="pagination-controls" aria-label="Сторінки результатів">
+      <button class="pagination-arrow" type="button" aria-label="Попередня сторінка" [disabled]="page() <= 1"
+        (click)="pageChanged.emit(page() - 1)">
+        <svg lucideChevronLeft size="24" strokeWidth="1.75" aria-hidden="true"></svg>
+      </button>
+      @for (number of pages(); track number) {
+        <button type="button" [attr.aria-current]="number === page() ? 'page' : null"
+          [attr.aria-label]="'Сторінка ' + number" (click)="pageChanged.emit(number)">{{ number }}</button>
+      }
+      <button class="pagination-arrow" type="button" aria-label="Наступна сторінка" [disabled]="page() >= pageCount()"
+        (click)="pageChanged.emit(page() + 1)">
+        <svg lucideChevronRight size="24" strokeWidth="1.75" aria-hidden="true"></svg>
+      </button>
+    </nav>
+  }
+</div>

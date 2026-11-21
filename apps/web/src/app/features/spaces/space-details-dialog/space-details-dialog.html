@@ -1,0 +1,29 @@
+<dialog appModalDialog #dialog="appModalDialog" class="space-details-dialog"
+    aria-labelledby="space-details-title" (dialogClosed)="closed.emit()">
+  <div class="space-details-panel relative">
+    <h2 id="space-details-title" class="space-details-title font-bold" tabindex="-1" autofocus>{{ title() }}</h2>
+    <button type="button" class="space-details-close absolute grid size-11 place-items-center rounded-lg"
+        aria-label="Закрити" (click)="dialog.close()">
+      <svg lucideX size="22" strokeWidth="1.5" aria-hidden="true"></svg>
+    </button>
+
+    <ul class="space-details-features grid" role="list">
+      <li>{{ typeLabel() }}</li>
+      @for (amenity of amenities(); track amenity.id) {
+        <li>{{ amenity.label }}</li>
+      }
+    </ul>
+
+    <div class="space-details-rates grid grid-cols-2 text-center font-bold" aria-label="Тарифи" role="group">
+      <div>{{ rates().hourly }} грн/год</div>
+      <div>{{ rates().daily }} грн/день</div>
+    </div>
+
+    <div class="space-details-actions grid">
+      <button type="button" class="space-details-action space-details-hourly font-bold"
+          (click)="requestBooking('hourly')">Забронювати погодинно</button>
+      <button type="button" class="space-details-action space-details-daily font-bold"
+          (click)="requestBooking('daily')">Забронювати на день</button>
+    </div>
+  </div>
+</dialog>

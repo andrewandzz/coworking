@@ -1,0 +1,12 @@
+<button
+  type="button"
+  class="space-marker grid size-full min-h-11 cursor-pointer items-center justify-items-center font-bold select-none"
+  [attr.data-space-type]="type()"
+  [attr.data-state]="visualState()"
+  [attr.aria-label]="accessibleLabel()"
+  (click)="spaceSelected.emit(spaceId())"
+>
+  <app-space-type-icon class="space-icon" [type]="type()" />
+  <span class="space-number" aria-hidden="true">{{ number() }}</span>
+  <span class="space-indicator rounded-full" aria-hidden="true"></span>
+</button>

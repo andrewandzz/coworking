@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  min-inline-size: 0;
+  container-type: inline-size;
+}
+
+.space-marker {
+  --marker-indicator-size: clamp(0.625rem, 19cqi, 1.375rem);
+  --marker-icon-width: clamp(1rem, 24cqi, 1.75rem);
+  --space-icon-stroke: clamp(1px, 1.25cqi, 1.5px);
+  background-color: var(--space-status-fill);
+  color: #222821;
+  line-height: 1;
+}
+
+.space-marker:focus-visible {
+  outline: 3px solid #346831;
+  outline-offset: -4px;
+}
+
+.space-marker[data-space-type='desk'] {
+  grid-template-areas: 'icon number indicator';
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  aspect-ratio: 117 / 61;
+  border: 2px solid var(--space-status-border);
+  border-radius: clamp(0.5rem, 13cqi, 1rem);
+  padding-inline: clamp(0.25rem, 6cqi, 0.5rem);
+}
+
+.space-marker[data-space-type='desk'] .space-icon,
+.space-marker[data-space-type='desk'] .space-indicator {
+  translate: 0 calc(var(--marker-indicator-size) / 2);
+}
+
+.space-marker[data-space-type='desk'] .space-icon {
+  justify-self: start;
+}
+
+.space-marker[data-space-type='desk'] .space-indicator,
+.space-marker[data-space-type='skype-booth'] .space-indicator {
+  justify-self: end;
+}
+
+.space-marker[data-space-type='meeting-room'] {
+  --marker-icon-width: clamp(1.625rem, 21cqi, 4rem);
+  --space-icon-stroke: clamp(1.5px, 1cqi, 3px);
+  grid-template-areas:
+    'icon number'
+    'indicator indicator';
+  place-content: center;
+  gap: clamp(0.3125rem, 10cqi, 2rem) clamp(0.375rem, 8cqi, 1.75rem);
+  aspect-ratio: 307 / 196;
+}
+
+.space-marker[data-space-type='meeting-room'] .space-icon,
+.space-marker[data-space-type='meeting-room'] .space-number {
+  translate: clamp(-1rem, -5cqi, -0.25rem) 0;
+}
+
+.space-marker[data-space-type='skype-booth'] {
+  --marker-icon-width: clamp(1.375rem, 21cqi, 3rem);
+  grid-template-areas: 'icon number indicator';
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  aspect-ratio: 230 / 140;
+  padding-inline: clamp(0.375rem, 13cqi, 1.875rem);
+}
+
+.space-marker[data-space-type='skype-booth'] .space-indicator {
+  translate: 0 clamp(0.375rem, 8cqi, 1.125rem);
+}
+
+.space-icon {
+  grid-area: icon;
+  inline-size: var(--marker-icon-width);
+}
+
+.space-number {
+  grid-area: number;
+  font-size: clamp(1.125rem, 29cqi, 2.125rem);
+}
+
+.space-indicator {
+  grid-area: indicator;
+  inline-size: var(--marker-indicator-size);
+  block-size: var(--marker-indicator-size);
+  background-color: var(--space-status-indicator);
+}

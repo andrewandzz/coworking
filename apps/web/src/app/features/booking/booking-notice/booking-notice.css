@@ -1,0 +1,68 @@
+.booking-notice-panel {
+  padding: clamp(1.25rem, 6.53cqi, 1.8125rem) clamp(1rem, 5.85cqi, 1.625rem)
+    clamp(1.5rem, 8.32cqi, 2.3125rem);
+}
+
+.booking-notice-close {
+  inset-block-start: 1rem;
+  inset-inline-end: 0.875rem;
+  color: #777c73;
+}
+
+.booking-notice-icon {
+  inline-size: 4.5rem;
+  block-size: 4.5rem;
+  border: 2px solid #ff5145;
+  background: #f5e2de;
+  color: #d4574e;
+}
+
+.booking-notice-title {
+  max-inline-size: 21rem;
+  margin-block-start: 0.6875rem;
+  font-size: clamp(1.25rem, 5.4cqi, 1.5rem);
+  line-height: 1.25;
+}
+
+.booking-notice-title:focus {
+  outline: none;
+}
+
+.booking-notice-message {
+  max-inline-size: 22rem;
+  margin-block-start: 0.875rem;
+  color: #626b61;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.booking-notice-action {
+  min-block-size: 3.125rem;
+  margin-block-start: 1.4375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.75rem;
+  background: #346831;
+  color: #fff;
+  font-size: clamp(1rem, 4.5cqi, 1.25rem);
+}
+
+.booking-notice-panel[data-kind='payment-failed'] {
+  padding-block-end: clamp(1.25rem, 6.08cqi, 1.6875rem);
+}
+
+.booking-notice-panel[data-kind='payment-failed'] .booking-notice-title {
+  line-height: 1.4;
+}
+
+.booking-notice-panel[data-kind='payment-failed'] .booking-notice-message {
+  margin-block-start: clamp(0.875rem, 4.5cqi, 1.25rem);
+}
+
+.booking-notice-panel[data-kind='payment-failed'] .booking-notice-action {
+  margin-block-start: clamp(1.25rem, 8.3cqi, 2.3125rem);
+}
+
+.booking-notice-panel button:focus-visible {
+  outline: 3px solid #346831;
+  outline-offset: 3px;
+}
