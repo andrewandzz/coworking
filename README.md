@@ -1,0 +1,52 @@
+# Бронювання робочих місць у коворкінгу
+
+Односторінковий застосунок на Angular 22 і Tailwind CSS 4 з API на NestJS 12 та TypeORM. Можна обрати дату й зону, забронювати місце на весь день, переглянути свої поточні бронювання та скасувати їх.
+
+## Локальний запуск
+
+Потрібен Node.js 24 LTS версії 24.15 або новішої. Ці команди запускають Angular і NestJS разом.
+
+```sh
+npm ci
+npm run dev
+```
+
+Застосунок доступний за адресою [localhost:4200](http://localhost:4200). Angular перенаправляє запити `/api` на порт 3000. Для локального запуску TypeORM створює SQLite-файл `apps/api/data/coworking.sqlite`. Початкова міграція додає дев’ять місць у трьох зонах.
+
+## Зібраний застосунок
+
+```sh
+npm run build
+npm start
+```
+
+NestJS обслуговує застосунок і API за однією адресою [localhost:3000](http://localhost:3000).
+
+## SQL Server
+
+Скопіюйте `.env.example` у `.env` і вкажіть `DB_TYPE=mssql` та параметри підключення до наявної бази `DB_NAME`. TypeORM застосовує міграції під час запуску API.
+
+Для локального контейнера на x86-64 встановіть у `.env` власний пароль `DB_PASSWORD` для `sa` і вкажіть `DB_TRUST_CERTIFICATE=true`. Створіть базу після запуску контейнера.
+
+```sh
+docker compose up -d --wait sqlserver
+docker compose exec sqlserver bash
+export SQLCMDPASSWORD="$MSSQL_SA_PASSWORD"
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -b -Q 'CREATE DATABASE [coworking]'
+exit
+```
+
+На Apple Silicon можна запустити застосунок із локальною SQLite або під’єднати зовнішній SQL Server. Контейнери SQL Server підтримуються на Linux x86-64. [Документація Microsoft](https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-docker-container-deployment)
+
+## Правила бронювання
+
+Бронювання доступні від сьогодні до 30 днів наперед за київським часом. Одне місце можна забронювати один раз на кожну дату. Перегляд і скасування прив’язані до ключа, збереженого в браузері.
+
+| Метод і шлях | Дія |
+| --- | --- |
+| `GET /api/desks?date=YYYY-MM-DD` | Доступність місць на дату. Якщо дату пропущено, повертається сьогоднішня доступність. |
+| `GET /api/bookings` | Поточні бронювання браузера. |
+| `POST /api/bookings` | Бронювання місця за `deskId` і `date`. |
+| `DELETE /api/bookings/:id` | Скасування поточного бронювання. |
+
+Запити до `/api/bookings` використовують заголовок `Authorization: Bearer <ключ>`. Застосунок генерує ключ із 32 випадкових байтів і зберігає його в шістнадцятковому форматі.

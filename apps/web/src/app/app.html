@@ -1,0 +1,21 @@
+<div class="app-shell">
+  <header class="app-sidebar">
+    <a routerLink="/desks" class="brand">
+      <span class="brand-mark" aria-hidden="true"><svg lucideLayoutGrid size="21"></svg></span>
+      Коворкінг
+    </a>
+    <nav class="main-nav" aria-label="Розділи застосунку">
+      <a routerLink="/desks" routerLinkActive="nav-active" ariaCurrentWhenActive="page">
+        <svg lucideLayoutGrid size="19" aria-hidden="true"></svg>
+        Робочі місця
+      </a>
+      <a routerLink="/bookings" routerLinkActive="nav-active" ariaCurrentWhenActive="page">
+        <svg lucideCalendarCheck size="19" aria-hidden="true"></svg>
+        Мої бронювання
+      </a>
+    </nav>
+  </header>
+  <main class="app-content" id="main-content">
+    <router-outlet />
+  </main>
+</div>

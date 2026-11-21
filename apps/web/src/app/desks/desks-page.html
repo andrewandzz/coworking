@@ -1,0 +1,112 @@
+<header class="page-heading">
+  <h1>Робочі місця</h1>
+  <p>Оберіть дату та забронюйте місце на весь день.</p>
+</header>
+
+<section class="surface calendar-panel" aria-labelledby="calendar-heading">
+  <div class="calendar-header">
+    <div class="flex min-w-0 items-center gap-3">
+      <span class="calendar-icon"><svg lucideCalendarDays size="21" aria-hidden="true"></svg></span>
+      <div class="min-w-0">
+        <h2 id="calendar-heading" class="text-base font-extrabold">Дата бронювання</h2>
+        <p class="text-sm text-muted">{{ formatDate(selectedDate(), 'long') }}</p>
+      </div>
+    </div>
+    <div class="flex shrink-0 items-center gap-1.5" aria-label="Навігація за датами">
+      <button type="button" class="icon-button bordered" aria-label="Попередні дати"
+          [disabled]="weekStart() <= today()" (click)="changeWeek(-1)">
+        <svg lucideChevronLeft size="19" aria-hidden="true"></svg>
+      </button>
+      <button type="button" class="icon-button bordered" aria-label="Наступні дати"
+          [disabled]="dates()[dates().length - 1] >= lastDate()" (click)="changeWeek(1)">
+        <svg lucideChevronRight size="19" aria-hidden="true"></svg>
+      </button>
+    </div>
+  </div>
+  <div class="date-grid" role="group" aria-label="Доступні дати бронювання">
+    @for (date of dates(); track date) {
+      <button type="button" class="date-button" [class.date-active]="date === selectedDate()"
+          [attr.aria-label]="formatDate(date, 'long')" [attr.aria-pressed]="date === selectedDate()"
+          [disabled]="date < today() || date > lastDate()" (click)="selectDate(date)">
+        <span>{{ formatDate(date, 'weekday') }}</span>
+        <strong>{{ formatDate(date, 'day') }}</strong>
+        @if (date === today()) {
+          <span class="today-indicator"><span class="sr-only">Сьогодні</span></span>
+        }
+      </button>
+    }
+  </div>
+</section>
+
+<section class="mt-8 sm:mt-10" aria-labelledby="desks-heading">
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <h2 id="desks-heading" class="text-xl font-extrabold sm:text-2xl">Обрати місце</h2>
+    @if (availability.hasValue()) {
+      <span class="availability-total" aria-live="polite">
+        {{ availableCount() }} з {{ visibleDesks().length }} вільні
+      </span>
+    }
+  </div>
+  <div class="filter-row" role="group" aria-label="Фільтр за зоною">
+    <button type="button" [class.filter-active]="zone() === 'all'"
+        [attr.aria-pressed]="zone() === 'all'" (click)="zone.set('all')">Усі зони</button>
+    @for (item of zones; track item) {
+      <button type="button" [class.filter-active]="zone() === item"
+          [attr.aria-pressed]="zone() === item" (click)="zone.set(item)">{{ zoneLabel[item] }}</button>
+    }
+  </div>
+
+  @if (storageWarning) {
+    <p class="notice error-notice" role="alert">{{ storageWarning }}</p>
+  }
+  @if (notice(); as message) {
+    <div class="notice" role="status" [class.success-notice]="message.success"
+        [class.error-notice]="!message.success">
+      <span>{{ message.text }}</span>
+      @if (message.success) {
+        <a routerLink="/bookings" class="font-extrabold underline underline-offset-4">Мої бронювання</a>
+      }
+    </div>
+  }
+  @if (availability.error()) {
+    <div class="surface empty-state" role="alert">
+      <p>Не вдалося завантажити робочі місця.</p>
+      <button class="button button-secondary" type="button" (click)="availability.reload()">Спробувати знову</button>
+    </div>
+  } @else if (availability.isLoading() && !availability.hasValue()) {
+    <p class="surface empty-state" role="status">Завантаження робочих місць…</p>
+  } @else {
+    <div class="desk-grid" [attr.aria-busy]="availability.isLoading()">
+      @for (desk of visibleDesks(); track desk.id) {
+        <article class="surface desk-card">
+          <div class="flex items-start justify-between gap-3">
+            <div class="desk-icon" [attr.data-zone]="desk.zone">
+              @switch (desk.zone) {
+                @case ('quiet') { <svg lucideHeadphones size="23" aria-hidden="true"></svg> }
+                @case ('window') { <svg lucideSun size="23" aria-hidden="true"></svg> }
+                @default { <svg lucideMonitor size="23" aria-hidden="true"></svg> }
+              }
+            </div>
+            <span class="desk-status" [class.desk-free]="desk.available">
+              {{ desk.available ? 'Вільне' : 'Зайняте' }}
+            </span>
+          </div>
+          <div class="mt-4">
+            <h3 class="text-lg font-extrabold">Місце {{ desk.id }}</h3>
+            <p class="mt-1 text-sm text-muted">{{ zoneLabel[desk.zone] }}</p>
+          </div>
+          <button type="button" class="button button-secondary mt-5 w-full"
+              [attr.aria-label]="'Забронювати місце ' + desk.id"
+              [disabled]="!desk.available || availability.isLoading() || !!storageWarning"
+              (click)="selectDesk(desk)">Забронювати</button>
+        </article>
+      } @empty {
+        <p class="surface empty-state col-span-full">У цій зоні поки немає робочих місць.</p>
+      }
+    </div>
+  }
+</section>
+
+<app-confirm-dialog title="Підтвердити бронювання" confirmLabel="Забронювати"
+    pendingLabel="Бронюємо…" [description]="confirmationDescription()" [pending]="pending()"
+    [error]="confirmationError()" (confirmed)="confirmBooking()" (closed)="selectedDesk.set(null)" />

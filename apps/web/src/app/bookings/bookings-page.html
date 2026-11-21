@@ -1,0 +1,46 @@
+<header class="page-heading">
+  <h1>Мої бронювання</h1>
+  <p>Поточні бронювання, створені в цьому браузері.</p>
+</header>
+
+@if (notice()) {
+  <p class="notice success-notice" role="status">{{ notice() }}</p>
+}
+@if (storageWarning) {
+  <p class="notice error-notice" role="alert">{{ storageWarning }}</p>
+} @else if (bookings.error()) {
+  <div class="surface empty-state" role="alert">
+    <p>Не вдалося завантажити бронювання.</p>
+    <button type="button" class="button button-secondary" (click)="bookings.reload()">Спробувати знову</button>
+  </div>
+} @else if (bookings.isLoading() && !bookings.hasValue()) {
+  <p class="surface empty-state" role="status">Завантаження бронювань…</p>
+} @else if (bookings.hasValue()) {
+  <ul class="grid gap-3" [attr.aria-busy]="bookings.isLoading()">
+    @for (booking of bookings.value(); track booking.id) {
+      <li class="surface booking-row">
+        <span class="booking-date" aria-hidden="true">
+          <svg lucideCalendarCheck size="24"></svg>
+        </span>
+        <div class="min-w-0">
+          <h2 class="text-lg font-extrabold">Місце {{ booking.desk.id }}</h2>
+          <p class="mt-1 text-sm text-muted">{{ zoneLabel[booking.desk.zone] }} · {{ formatDate(booking.date, 'long') }}</p>
+        </div>
+        <button type="button" class="button button-secondary cancel-button"
+            [attr.aria-label]="'Скасувати бронювання місця ' + booking.desk.id + ' на ' + formatDate(booking.date, 'long')"
+            [disabled]="bookings.isLoading()" (click)="selectBooking(booking)">Скасувати</button>
+      </li>
+    } @empty {
+      <li class="surface empty-state">
+        <span class="booking-date mx-auto"><svg lucideCalendarCheck size="27" aria-hidden="true"></svg></span>
+        <p class="text-lg font-extrabold">У вас ще немає поточних бронювань</p>
+        <a class="button button-primary" routerLink="/desks">Обрати місце</a>
+      </li>
+    }
+  </ul>
+}
+
+<app-confirm-dialog title="Скасувати бронювання?" confirmLabel="Скасувати бронювання"
+    pendingLabel="Скасовуємо…" dismissLabel="Залишити" [dangerous]="true"
+    [description]="confirmationDescription()" [pending]="pending()" [error]="confirmationError()"
+    (confirmed)="confirmCancellation()" (closed)="selectedBooking.set(null)" />
