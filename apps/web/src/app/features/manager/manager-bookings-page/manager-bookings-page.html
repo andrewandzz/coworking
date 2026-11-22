@@ -56,7 +56,7 @@
                     (click)="openDetails(booking.bookingNumber)">{{ booking.bookingNumber }}</button>
                 </td>
                 <td class="manager-booking-customer" role="cell">{{ booking.customerName }}</td>
-                <td class="manager-booking-phone" role="cell">{{ booking.phone }}</td>
+                <td class="manager-booking-phone" role="cell">{{ booking.phone | ukrainianPhone }}</td>
                 <td class="manager-booking-status-cell" role="cell">
                   <span class="manager-status-pill" [attr.data-status]="booking.status">{{ statusLabels[booking.status] }}</span>
                 </td>
@@ -66,7 +66,7 @@
         </table>
 
         <app-manager-pagination class="manager-bookings-pagination block" [page]="result.page"
-          [pageSize]="result.pageSize" [total]="result.total" (pageChanged)="page.set($event)" />
+          [pageSize]="result.pageSize" [total]="result.total" (pageChanged)="pagination.setPage($event)" />
       } @else {
         <p class="manager-bookings-notice" role="status">Бронювань за цими фільтрами немає.</p>
       }

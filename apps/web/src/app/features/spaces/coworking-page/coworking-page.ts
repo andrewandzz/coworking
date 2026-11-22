@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, output, signal } from '@angular/core';
-import { addCalendarDays, getBookingWindow } from '@coworking/contracts';
+import { addCalendarDays, DEMO_BOOKING_RATES_IN_KOPIYKAS, getBookingWindow } from '@coworking/contracts';
 import { CoworkingBrand } from '../../../shared/ui/coworking-brand/coworking-brand';
 import { RESERVATION_DURATION_MS } from '../../booking/booking-reservation';
 import type { BookingConfirmation, BookingContactSubmission, BookingPayment, BookingReservation } from '../../booking/booking-reservation';
@@ -51,8 +51,6 @@ const DEMO_SPACES: readonly CoworkingSpace[] = [
   { id: 'skype-booth-3', type: 'skype-booth', number: 3, occupied: false, amenities: ['quiet-zone'] },
 ];
 
-const DEMO_RATES_IN_KOPIYKAS = { hourly: 8000, daily: 48000 };
-
 @Component({
   selector: 'app-coworking-page',
   imports: [CoworkingBrand, SpaceFilters, FloorPlan, FloorPlanLegend, SpaceDetailsDialog, BookingSchedule, ContactForm, PaymentStep, BookingResult],
@@ -91,7 +89,7 @@ export class CoworkingPage {
     const space = DEMO_SPACES.find(({ id }) => id === spaceId);
     if (!space) return;
 
-    this.selectedSpace.set({ ...space, ratesInKopiykas: DEMO_RATES_IN_KOPIYKAS });
+    this.selectedSpace.set({ ...space, ratesInKopiykas: DEMO_BOOKING_RATES_IN_KOPIYKAS });
     this.spaceSelected.emit(spaceId);
   }
 

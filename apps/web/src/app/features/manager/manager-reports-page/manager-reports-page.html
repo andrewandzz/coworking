@@ -10,7 +10,7 @@
           <label class="manager-report-date relative">
             <span class="sr-only">Початкова дата</span>
             <input #fromInput class="manager-report-date-input absolute inset-0 size-full cursor-pointer"
-              type="date" lang="uk" required min="0001-01-01" max="9999-12-31" [value]="initialPeriod.from"
+              type="date" lang="uk" required min="0001-01-01" max="9999-12-31"
               [attr.aria-invalid]="periodError()?.field === 'from' ? 'true' : null"
               [attr.aria-describedby]="periodError()?.field === 'from' ? 'manager-report-period-error' : null"
               (click)="showDatePicker(fromInput)" (input)="fromDate.set(fromInput.value); periodError.set(null)">
@@ -22,7 +22,7 @@
           <label class="manager-report-date relative">
             <span class="sr-only">Кінцева дата</span>
             <input #toInput class="manager-report-date-input absolute inset-0 size-full cursor-pointer"
-              type="date" lang="uk" required min="0001-01-01" max="9999-12-31" [value]="initialPeriod.to"
+              type="date" lang="uk" required min="0001-01-01" max="9999-12-31"
               [attr.aria-invalid]="periodError()?.field === 'to' ? 'true' : null"
               [attr.aria-describedby]="periodError()?.field === 'to' ? 'manager-report-period-error' : null"
               (click)="showDatePicker(toInput)" (input)="toDate.set(toInput.value); periodError.set(null)">
@@ -67,7 +67,7 @@
               <tr role="row">
                 <td class="manager-booking-number" role="cell">{{ booking.bookingNumber }}</td>
                 <td class="manager-booking-customer" role="cell">{{ booking.customerName }}</td>
-                <td class="manager-booking-phone" role="cell">{{ booking.phone }}</td>
+                <td class="manager-booking-phone" role="cell">{{ booking.phone | ukrainianPhone }}</td>
                 <td class="manager-report-price" role="cell">{{ formatBookingAmount(booking.amountInKopiykas) }} грн</td>
               </tr>
             }
@@ -75,7 +75,7 @@
         </table>
 
         <app-manager-pagination class="manager-report-pagination block" [page]="revenue.page"
-          [pageSize]="revenue.pageSize" [total]="revenue.total" (pageChanged)="page.set($event)" />
+          [pageSize]="revenue.pageSize" [total]="revenue.total" (pageChanged)="selectPage($event)" />
       } @else {
         <p class="manager-report-notice" role="status">За цей період немає завершених бронювань.</p>
       }

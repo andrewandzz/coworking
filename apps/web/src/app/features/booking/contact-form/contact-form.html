@@ -47,11 +47,11 @@
 
           <div>
             <label class="block font-bold" for="booking-contact-phone">Телефон <span aria-hidden="true">*</span></label>
-            <input id="booking-contact-phone" class="booking-contact-input block w-full" name="phone"
-                type="tel" inputmode="tel" autocomplete="tel" required placeholder="Введіть номер телефону"
+            <input #phoneInput id="booking-contact-phone" class="booking-contact-input block w-full" name="phone"
+                type="tel" inputmode="tel" autocomplete="tel" required placeholder="+38 (067) 123-45-67"
                 [attr.aria-invalid]="errors().phone ? 'true' : null"
                 [attr.aria-describedby]="errors().phone ? 'booking-contact-phone-error' : null"
-                (input)="clearError('phone')">
+                (input)="clearError('phone')" (blur)="formatPhoneInput(phoneInput)">
             @if (errors().phone; as error) {
               <p class="booking-contact-error" id="booking-contact-phone-error" role="alert">{{ error }}</p>
             }

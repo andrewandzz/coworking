@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output, signal } from '@angular/core';
+import { normalizeUkrainianPhone } from '@coworking/contracts';
 import { LucideX } from '@lucide/angular';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
+import { formatUkrainianPhone } from '../../../shared/ukrainian-phone.pipe';
 import { BookingNotice } from '../booking-notice/booking-notice';
 import type { BookingContact, BookingContactSubmission, BookingReservation } from '../booking-reservation';
 import { ReservationTimer } from '../reservation-timer/reservation-timer';
@@ -31,6 +33,10 @@ export class ContactForm {
     }
   }
 
+  protected formatPhoneInput(input: HTMLInputElement): void {
+    input.value = formatUkrainianPhone(input.value) ?? input.value;
+  }
+
   protected submit(event: SubmitEvent, form: HTMLFormElement, dialog: ModalDialog): void {
     event.preventDefault();
     const reservation = this.reservation();
@@ -40,16 +46,17 @@ export class ContactForm {
     }
 
     const data = new FormData(form);
+    const enteredPhone = String(data.get('phone') ?? '').trim();
     const contact: BookingContact = {
       firstName: String(data.get('firstName') ?? '').trim(),
       lastName: String(data.get('lastName') ?? '').trim(),
-      phone: String(data.get('phone') ?? '').trim().replace(/[\s().-]/g, ''),
+      phone: normalizeUkrainianPhone(enteredPhone) ?? '',
     };
     const errors: ContactErrors = {};
     if (!contact.firstName) errors.firstName = 'Введіть ім’я.';
     if (!contact.lastName) errors.lastName = 'Введіть прізвище.';
-    if (!/^\+?\d{7,15}$/.test(contact.phone)) {
-      errors.phone = contact.phone ? 'Введіть дійсний номер телефону.' : 'Введіть номер телефону.';
+    if (!contact.phone) {
+      errors.phone = enteredPhone ? 'Введіть дійсний український номер телефону.' : 'Введіть номер телефону.';
     }
 
     this.errors.set(errors);

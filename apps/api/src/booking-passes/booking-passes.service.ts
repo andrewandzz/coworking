@@ -28,7 +28,7 @@ export class BookingPassesService {
   constructor(@InjectRepository(BookingPassEntity) private readonly passes: Repository<BookingPassEntity>) {}
 
   async issue(request: IssueBookingPassRequest): Promise<IssuedBookingPass> {
-    const { token, ...schedule } = request;
+    const { token, phone, ...schedule } = request;
     const tokenHash = hashToken(token);
     let pass = await this.passes.findOneBy({ tokenHash });
     if (!pass) {
@@ -36,7 +36,7 @@ export class BookingPassesService {
         throw new BadRequestException('Виберіть сьогоднішню або майбутню дату бронювання.');
       }
       try {
-        await this.passes.insert({ ...schedule, tokenHash, usedAt: null });
+        await this.passes.insert({ ...schedule, tokenHash, phone, usedAt: null });
       } catch (error) {
         if (!(error instanceof QueryFailedError)) throw error;
         pass = await this.passes.findOneBy({ tokenHash });
@@ -46,7 +46,8 @@ export class BookingPassesService {
     }
 
     if (pass.spaceId !== schedule.spaceId || pass.date !== schedule.date
-      || pass.startHour !== schedule.startHour || pass.endHour !== schedule.endHour) {
+      || pass.startHour !== schedule.startHour || pass.endHour !== schedule.endHour
+      || (pass.phone !== null && pass.phone !== phone)) {
       throw new ConflictException('Цей запит вже створив перепустку для іншого бронювання.');
     }
     return describe(pass);

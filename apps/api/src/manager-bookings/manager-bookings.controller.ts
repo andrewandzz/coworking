@@ -1,7 +1,7 @@
 import {
   ConflictException, Controller, Get, Header, Headers, HttpCode, NotFoundException, Param, Post, Query, UseGuards,
 } from '@nestjs/common';
-import { MANAGER_BOOKING_STATUSES } from '@coworking/contracts';
+import { MANAGER_BOOKING_STATUSES, normalizeUkrainianPhone } from '@coworking/contracts';
 import type { ManagerBookingDetails, ManagerBookingsResult } from '@coworking/contracts';
 import { z } from 'zod';
 import { ManagerSessionGuard } from '../manager-auth/manager-session.guard.js';
@@ -18,21 +18,17 @@ const querySchema = z.strictObject({
   page: pageSchema,
 });
 
-function phoneDigits(value: string): string {
-  return value.replace(/\D/g, '');
-}
-
 @Controller('manager/bookings')
 @UseGuards(ManagerSessionGuard)
 export class ManagerBookingsController {
   @Get()
   @Header('Cache-Control', 'no-store')
   list(@Query({ schema: querySchema }) { q, status, page = 1 }: z.output<typeof querySchema>): ManagerBookingsResult {
-    const phoneQuery = /^[\d\s()+.-]+$/.test(q) ? phoneDigits(q) : '';
+    const phoneQuery = /^[\d\s()+.-]+$/.test(q) ? normalizeUkrainianPhone(q) ?? q.replace(/\D/g, '') : '';
     const nameParts = q.toLocaleLowerCase('uk-UA').split(/\s+/);
     const matching = DEMO_MANAGER_BOOKINGS.filter((booking) => {
       if (status && booking.status !== status) return false;
-      if (phoneQuery) return phoneDigits(booking.phone).includes(phoneQuery);
+      if (phoneQuery) return booking.phone.includes(phoneQuery);
 
       const name = booking.customerName.toLocaleLowerCase('uk-UA');
       return nameParts.every((part) => name.includes(part));

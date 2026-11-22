@@ -7,11 +7,12 @@ import { BookingEntity, DeskEntity } from './bookings/entities.js';
 import { parsePort, requiredEnv } from './config.js';
 import { CreateBookings1763668800000 } from './migrations/1763668800000-create-bookings.js';
 import { CreateBookingPasses1795305600000 } from './migrations/1795305600000-create-booking-passes.js';
+import { AddBookingPassPhone1795478400000 } from './migrations/1795478400000-add-booking-pass-phone.js';
 
 export function databaseOptions(): TypeOrmModuleOptions {
   const options = {
     entities: [DeskEntity, BookingEntity, BookingPassEntity],
-    migrations: [CreateBookings1763668800000, CreateBookingPasses1795305600000],
+    migrations: [CreateBookings1763668800000, CreateBookingPasses1795305600000, AddBookingPassPhone1795478400000],
     migrationsRun: true,
     synchronize: false,
     retryAttempts: 1,

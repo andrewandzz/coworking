@@ -23,6 +23,9 @@ export class BookingPassEntity {
   @Column({ name: 'end_hour', type: 'int' })
   endHour!: number;
 
+  @Column({ type: 'varchar', length: 12, nullable: true })
+  phone!: string | null;
+
   @Column({ name: 'used_at', type: 'varchar', length: 24, nullable: true })
   usedAt!: string | null;
 }

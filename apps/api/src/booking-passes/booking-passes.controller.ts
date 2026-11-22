@@ -1,5 +1,7 @@
 import { Body, Controller, Header, Headers, HttpCode, Post, UseGuards } from '@nestjs/common';
-import { BOOKING_PASS_TOKEN_PATTERN, COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR } from '@coworking/contracts';
+import {
+  BOOKING_PASS_TOKEN_PATTERN, COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR, normalizeUkrainianPhone,
+} from '@coworking/contracts';
 import type { BookingCheckIn, IssueBookingPassRequest, IssuedBookingPass } from '@coworking/contracts';
 import { z } from 'zod';
 import { ManagerSessionGuard } from '../manager-auth/manager-session.guard.js';
@@ -10,6 +12,8 @@ const token = z.string().regex(BOOKING_PASS_TOKEN_PATTERN);
 const hour = z.int().min(COWORKING_OPENING_HOUR).max(COWORKING_CLOSING_HOUR);
 const issueSchema = z.strictObject({
   token,
+  phone: z.string().max(64).transform((value) => normalizeUkrainianPhone(value) ?? '')
+    .pipe(z.string().min(1, 'Вкажіть дійсний український номер телефону.')),
   spaceId: z.string().regex(/^(?:desk-[1-6]|meeting-room-[1-2]|skype-booth-[1-3])$/),
   date: z.iso.date(),
   startHour: hour,

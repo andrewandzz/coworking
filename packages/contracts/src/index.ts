@@ -1,8 +1,11 @@
+export { normalizeUkrainianPhone } from './ukrainian-phone.js';
+
 export const DESK_ZONES = ['open', 'quiet', 'window'] as const;
 export const BOOKING_TIME_ZONE = 'Europe/Kyiv';
 export const BOOKING_DAYS_AHEAD = 30;
 export const COWORKING_OPENING_HOUR = 9;
 export const COWORKING_CLOSING_HOUR = 18;
+export const DEMO_BOOKING_RATES_IN_KOPIYKAS = { hourly: 8_000, daily: 48_000 } as const;
 
 export const SPACE_TYPE_LABELS = {
   desk: { singular: 'Робочий стіл', plural: 'Робочі столи' },
@@ -17,6 +20,7 @@ export const BOOKING_PASS_TOKEN_PATTERN = /^[a-f0-9]{32}$/;
 
 export interface IssueBookingPassRequest {
   token: string;
+  phone: string;
   spaceId: string;
   date: string;
   startHour: number;

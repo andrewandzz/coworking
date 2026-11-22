@@ -66,7 +66,7 @@ export class PaymentStep {
     const submission = this.submission();
     const schedule = submission.reservation.schedule;
     const { spaceId, date, startHour, endHour } = schedule;
-    const request: IssueBookingPassRequest = { token: this.passToken, spaceId, date, startHour, endHour };
+    const request: IssueBookingPassRequest = { token: this.passToken, phone: submission.contact.phone, spaceId, date, startHour, endHour };
     this.issueError.set('');
     this.pending.set(true);
     try {
