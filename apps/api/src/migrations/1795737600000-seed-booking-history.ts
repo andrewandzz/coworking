@@ -70,7 +70,7 @@ const bookings: readonly SampleBooking[] = [
 const mobileCodes = ['067', '050', '063', '068', '066', '073', '096', '095', '093', '097', '099', '077', '098', '075'];
 
 // Stable hashes identify the seed rows for retries and rollback without issuing QR passes.
-const samples = bookings.map(([customerName, spaceId, dayOffset, startHour, endHour, cancelled], index) => ({
+export const bookingHistorySamples = bookings.map(([customerName, spaceId, dayOffset, startHour, endHour, cancelled], index) => ({
   customerName, spaceId, dayOffset, startHour, endHour, cancelled,
   tokenHash: createHash('sha256').update(`coworking:booking-history:1795737600000:${index}`).digest('hex'),
   phone: `38${mobileCodes[index % mobileCodes.length]}${1_234_567 + index * 9_173}`,
@@ -79,7 +79,7 @@ const samples = bookings.map(([customerName, spaceId, dayOffset, startHour, endH
 export class SeedBookingHistory1795737600000 implements MigrationInterface {
   async up(queryRunner: QueryRunner): Promise<void> {
     if (queryRunner.connection.options.type === 'mssql') {
-      const spaceIds = [...new Set(samples.map(({ spaceId }) => spaceId))].sort();
+      const spaceIds = [...new Set(bookingHistorySamples.map(({ spaceId }) => spaceId))].sort();
       for (const spaceId of spaceIds) {
         if (!await tryLockBookingSpace(queryRunner, spaceId)) {
           throw new Error(`Could not lock ${spaceId} to seed booking history.`);
@@ -90,7 +90,7 @@ export class SeedBookingHistory1795737600000 implements MigrationInterface {
     const now = new Date();
     const nowIso = now.toISOString();
     const { today } = getBookingWindow(now);
-    for (const sample of samples) {
+    for (const sample of bookingHistorySamples) {
       const { tokenHash, customerName, spaceId, dayOffset, startHour, endHour, phone, cancelled } = sample;
       const date = addCalendarDays(today, dayOffset);
       const hours = { startHour, endHour };
@@ -117,7 +117,7 @@ export class SeedBookingHistory1795737600000 implements MigrationInterface {
 
   async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.sql`
-      DELETE FROM booking_passes WHERE token_hash IN (${() => samples.map(({ tokenHash }) => tokenHash)})
+      DELETE FROM booking_passes WHERE token_hash IN (${() => bookingHistorySamples.map(({ tokenHash }) => tokenHash)})
     `;
   }
 }
