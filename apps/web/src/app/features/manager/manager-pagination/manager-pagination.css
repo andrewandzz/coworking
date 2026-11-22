@@ -20,7 +20,7 @@
 
 .pagination-controls button {
   display: grid;
-  inline-size: clamp(2.25rem, 10vw, 3.1875rem);
+  inline-size: clamp(2.25rem, calc(10 * var(--layout-vw)), 3.1875rem);
   min-block-size: clamp(2.75rem, 3.4cqi, 3rem);
   place-items: center;
   border: 1px solid transparent;

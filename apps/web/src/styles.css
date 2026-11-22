@@ -3,6 +3,10 @@
 
 @theme {
   --font-sans: "Manrope Variable", system-ui, sans-serif;
+  /* Match these viewport breakpoints to the 80% interface scale. */
+  --breakpoint-sm: 32rem;
+  --breakpoint-lg: 51.2rem;
+  --breakpoint-xl: 64rem;
   --color-page: #f6f8fc;
   --color-ink: #172238;
   --color-muted: #56637b;
@@ -16,8 +20,14 @@
 
 @layer base {
   :root {
+    --app-scale: 0.8;
+    /* Express viewport lengths in the zoomed layout's coordinates. */
+    --layout-vw: calc(1vw / var(--app-scale));
+    --layout-dvh: calc(1dvh / var(--app-scale));
+    --layout-viewport-height: calc(100 * var(--layout-dvh));
     --coworking-brand-green: #90c846;
     --coworking-brand-dark-green: #16531c;
+    zoom: var(--app-scale);
   }
 
   body {
@@ -40,12 +50,12 @@
   }
 
   .app-shell {
-    @apply grid min-h-dvh lg:grid-cols-[15rem_minmax(0,1fr)];
+    @apply grid min-h-(--layout-viewport-height) lg:grid-cols-[15rem_minmax(0,1fr)];
   }
 
   .app-sidebar {
     @apply flex flex-col gap-4 border-b border-line bg-white px-4 pt-5 sm:px-6
-      lg:sticky lg:top-0 lg:h-dvh lg:gap-11 lg:border-r lg:border-b-0 lg:px-5 lg:py-8;
+      lg:sticky lg:top-0 lg:h-(--layout-viewport-height) lg:gap-11 lg:border-r lg:border-b-0 lg:px-5 lg:py-8;
   }
 
   .brand {
@@ -231,7 +241,7 @@
   }
 
   .confirm-dialog {
-    @apply m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md rounded-2xl
+    @apply m-auto max-h-[calc(var(--layout-viewport-height)-2rem)] w-[calc(100%-2rem)] max-w-md rounded-2xl
       border border-line bg-white p-5 text-ink shadow-xl sm:p-6;
   }
 

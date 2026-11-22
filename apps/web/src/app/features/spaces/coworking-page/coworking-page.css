@@ -8,8 +8,9 @@
 }
 
 .coworking-content {
-  inline-size: min(calc(100% - clamp(1.5rem, 5vw, 6rem)), 115rem);
-  padding-block: clamp(1rem, 1.9vw, 2.375rem) clamp(1.5rem, 2.5vw, 2.5rem);
+  inline-size: min(calc(100% - clamp(1.5rem, calc(5 * var(--layout-vw)), 6rem)), 115rem);
+  padding-block: clamp(1rem, calc(1.9 * var(--layout-vw)), 2.375rem)
+    clamp(1.5rem, calc(2.5 * var(--layout-vw)), 2.5rem);
   container-type: inline-size;
 }
 

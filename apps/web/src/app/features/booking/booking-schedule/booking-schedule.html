@@ -37,7 +37,7 @@
     </div>
 
     @if (mode() === 'hourly') {
-      <fieldset class="booking-time min-w-0" [disabled]="reserving()">
+      <fieldset class="booking-time min-w-0" [disabled]="reserving()" [attr.aria-busy]="availabilityLoading()">
         <legend class="booking-field-label font-bold">Час</legend>
         <div class="booking-time-slots grid">
           @for (slot of slots(); track slot.hour) {
@@ -61,14 +61,14 @@
 
     @if (reserveError(); as message) {
       <p class="booking-unavailable" role="alert">{{ message }}</p>
-    } @else if (availabilityLoading()) {
-      <p class="booking-availability-loading" role="status">Перевіряємо доступність…</p>
-    } @else if (!availabilityReady()) {
-      <p class="booking-unavailable" role="status">Не вдалося перевірити доступність. Спробуємо оновити її.</p>
-    } @else if (mode() === 'hourly' && !hoursAvailable()) {
-      <p class="booking-unavailable" role="status">На цю дату немає вільних годин.</p>
-    } @else if (mode() === 'daily' && !dayAvailable()) {
-      <p class="booking-unavailable" role="status">Повний день на цю дату недоступний.</p>
+    } @else if (!availabilityLoading()) {
+      @if (!availabilityReady()) {
+        <p class="booking-unavailable" role="status">Не вдалося перевірити доступність. Спробуємо оновити її.</p>
+      } @else if (mode() === 'hourly' && !hoursAvailable()) {
+        <p class="booking-unavailable" role="status">На цю дату немає вільних годин.</p>
+      } @else if (mode() === 'daily' && !dayAvailable()) {
+        <p class="booking-unavailable" role="status">Повний день на цю дату недоступний.</p>
+      }
     }
     <button type="button" class="booking-schedule-continue w-full font-bold"
         [disabled]="!selection() || reserving()" (click)="continue(dialog)">

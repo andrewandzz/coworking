@@ -5,45 +5,47 @@
 
 .manager-login-card {
   max-inline-size: 44.25rem;
-  padding: clamp(2rem, 5.9dvh, 3.9375rem) clamp(1.25rem, 6vw, 4.9375rem) clamp(2rem, 7.1dvh, 4.75rem);
+  padding: clamp(2rem, calc(5.9 * var(--layout-dvh)), 3.9375rem)
+    clamp(1.25rem, calc(6 * var(--layout-vw)), 4.9375rem)
+    clamp(2rem, calc(7.1 * var(--layout-dvh)), 4.75rem);
   border-radius: 1.5625rem;
   background: #fff;
 }
 
 .manager-login-brand {
-  --coworking-brand-font-size: clamp(1.75rem, 8vw, 2.5rem);
-  --coworking-brand-mark-width: clamp(2.625rem, 14vw, 4.1875rem);
-  --coworking-brand-mark-height: clamp(2.375rem, 13vw, 3.9375rem);
+  --coworking-brand-font-size: clamp(1.75rem, calc(8 * var(--layout-vw)), 2.5rem);
+  --coworking-brand-mark-width: clamp(2.625rem, calc(14 * var(--layout-vw)), 4.1875rem);
+  --coworking-brand-mark-height: clamp(2.375rem, calc(13 * var(--layout-vw)), 3.9375rem);
   --coworking-brand-mark-inset: 0.5rem;
 }
 
 .manager-login-title {
-  margin-block-start: clamp(1.375rem, 3dvh, 2rem);
-  font-size: clamp(1.875rem, 6vw, 2.5rem);
+  margin-block-start: clamp(1.375rem, calc(3 * var(--layout-dvh)), 2rem);
+  font-size: clamp(1.875rem, calc(6 * var(--layout-vw)), 2.5rem);
   line-height: 1.25;
 }
 
 .manager-login-form {
-  margin-block-start: clamp(1.5rem, 3.2dvh, 2.125rem);
+  margin-block-start: clamp(1.5rem, calc(3.2 * var(--layout-dvh)), 2.125rem);
 }
 
 .manager-login-fields {
-  gap: clamp(1rem, 2.7dvh, 1.8125rem);
+  gap: clamp(1rem, calc(2.7 * var(--layout-dvh)), 1.8125rem);
   margin-inline: 0.3125rem 0.0625rem;
 }
 
 .manager-login-fields label {
   display: block;
-  margin-block-end: clamp(0.5rem, 1.15dvh, 0.75rem);
-  font-size: clamp(1.125rem, 4.5vw, 1.5rem);
+  margin-block-end: clamp(0.5rem, calc(1.15 * var(--layout-dvh)), 0.75rem);
+  font-size: clamp(1.125rem, calc(4.5 * var(--layout-vw)), 1.5rem);
   font-weight: 700;
   line-height: 1.3334;
 }
 
 .manager-login-fields input {
   inline-size: 100%;
-  min-block-size: clamp(3.25rem, 5.5dvh, 3.6875rem);
-  padding-inline: clamp(0.875rem, 3vw, 1.625rem);
+  min-block-size: clamp(3.25rem, calc(5.5 * var(--layout-dvh)), 3.6875rem);
+  padding-inline: clamp(0.875rem, calc(3 * var(--layout-vw)), 1.625rem);
   border: 1px solid #a6a29a;
   border-radius: 1rem;
   font-size: 1rem;
@@ -51,17 +53,17 @@
 
 .manager-login-fields input::placeholder {
   color: #a6a29a;
-  font-size: clamp(1.0625rem, 1.1vw, 1.125rem);
+  font-size: clamp(1.0625rem, calc(1.1 * var(--layout-vw)), 1.125rem);
 }
 
 .manager-login-action {
-  min-block-size: clamp(3.25rem, 6.7dvh, 4.5rem);
-  margin-block-start: clamp(1.5rem, 3.7dvh, 2.4375rem);
+  min-block-size: clamp(3.25rem, calc(6.7 * var(--layout-dvh)), 4.5rem);
+  margin-block-start: clamp(1.5rem, calc(3.7 * var(--layout-dvh)), 2.4375rem);
   padding-inline: 0.75rem;
   border-radius: 0.75rem;
   background: #346831;
   color: #fff;
-  font-size: clamp(1.125rem, 4.5vw, 1.5rem);
+  font-size: clamp(1.125rem, calc(4.5 * var(--layout-vw)), 1.5rem);
 }
 
 .manager-login-action:enabled:hover {
