@@ -78,10 +78,6 @@ export class CoworkingPage {
   protected readonly paymentContext = signal<PaymentContext | null>(null);
   protected readonly confirmation = signal<BookingConfirmation | null>(null);
   protected readonly filters = signal<SpaceFiltersValue>(DEFAULT_SPACE_FILTERS);
-  protected readonly filtersActive = computed(() => {
-    const { type, amenities } = this.filters();
-    return type !== 'all' || amenities.length > 0;
-  });
 
   protected readonly planSpaces = computed(() => {
     const { type, amenities } = this.filters();

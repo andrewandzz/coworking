@@ -1,7 +1,7 @@
 [data-state='available'] {
-  --space-status-fill: #d9e8ca;
-  --space-status-border: #80b746;
-  --space-status-indicator: #346831;
+  --space-status-fill: color-mix(in srgb, #d9e8ca, var(--coworking-brand-green));
+  --space-status-border: color-mix(in srgb, #80b746, var(--coworking-brand-dark-green));
+  --space-status-indicator: color-mix(in srgb, #346831, var(--coworking-brand-dark-green));
 }
 
 [data-state='occupied'] {
@@ -14,4 +14,5 @@
   --space-status-fill: #e7e4df;
   --space-status-border: #a6a29a;
   --space-status-indicator: #222821;
+  opacity: 0.6;
 }

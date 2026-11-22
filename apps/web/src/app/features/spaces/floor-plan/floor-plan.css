@@ -4,6 +4,7 @@
 }
 
 .floor-plan-scroll {
+  container-type: inline-size;
   overscroll-behavior-x: contain;
 }
 
@@ -13,19 +14,27 @@
 }
 
 .floor-plan {
-  --wall-width: 10px;
+  /* The mockup uses a 1253-by-451 coordinate system, including the outer walls. */
+  --plan-unit: max(1px, calc(100cqi / 1253));
+  --wall-width: calc(10 * var(--plan-unit));
   --wall-color: #a6a29a;
-  position: relative;
   box-sizing: border-box;
-  width: 1253px;
-  height: 451px;
-  overflow: hidden;
-  border: var(--wall-width) solid var(--wall-color);
-  border-radius: 25px;
+  width: calc(1253 * var(--plan-unit));
+  height: calc(451 * var(--plan-unit));
+  padding: var(--wall-width);
+  border-radius: calc(25 * var(--plan-unit));
+  background-color: var(--wall-color);
 }
 
-.floor-plan::before,
-.floor-plan::after {
+.floor-plan-interior {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: calc(15 * var(--plan-unit));
+}
+
+.floor-plan-interior::before,
+.floor-plan-interior::after {
   position: absolute;
   inset-block: 0;
   width: var(--wall-width);
@@ -34,17 +43,21 @@
   content: '';
 }
 
-.floor-plan::before {
-  left: 575px;
+.floor-plan-interior::before {
+  left: calc(575 * var(--plan-unit));
 }
 
-.floor-plan::after {
-  left: 994px;
+.floor-plan-interior::after {
+  left: calc(994 * var(--plan-unit));
 }
 
 .floor-plan-slot {
   position: absolute;
   box-sizing: border-box;
+  left: calc(var(--slot-left) * var(--plan-unit));
+  top: calc(var(--slot-top) * var(--plan-unit));
+  width: calc(var(--slot-width) * var(--plan-unit));
+  height: calc(var(--slot-height) * var(--plan-unit));
 }
 
 .floor-plan-slot[data-walls='bottom'],
@@ -58,10 +71,10 @@
 }
 
 .floor-plan-slot[data-walls='bottom-right'] {
-  border-bottom-right-radius: 5px;
+  border-bottom-right-radius: calc(5 * var(--plan-unit));
 }
 
 .floor-plan-slot[data-walls='top-right'] {
   border-top: var(--wall-width) solid var(--wall-color);
-  border-top-right-radius: 5px;
+  border-top-right-radius: calc(5 * var(--plan-unit));
 }

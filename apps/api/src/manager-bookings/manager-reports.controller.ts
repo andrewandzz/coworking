@@ -31,8 +31,8 @@ export class ManagerReportsController {
       ...pagination,
       period: { from, to },
       totalRevenueInKopiykas,
-      bookings: bookings.map(({ bookingNumber, customerName, phone, amountInKopiykas }) => ({
-        bookingNumber, customerName, phone, amountInKopiykas,
+      bookings: bookings.map(({ bookingNumber, customerName, phone, date, startHour, endHour, amountInKopiykas }) => ({
+        bookingNumber, customerName, phone, date, startHour, endHour, amountInKopiykas,
       })),
     };
   }

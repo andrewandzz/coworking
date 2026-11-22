@@ -7,6 +7,7 @@ import type { ManagerBookingDetails, ManagerBookingsResult, ManagerBookingStatus
 import { LucideChevronDown, LucideSearch } from '@lucide/angular';
 import { debounceTime, firstValueFrom } from 'rxjs';
 import { UkrainianPhonePipe } from '../../../shared/ukrainian-phone.pipe';
+import { formatBookingDate, formatBookingHour } from '../../booking/booking-format';
 import { ManagerBookingDetailsDialog } from '../manager-booking-details-dialog/manager-booking-details-dialog';
 import { MANAGER_BOOKING_STATUS_LABELS } from '../manager-booking-status';
 import { ManagerCancelBookingDialog } from '../manager-cancel-booking-dialog/manager-cancel-booking-dialog';
@@ -43,6 +44,8 @@ export class ManagerBookingsPage {
   protected readonly pagination = inject(ManagerPaginationQuery);
   protected readonly statuses = MANAGER_BOOKING_STATUSES;
   protected readonly statusLabels = MANAGER_BOOKING_STATUS_LABELS;
+  protected readonly formatBookingDate = formatBookingDate;
+  protected readonly formatBookingHour = formatBookingHour;
   private readonly searchQuery = computed(() => this.pagination.params().get('q')?.trim().slice(0, 120) ?? '');
   protected readonly searchText = linkedSignal({
     source: this.searchQuery,

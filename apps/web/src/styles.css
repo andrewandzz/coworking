@@ -15,6 +15,11 @@
 }
 
 @layer base {
+  :root {
+    --coworking-brand-green: #90c846;
+    --coworking-brand-dark-green: #16531c;
+  }
+
   body {
     @apply min-w-0 bg-page font-sans text-ink antialiased;
   }

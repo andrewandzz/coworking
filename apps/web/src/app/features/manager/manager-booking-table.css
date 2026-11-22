@@ -8,15 +8,19 @@
 }
 
 .manager-number-column {
-  inline-size: 20.6%;
+  inline-size: 12%;
 }
 
 .manager-customer-column {
-  inline-size: 28.1%;
+  inline-size: 22%;
 }
 
 .manager-phone-column {
-  inline-size: 32.55%;
+  inline-size: 23%;
+}
+
+.manager-date-column {
+  inline-size: 24%;
 }
 
 .manager-bookings-table th,
@@ -48,7 +52,7 @@
   border-block-end: 2px solid var(--manager-line);
 }
 
-@container (max-width: 36rem) {
+@container (max-width: 46rem) {
   .manager-bookings-table,
   .manager-bookings-table tbody {
     display: block;
@@ -88,7 +92,8 @@
   }
 
   .manager-booking-customer,
-  .manager-booking-phone {
+  .manager-booking-phone,
+  .manager-booking-date {
     grid-column: 1 / -1;
   }
 

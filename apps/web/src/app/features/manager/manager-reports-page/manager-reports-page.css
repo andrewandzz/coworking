@@ -170,6 +170,13 @@
   text-decoration: underline;
 }
 
+@container manager-reports (max-width: 46rem) {
+  .manager-report-table .manager-report-price {
+    padding-inline-end: 0;
+    font-weight: 700;
+  }
+}
+
 @container manager-reports (max-width: 36rem) {
   .manager-report-controls,
   .manager-report-period {
@@ -193,11 +200,6 @@
 
   .manager-report-date {
     padding-inline-end: 2rem;
-  }
-
-  .manager-report-table .manager-report-price {
-    padding-inline-end: 0;
-    font-weight: 700;
   }
 
   .manager-report-total {

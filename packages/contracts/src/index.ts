@@ -6,7 +6,7 @@ export const BOOKING_DAYS_AHEAD = 30;
 export const COWORKING_OPENING_HOUR = 9;
 export const COWORKING_CLOSING_HOUR = 18;
 export const DEMO_BOOKING_RATES_IN_KOPIYKAS = { hourly: 8_000, daily: 48_000 } as const;
-export const RESERVATION_DURATION_MS = 1 * 60 * 1000;
+export const RESERVATION_DURATION_MS = 5 * 60 * 1000;
 
 export const SPACE_TYPE_LABELS = {
   desk: { singular: 'Робочий стіл', plural: 'Робочі столи' },
@@ -112,14 +112,14 @@ export interface ManagerBookingSummary {
   bookingNumber: string;
   customerName: string;
   phone: string;
+  date: string;
+  startHour: number;
+  endHour: number;
   status: ManagerBookingStatus;
 }
 
 export interface ManagerBookingDetails extends ManagerBookingSummary {
   spaceLabel: string;
-  date: string;
-  startHour: number;
-  endHour: number;
   amountInKopiykas: number;
 }
 
@@ -135,7 +135,9 @@ export interface ManagerReportPeriod {
   to: string;
 }
 
-export type ManagerReportBooking = Pick<ManagerBookingDetails, 'bookingNumber' | 'customerName' | 'phone' | 'amountInKopiykas'>;
+export type ManagerReportBooking = Pick<
+  ManagerBookingDetails, 'bookingNumber' | 'customerName' | 'phone' | 'date' | 'startHour' | 'endHour' | 'amountInKopiykas'
+>;
 
 export interface ManagerRevenueReport {
   period: ManagerReportPeriod;

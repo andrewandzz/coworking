@@ -7,7 +7,7 @@ import type { ManagerReportPeriod, ManagerRevenueReport } from '@coworking/contr
 import { LucideCalendarDays } from '@lucide/angular';
 import { showDatePicker } from '../../../shared/ui/native-date-picker';
 import { UkrainianPhonePipe } from '../../../shared/ukrainian-phone.pipe';
-import { formatBookingAmount } from '../../booking/booking-format';
+import { formatBookingAmount, formatBookingDate, formatBookingHour } from '../../booking/booking-format';
 import { ManagerPagination } from '../manager-pagination/manager-pagination';
 import { ManagerPaginationQuery } from '../manager-pagination/manager-pagination-query';
 
@@ -65,6 +65,8 @@ export class ManagerReportsPage {
 
   protected readonly showDatePicker = showDatePicker;
   protected readonly formatBookingAmount = formatBookingAmount;
+  protected readonly formatBookingDate = formatBookingDate;
+  protected readonly formatBookingHour = formatBookingHour;
 
   constructor() {
     effect(() => {

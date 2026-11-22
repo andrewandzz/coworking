@@ -36,8 +36,8 @@ export class ManagerBookingsController {
     const { bookings, ...pagination } = paginateBookings(matching, page, pageSize);
     return {
       ...pagination,
-      bookings: bookings.map(({ bookingNumber, customerName, phone, status }) => ({
-        bookingNumber, customerName, phone, status,
+      bookings: bookings.map(({ bookingNumber, customerName, phone, date, startHour, endHour, status }) => ({
+        bookingNumber, customerName, phone, date, startHour, endHour, status,
       })),
     };
   }

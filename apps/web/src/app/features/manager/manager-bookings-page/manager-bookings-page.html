@@ -37,6 +37,7 @@
             <col class="manager-number-column" />
             <col class="manager-customer-column" />
             <col class="manager-phone-column" />
+            <col class="manager-date-column" />
             <col />
           </colgroup>
           <thead role="rowgroup">
@@ -44,6 +45,7 @@
               <th scope="col" role="columnheader">№</th>
               <th scope="col" role="columnheader">Користувач</th>
               <th scope="col" role="columnheader">Номер телефону</th>
+              <th scope="col" role="columnheader">Дата і час</th>
               <th scope="col" role="columnheader">Статус</th>
             </tr>
           </thead>
@@ -57,6 +59,10 @@
                 </td>
                 <td class="manager-booking-customer" role="cell">{{ booking.customerName }}</td>
                 <td class="manager-booking-phone" role="cell">{{ booking.phone | ukrainianPhone }}</td>
+                <td class="manager-booking-date" role="cell">
+                  <time class="block" [attr.datetime]="booking.date">{{ formatBookingDate(booking.date) }}</time>
+                  <span class="whitespace-nowrap">{{ formatBookingHour(booking.startHour) }} – {{ formatBookingHour(booking.endHour) }}</span>
+                </td>
                 <td class="manager-booking-status-cell" role="cell">
                   <span class="manager-status-pill" [attr.data-status]="booking.status">{{ statusLabels[booking.status] }}</span>
                 </td>

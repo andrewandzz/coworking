@@ -11,7 +11,7 @@
           </option>
         }
       </select>
-      <svg lucideChevronDown size="20" strokeWidth="1.5"
+      <svg lucideChevronDown size="16" strokeWidth="1.5"
           class="select-chevron pointer-events-none absolute" aria-hidden="true"></svg>
     </span>
   </label>
@@ -25,7 +25,7 @@
               [checked]="filters().amenities.includes(amenity.id)"
               (change)="toggleAmenity(amenity.id, amenityInput.checked)">
           <span class="amenity-mark grid shrink-0 place-items-center" aria-hidden="true">
-            <svg lucideCheck size="19" strokeWidth="2.5" class="amenity-check-icon"></svg>
+            <svg lucideCheck size="15" strokeWidth="2.5" class="amenity-check-icon"></svg>
           </span>
           {{ amenity.filterLabel }}
         </label>
@@ -34,7 +34,7 @@
   </fieldset>
 
   <button type="button" class="filter-reset inline-flex w-fit items-center gap-1.5 font-bold" (click)="resetFilters()">
-    <svg lucideRefreshCw size="24" strokeWidth="1.75" class="shrink-0" aria-hidden="true"></svg>
+    <svg lucideRefreshCw size="18" strokeWidth="1.75" class="shrink-0" aria-hidden="true"></svg>
     Скинути фільтри
   </button>
 </div>

@@ -127,7 +127,9 @@
   .manager-bookings-filters {
     grid-template-columns: minmax(0, 1fr);
   }
+}
 
+@container manager-bookings (max-width: 46rem) {
   .manager-status-pill {
     inline-size: auto;
     padding-inline: 0.75rem;

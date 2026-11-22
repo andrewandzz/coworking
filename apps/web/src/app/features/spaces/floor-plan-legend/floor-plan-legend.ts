@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SpaceTypeIcon } from '../space-type-icon/space-type-icon';
 import { SPACE_TYPE_LABELS } from '../space-types';
 import type { SpaceType } from '../space-types';
@@ -11,8 +11,6 @@ import type { SpaceType } from '../space-types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FloorPlanLegend {
-  readonly filtersActive = input(false);
-
   protected readonly statuses = [
     { state: 'available', label: 'Вільно' },
     { state: 'occupied', label: 'Зайнято' },
