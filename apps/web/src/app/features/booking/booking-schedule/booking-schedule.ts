@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import {
-  addCalendarDays, COWORKING_CLOSING_HOUR as CLOSING_HOUR,
+  addCalendarDays, calculateBookingTotal, COWORKING_CLOSING_HOUR as CLOSING_HOUR,
   COWORKING_OPENING_HOUR as OPENING_HOUR, getBookingTime, getBookingWindow,
 } from '@coworking/contracts';
 import type { SpaceBookingRange } from '@coworking/contracts';
@@ -111,8 +111,7 @@ export class BookingSchedule {
     if (!range) return null;
 
     const space = this.space();
-    const totalInKopiykas = space.ratesInKopiykas[mode]
-      * (mode === 'hourly' ? range.endHour - range.startHour : 1);
+    const totalInKopiykas = calculateBookingTotal(space.ratesInKopiykas, mode, range.endHour - range.startHour);
     return { spaceId: space.id, mode, date: this.date(), ...range, totalInKopiykas };
   });
   protected readonly duration = computed(() => {
@@ -162,21 +161,25 @@ export class BookingSchedule {
     const schedule = this.selection();
     if (!schedule || this.reserving()) return;
 
-    const { spaceId, date, startHour, endHour } = schedule;
+    const { spaceId, date, startHour, endHour, mode } = schedule;
     const token = Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
       byte.toString(16).padStart(2, '0'),
     ).join('');
     this.reserving.set(true);
     this.reserveError.set('');
     try {
-      const { expiresAt, serverTime } = await firstValueFrom(
-        this.bookingApi.reserveSpace({ token, spaceId, date, startHour, endHour }),
+      const { expiresAt, serverTime, amountInKopiykas } = await firstValueFrom(
+        this.bookingApi.reserveSpace({ token, spaceId, date, startHour, endHour, mode }),
       );
       if (this.destroyRef.destroyed) {
         this.releaseUnacknowledgedHold(token);
         return;
       }
-      this.continued.emit({ token, schedule, expiresAt: Date.now() + expiresAt - serverTime });
+      this.continued.emit({
+        token,
+        schedule: { ...schedule, totalInKopiykas: amountInKopiykas ?? schedule.totalInKopiykas },
+        expiresAt: Date.now() + expiresAt - serverTime,
+      });
       dialog.close();
     } catch (error) {
       if (!(error instanceof HttpErrorResponse) || error.status === 0 || error.status >= 500) {

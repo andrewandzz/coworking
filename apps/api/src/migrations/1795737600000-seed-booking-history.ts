@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { addCalendarDays, getBookingWindow } from '@coworking/contracts';
 import type { SpaceType } from '@coworking/contracts';
 import type { MigrationInterface, QueryRunner } from 'typeorm';
-import { calculateBookingAmount, isWholeWorkday } from '../booking-passes/booking-pass-summary.js';
+import { calculateLegacyBookingAmount, isWholeWorkday } from '../booking-passes/booking-pass-summary.js';
 import { tryLockBookingSpace } from '../booking-passes/space-lock.js';
 
 type SampleBooking = readonly [
@@ -94,7 +94,7 @@ export class SeedBookingHistory1795737600000 implements MigrationInterface {
       const { tokenHash, customerName, spaceId, dayOffset, startHour, endHour, phone, cancelled } = sample;
       const date = addCalendarDays(today, dayOffset);
       const hours = { startHour, endHour };
-      const amount = calculateBookingAmount(hours, isWholeWorkday(hours) ? 'daily' : 'hourly');
+      const amount = calculateLegacyBookingAmount(hours, isWholeWorkday(hours) ? 'daily' : 'hourly');
       const cancelledAt = cancelled ? (dayOffset < 0 ? `${date}T00:00:00.000Z` : nowIso) : null;
 
       await queryRunner.sql`

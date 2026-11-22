@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, viewChild } from '@angular/core';
-import type { BookingMode } from '@coworking/contracts';
+import type { BookingMode, BookingRates } from '@coworking/contracts';
 import { LucideX } from '@lucide/angular';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
 import { formatBookingAmount } from '../../booking/booking-format';
@@ -13,7 +13,7 @@ export interface SpaceDetails {
   readonly type: SpaceType;
   readonly number: number;
   readonly amenities: readonly SpaceAmenity[];
-  readonly ratesInKopiykas: Readonly<Record<BookingMode, number>>;
+  readonly ratesInKopiykas: BookingRates;
 }
 
 export interface SpaceBookingRequest {

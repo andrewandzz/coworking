@@ -6,7 +6,7 @@ import type {
 } from '@coworking/contracts';
 import { Between, IsNull, Repository } from 'typeorm';
 import { BookingPassEntity } from '../booking-passes/booking-pass.entity.js';
-import { calculateBookingAmount, describeBookingPass } from '../booking-passes/booking-pass-summary.js';
+import { calculateLegacyBookingAmount, describeBookingPass } from '../booking-passes/booking-pass-summary.js';
 import { paginateBookings } from './paginate-bookings.js';
 
 const bookingsPageSize = 7;
@@ -29,7 +29,7 @@ function describeBooking(pass: BookingPassEntity, { today, hour }: ReturnType<ty
     customerName: pass.customerName,
     phone: pass.phone,
     status,
-    amountInKopiykas: pass.amountInKopiykas ?? calculateBookingAmount(pass),
+    amountInKopiykas: pass.amountInKopiykas ?? calculateLegacyBookingAmount(pass),
   };
 }
 

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Header, Headers, HttpCode, Post, Query, UseGuards } from '@nestjs/common';
 import {
-  BOOKING_NAME_MAX_LENGTH, BOOKING_PASS_TOKEN_PATTERN, COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR,
+  BOOKING_NAME_MAX_LENGTH, BOOKING_PASS_TOKEN_PATTERN, COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR, COWORKING_SPACES,
   normalizeUkrainianPhone,
 } from '@coworking/contracts';
 import type {
@@ -17,19 +17,20 @@ const hour = z.int().min(COWORKING_OPENING_HOUR).max(COWORKING_CLOSING_HOUR);
 const date = z.iso.date();
 const reserveSchema = z.strictObject({
   token,
-  spaceId: z.string().regex(/^(?:desk-[1-6]|meeting-room-[1-2]|skype-booth-[1-3])$/),
+  spaceId: z.enum(COWORKING_SPACES.map(({ id }) => id)),
   date,
   startHour: hour,
   endHour: hour,
-}).refine(({ startHour, endHour }) => startHour < endHour, { path: ['endHour'] });
+  mode: z.enum(['hourly', 'daily']).optional(),
+}).refine(({ startHour, endHour }) => startHour < endHour, { path: ['endHour'] })
+  .refine((request) => request.mode !== 'daily' || isWholeWorkday(request), {
+    path: ['mode'],
+    message: 'Денний тариф діє на весь робочий день.',
+  });
 const issueSchema = reserveSchema.safeExtend({
   phone: z.string().max(64).transform((value) => normalizeUkrainianPhone(value) ?? '')
     .pipe(z.string().min(1, 'Вкажіть дійсний український номер телефону.')),
   customerName: z.string().trim().min(1).max(BOOKING_NAME_MAX_LENGTH * 2 + 1).optional(),
-  mode: z.enum(['hourly', 'daily']).optional(),
-}).refine((request) => request.mode !== 'daily' || isWholeWorkday(request), {
-  path: ['mode'],
-  message: 'Денний тариф діє на весь робочий день.',
 });
 const checkInSchema = z.strictObject({ token });
 

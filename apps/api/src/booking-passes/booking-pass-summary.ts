@@ -1,10 +1,11 @@
 import {
-  COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR, DEMO_BOOKING_RATES_IN_KOPIYKAS, SPACE_TYPE_LABELS,
+  calculateBookingTotal, COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR, SPACE_TYPE_LABELS,
 } from '@coworking/contracts';
 import type { BookingMode, IssuedBookingPass, SpaceBookingRange, SpaceType } from '@coworking/contracts';
 import type { BookingPassEntity } from './booking-pass.entity.js';
 
 type BookingHours = Pick<SpaceBookingRange, 'startHour' | 'endHour'>;
+export const LEGACY_BOOKING_RATES_IN_KOPIYKAS = { hourly: 8_000, daily: 48_000 } as const;
 
 export function describeBookingPass(pass: BookingPassEntity): IssuedBookingPass {
   const numberStart = pass.spaceId.lastIndexOf('-');
@@ -23,10 +24,8 @@ export function isWholeWorkday({ startHour, endHour }: BookingHours): boolean {
   return startHour === COWORKING_OPENING_HOUR && endHour === COWORKING_CLOSING_HOUR;
 }
 
-export function calculateBookingAmount(hours: BookingHours, mode?: BookingMode): number | null {
-  const { hourly, daily } = DEMO_BOOKING_RATES_IN_KOPIYKAS;
-  if (mode === 'daily') return daily;
+export function calculateLegacyBookingAmount(hours: BookingHours, mode?: BookingMode): number | null {
   // Older full-day bookings can use either tariff for the same interval.
   if (mode === undefined && isWholeWorkday(hours)) return null;
-  return hourly * (hours.endHour - hours.startHour);
+  return calculateBookingTotal(LEGACY_BOOKING_RATES_IN_KOPIYKAS, mode ?? 'hourly', hours.endHour - hours.startHour);
 }

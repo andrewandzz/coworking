@@ -11,6 +11,7 @@ import { AddBookingPassPhone1795478400000 } from './migrations/1795478400000-add
 import { AddSpaceReservations1795564800000 } from './migrations/1795564800000-add-space-reservations.js';
 import { AddBookingDetails1795651200000 } from './migrations/1795651200000-add-booking-details.js';
 import { SeedBookingHistory1795737600000 } from './migrations/1795737600000-seed-booking-history.js';
+import { AddBookingMode1795824000000 } from './migrations/1795824000000-add-booking-mode.js';
 
 export function databaseOptions(): TypeOrmModuleOptions {
   const options = {
@@ -19,6 +20,7 @@ export function databaseOptions(): TypeOrmModuleOptions {
       CreateBookings1763668800000, CreateBookingPasses1795305600000,
       AddBookingPassPhone1795478400000, AddSpaceReservations1795564800000,
       AddBookingDetails1795651200000, SeedBookingHistory1795737600000,
+      AddBookingMode1795824000000,
     ],
     migrationsRun: true,
     synchronize: false,

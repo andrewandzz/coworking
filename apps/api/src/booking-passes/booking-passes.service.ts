@@ -3,14 +3,16 @@ import {
   BadRequestException, ConflictException, GoneException, Injectable, NotFoundException, ServiceUnavailableException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getBookingTime, getBookingWindow, RESERVATION_DURATION_MS } from '@coworking/contracts';
+import {
+  calculateBookingTotal, COWORKING_SPACES, getBookingTime, getBookingWindow, getSpaceBookingRates, RESERVATION_DURATION_MS,
+} from '@coworking/contracts';
 import type {
-  BookingCheckIn, IssueBookingPassRequest, IssuedBookingPass, ReservationDeadline,
+  BookingCheckIn, BookingMode, IssueBookingPassRequest, IssuedBookingPass, ReservationDeadline,
   ReserveSpaceRequest, SpaceAvailability, SpaceBookingRange,
 } from '@coworking/contracts';
 import { IsNull, LessThan, LessThanOrEqual, MoreThan, Not, Or, QueryFailedError, Repository } from 'typeorm';
 import { BOOKING_PASS_TOKEN_INDEX, BookingPassEntity } from './booking-pass.entity.js';
-import { calculateBookingAmount, describeBookingPass } from './booking-pass-summary.js';
+import { describeBookingPass, isWholeWorkday } from './booking-pass-summary.js';
 import { tryLockBookingSpace } from './space-lock.js';
 
 function hashToken(token: string): string {
@@ -20,6 +22,17 @@ function hashToken(token: string): string {
 function matchesRange(pass: BookingPassEntity, range: SpaceBookingRange): boolean {
   return pass.spaceId === range.spaceId && pass.date === range.date
     && pass.startHour === range.startHour && pass.endHour === range.endHour;
+}
+
+function matchesBookingMode(pass: BookingPassEntity, mode?: BookingMode): boolean {
+  return mode === undefined || pass.bookingMode === null || pass.bookingMode === mode;
+}
+
+function quoteBooking(range: SpaceBookingRange, mode: BookingMode): number {
+  const space = COWORKING_SPACES.find(({ id }) => id === range.spaceId);
+  if (!space) throw new BadRequestException('Простір не знайдено.');
+
+  return calculateBookingTotal(getSpaceBookingRates(space), mode, range.endHour - range.startHour);
 }
 
 function activeBooking(now: string) {
@@ -46,18 +59,28 @@ export class BookingPassesService {
     return { date, serverTime: now.getTime(), occupied };
   }
 
-  async reserve({ token, ...range }: ReserveSpaceRequest): Promise<ReservationDeadline> {
+  async reserve({ token, mode, ...range }: ReserveSpaceRequest): Promise<ReservationDeadline> {
     const tokenHash = hashToken(token);
-    const expiresAt = await this.withSpaceLock(range.spaceId, async (passes) => {
+    const hold = await this.withSpaceLock(range.spaceId, async (passes) => {
       const now = new Date();
       const nowIso = now.toISOString();
       const existing = await passes.findOneBy({ tokenHash });
       if (existing) {
-        if (!matchesRange(existing, range) || existing.holdExpiresAt === null) {
+        if (!matchesRange(existing, range) || !matchesBookingMode(existing, mode) || existing.holdExpiresAt === null) {
           throw new ConflictException('Цей запит уже використано для бронювання.');
         }
         if (existing.holdExpiresAt <= nowIso) throw expiredReservation();
-        return Date.parse(existing.holdExpiresAt);
+        const expiresAt = Date.parse(existing.holdExpiresAt);
+        if (mode !== undefined && existing.bookingMode === null) {
+          const amountInKopiykas = existing.amountInKopiykas ?? quoteBooking(range, mode);
+          const updated = await passes.update(
+            { tokenHash, holdExpiresAt: MoreThan(new Date().toISOString()) },
+            { bookingMode: mode, amountInKopiykas },
+          );
+          if (!updated.affected) throw expiredReservation();
+          return { expiresAt, amountInKopiykas };
+        }
+        return { expiresAt, amountInKopiykas: existing.amountInKopiykas ?? undefined };
       }
 
       const { today } = getBookingWindow(now);
@@ -76,17 +99,21 @@ export class BookingPassesService {
 
       await passes.delete({ spaceId, holdExpiresAt: LessThanOrEqual(nowIso) });
       const expiresAt = Date.now() + RESERVATION_DURATION_MS;
+      const amountInKopiykas = mode === undefined ? null : quoteBooking(range, mode);
       try {
-        await passes.insert({ ...range, tokenHash, holdExpiresAt: new Date(expiresAt).toISOString() });
+        await passes.insert({
+          ...range, tokenHash, holdExpiresAt: new Date(expiresAt).toISOString(),
+          bookingMode: mode ?? null, amountInKopiykas,
+        });
       } catch (error) {
         if (error instanceof QueryFailedError && error.message.includes(BOOKING_PASS_TOKEN_INDEX)) {
           throw new ConflictException('Цей запит уже використано для бронювання.');
         }
         throw error;
       }
-      return expiresAt;
+      return { expiresAt, amountInKopiykas: amountInKopiykas ?? undefined };
     });
-    return { expiresAt, serverTime: Date.now() };
+    return { ...hold, serverTime: Date.now() };
   }
 
   async release(token: string): Promise<void> {
@@ -96,22 +123,22 @@ export class BookingPassesService {
   async issue(request: IssueBookingPassRequest): Promise<IssuedBookingPass> {
     const { token, phone, customerName, mode, ...schedule } = request;
     const tokenHash = hashToken(token);
-    const amountInKopiykas = calculateBookingAmount(schedule, mode);
     return this.withSpaceLock(schedule.spaceId, async (passes) => {
       const pass = await passes.findOneBy({ tokenHash });
       if (!pass) throw expiredReservation();
       if (pass.cancelledAt !== null) throw new GoneException('Це бронювання скасовано.');
-      if (!matchesRange(pass, schedule)
+      if (!matchesRange(pass, schedule) || !matchesBookingMode(pass, mode)
         || (pass.phone !== null && pass.phone !== phone)
-        || (pass.customerName !== null && customerName !== undefined && pass.customerName !== customerName)
-        || (pass.amountInKopiykas !== null && amountInKopiykas !== null && pass.amountInKopiykas !== amountInKopiykas)) {
+        || (pass.customerName !== null && customerName !== undefined && pass.customerName !== customerName)) {
         throw new ConflictException('Цей запит уже використано для іншого бронювання.');
       }
 
       if (pass.holdExpiresAt !== null) {
+        const bookingMode = pass.bookingMode ?? mode ?? (isWholeWorkday(schedule) ? null : 'hourly');
+        const amountInKopiykas = pass.amountInKopiykas ?? (bookingMode ? quoteBooking(schedule, bookingMode) : null);
         const confirmed = await passes.update(
           { tokenHash, holdExpiresAt: MoreThan(new Date().toISOString()) },
-          { phone, customerName: customerName ?? null, amountInKopiykas, holdExpiresAt: null },
+          { phone, customerName: customerName ?? null, bookingMode, amountInKopiykas, holdExpiresAt: null },
         );
         if (!confirmed.affected) throw expiredReservation();
       }

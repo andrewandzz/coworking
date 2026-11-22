@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { DEMO_BOOKING_RATES_IN_KOPIYKAS, getBookingTime } from '@coworking/contracts';
+import { COWORKING_SPACES, getBookingTime, getSpaceBookingRates } from '@coworking/contracts';
 import { Subject } from 'rxjs';
 import { BookingApi } from '../../../booking-api';
 import { CoworkingBrand } from '../../../shared/ui/coworking-brand/coworking-brand';
@@ -12,17 +12,11 @@ import type { BookingScheduleSelection } from '../../booking/booking-schedule/bo
 import { ContactForm } from '../../booking/contact-form/contact-form';
 import { PaymentStep } from '../../booking/payment-step/payment-step';
 import { FloorPlan } from '../floor-plan/floor-plan';
-import type { FloorPlanSpace } from '../floor-plan/floor-plan';
 import { FloorPlanLegend } from '../floor-plan-legend/floor-plan-legend';
 import { SpaceDetailsDialog } from '../space-details-dialog/space-details-dialog';
 import type { BookingMode, SpaceBookingRequest, SpaceDetails } from '../space-details-dialog/space-details-dialog';
 import { DEFAULT_SPACE_FILTERS, SpaceFilters } from '../space-filters/space-filters';
 import type { SpaceFiltersValue } from '../space-filters/space-filters';
-import type { SpaceAmenity } from '../space-types';
-
-interface CoworkingSpace extends Omit<FloorPlanSpace, 'occupied'> {
-  readonly amenities: readonly SpaceAmenity[];
-}
 
 interface ScheduleContext {
   readonly space: SpaceDetails;
@@ -36,20 +30,6 @@ type BookingStep =
   | { readonly kind: 'contacts'; readonly scheduleContext: ScheduleContext; readonly reservation: BookingReservation }
   | { readonly kind: 'payment'; readonly scheduleContext: ScheduleContext; readonly submission: BookingContactSubmission }
   | { readonly kind: 'confirmation'; readonly confirmation: BookingConfirmation };
-
-const SPACES: readonly CoworkingSpace[] = [
-  { id: 'desk-1', type: 'desk', number: 1, amenities: ['generator', 'dual-monitors'] },
-  { id: 'desk-2', type: 'desk', number: 2, amenities: ['generator'] },
-  { id: 'desk-3', type: 'desk', number: 3, amenities: ['generator', 'dual-monitors'] },
-  { id: 'desk-4', type: 'desk', number: 4, amenities: ['quiet-zone'] },
-  { id: 'desk-5', type: 'desk', number: 5, amenities: ['generator', 'dual-monitors', 'quiet-zone'] },
-  { id: 'desk-6', type: 'desk', number: 6, amenities: ['generator', 'dual-monitors'] },
-  { id: 'meeting-room-1', type: 'meeting-room', number: 1, amenities: ['generator'] },
-  { id: 'meeting-room-2', type: 'meeting-room', number: 2, amenities: [] },
-  { id: 'skype-booth-1', type: 'skype-booth', number: 1, amenities: ['quiet-zone'] },
-  { id: 'skype-booth-2', type: 'skype-booth', number: 2, amenities: ['quiet-zone'] },
-  { id: 'skype-booth-3', type: 'skype-booth', number: 3, amenities: ['quiet-zone'] },
-];
 
 @Component({
   selector: 'app-coworking-page',
@@ -84,7 +64,7 @@ export class CoworkingPage {
     const occupiedSpaces = new Set(availability?.occupied
       .filter(({ startHour, endHour }) => startHour <= hour && hour < endHour)
       .map(({ spaceId }) => spaceId));
-    return SPACES.map((space) => ({
+    return COWORKING_SPACES.map((space) => ({
       ...space,
       occupied: occupiedSpaces.has(space.id),
       matchesFilters: (type === 'all' || space.type === type)
@@ -93,10 +73,10 @@ export class CoworkingPage {
   });
 
   protected selectSpace(spaceId: string): void {
-    const space = SPACES.find(({ id }) => id === spaceId);
+    const space = COWORKING_SPACES.find(({ id }) => id === spaceId);
     if (!space || this.bookingStep().kind !== 'idle') return;
 
-    this.bookingStep.set({ kind: 'details', space: { ...space, ratesInKopiykas: DEMO_BOOKING_RATES_IN_KOPIYKAS } });
+    this.bookingStep.set({ kind: 'details', space: { ...space, ratesInKopiykas: getSpaceBookingRates(space) } });
     this.spaceSelected.emit(spaceId);
   }
 

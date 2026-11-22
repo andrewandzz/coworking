@@ -1,23 +1,16 @@
+import type { BookingMode } from './space-catalog.js';
+
 export { normalizeUkrainianPhone } from './ukrainian-phone.js';
+export { calculateBookingTotal, COWORKING_SPACES, getSpaceBookingRates, SPACE_AMENITIES, SPACE_TYPE_LABELS } from './space-catalog.js';
+export type { BookingMode, BookingRates, SpaceAmenity, SpaceType } from './space-catalog.js';
 
 export const DESK_ZONES = ['open', 'quiet', 'window'] as const;
 export const BOOKING_TIME_ZONE = 'Europe/Kyiv';
 export const BOOKING_DAYS_AHEAD = 30;
 export const COWORKING_OPENING_HOUR = 9;
 export const COWORKING_CLOSING_HOUR = 18;
-export const DEMO_BOOKING_RATES_IN_KOPIYKAS = { hourly: 8_000, daily: 48_000 } as const;
 export const BOOKING_NAME_MAX_LENGTH = 100;
 export const RESERVATION_DURATION_MS = 5 * 60 * 1000;
-
-export type BookingMode = keyof typeof DEMO_BOOKING_RATES_IN_KOPIYKAS;
-
-export const SPACE_TYPE_LABELS = {
-  desk: { singular: 'Робочий стіл', plural: 'Робочі столи' },
-  'meeting-room': { singular: 'Переговорна кімната', plural: 'Переговорні кімнати' },
-  'skype-booth': { singular: 'Skype-кабіна', plural: 'Skype-кабіни' },
-} as const;
-
-export type SpaceType = keyof typeof SPACE_TYPE_LABELS;
 
 export const BOOKING_PASS_PREFIX = 'coworking:';
 export const BOOKING_PASS_TOKEN_PATTERN = /^[a-f0-9]{32}$/;
@@ -31,11 +24,13 @@ export interface SpaceBookingRange {
 
 export interface ReserveSpaceRequest extends SpaceBookingRange {
   token: string;
+  mode?: BookingMode;
 }
 
 export interface ReservationDeadline {
   expiresAt: number;
   serverTime: number;
+  amountInKopiykas?: number;
 }
 
 export interface SpaceAvailability {
@@ -47,7 +42,6 @@ export interface SpaceAvailability {
 export interface IssueBookingPassRequest extends ReserveSpaceRequest {
   phone: string;
   customerName?: string;
-  mode?: BookingMode;
 }
 
 export interface IssuedBookingPass {
