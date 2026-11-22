@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { CoworkingBrand } from '../../../shared/ui/coworking-brand/coworking-brand';
 import { ManagerAuth } from '../manager-auth';
 
@@ -29,11 +30,27 @@ export class ManagerLoginPage {
     this.error.set('');
 
     try {
-      await this.auth.signIn({ email, password });
-      const enteredBookings = await this.router.navigate(['/manager', 'bookings'], { replaceUrl: true });
-      if (!enteredBookings) this.error.set('Не вдалося відкрити бронювання. Спробуйте ще раз.');
-    } catch (error) {
-      this.error.set(this.loginError(error));
+      try {
+        await this.auth.signIn({ email, password });
+      } catch (error) {
+        this.error.set(this.loginError(error));
+        return;
+      }
+
+      const session = await firstValueFrom(this.auth.getSession());
+      if (!session.manager) {
+        this.error.set('Пароль прийнято. Сесія відсутня. Перевірте налаштування cookie для цієї адреси.');
+        return;
+      }
+
+      await this.router.navigate(['/manager', 'bookings'], { replaceUrl: true });
+      if (!this.router.isActive('/manager/bookings', {
+        paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored',
+      })) {
+        this.error.set('Сесію підтверджено. Не вдалося відкрити сторінку бронювань.');
+      }
+    } catch {
+      this.error.set('Пароль прийнято. Не вдалося відкрити менеджерський розділ. Спробуйте ще раз.');
     } finally {
       this.pending.set(false);
     }
