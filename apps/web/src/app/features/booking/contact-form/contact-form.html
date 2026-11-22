@@ -1,7 +1,9 @@
 <dialog appModalDialog #dialog="appModalDialog" class="booking-contact-dialog"
     [class.booking-contact-expired]="expired()"
+    [appModalDialogDismissible]="!confirmingCancellation() && !cancelling()"
+    [appModalDialogConfirmDismissal]="!expired()" (dismissRequested)="requestCancellation()"
     [attr.aria-labelledby]="expired() ? 'booking-notice-title' : 'booking-contact-title'"
-    (dialogClosed)="closed.emit()">
+    (dialogClosed)="close()">
   @if (expired()) {
     <app-booking-notice kind="expired" (actionRequested)="retry(dialog)" (dismissed)="dialog.close()" />
   } @else {
@@ -10,9 +12,9 @@
         <h2 id="booking-contact-title" class="booking-contact-title font-bold" tabindex="-1" autofocus>
           Контактні дані
         </h2>
-        <app-reservation-timer class="booking-contact-timer" [expiresAt]="reservation().expiresAt" (expired)="expired.set(true)" />
+        <app-reservation-timer class="booking-contact-timer" [expiresAt]="reservation().expiresAt" (expired)="expire()" />
         <button type="button" class="booking-contact-close grid size-11 place-items-center rounded-lg"
-            aria-label="Закрити" (click)="dialog.close()">
+            aria-label="Закрити" aria-haspopup="dialog" [disabled]="cancelling()" (click)="requestCancellation()">
           <svg lucideX size="30" strokeWidth="1.5" aria-hidden="true"></svg>
         </button>
       </header>
@@ -58,8 +60,15 @@
           </div>
         </div>
 
-        <button type="submit" class="booking-contact-submit w-full font-bold">Продовжити</button>
+        @if (cancellationError(); as message) {
+          <p class="booking-contact-error" role="alert">{{ message }}</p>
+        }
+        <button type="submit" class="booking-contact-submit w-full font-bold" [disabled]="cancelling()">Продовжити</button>
       </form>
     </div>
   }
 </dialog>
+
+@if (confirmingCancellation()) {
+  <app-booking-cancel-dialog [pending]="cancelling()" (confirmed)="confirmCancellation(dialog)" (closed)="resumeBooking()" />
+}

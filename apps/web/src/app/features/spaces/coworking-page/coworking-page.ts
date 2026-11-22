@@ -29,15 +29,13 @@ interface ScheduleContext {
   readonly mode: BookingMode;
 }
 
-interface ContactContext {
-  readonly reservation: BookingReservation;
-  readonly scheduleContext: ScheduleContext;
-}
-
-interface PaymentContext {
-  readonly submission: BookingContactSubmission;
-  readonly scheduleContext: ScheduleContext;
-}
+type BookingStep =
+  | { readonly kind: 'idle' }
+  | { readonly kind: 'details'; readonly space: SpaceDetails }
+  | { readonly kind: 'schedule'; readonly scheduleContext: ScheduleContext }
+  | { readonly kind: 'contacts'; readonly scheduleContext: ScheduleContext; readonly reservation: BookingReservation }
+  | { readonly kind: 'payment'; readonly scheduleContext: ScheduleContext; readonly submission: BookingContactSubmission }
+  | { readonly kind: 'confirmation'; readonly confirmation: BookingConfirmation };
 
 const SPACES: readonly CoworkingSpace[] = [
   { id: 'desk-1', type: 'desk', number: 1, amenities: ['generator', 'dual-monitors'] },
@@ -76,11 +74,7 @@ export class CoworkingPage {
 
   protected readonly availabilityFailed = computed(() => this.availability() === null);
   protected readonly releaseError = signal('');
-  protected readonly selectedSpace = signal<SpaceDetails | null>(null);
-  protected readonly scheduleContext = signal<ScheduleContext | null>(null);
-  protected readonly contactContext = signal<ContactContext | null>(null);
-  protected readonly paymentContext = signal<PaymentContext | null>(null);
-  protected readonly confirmation = signal<BookingConfirmation | null>(null);
+  protected readonly bookingStep = signal<BookingStep>({ kind: 'idle' });
   protected readonly filters = signal<SpaceFiltersValue>(DEFAULT_SPACE_FILTERS);
 
   protected readonly planSpaces = computed(() => {
@@ -100,61 +94,67 @@ export class CoworkingPage {
 
   protected selectSpace(spaceId: string): void {
     const space = SPACES.find(({ id }) => id === spaceId);
-    if (!space) return;
+    if (!space || this.bookingStep().kind !== 'idle') return;
 
-    this.selectedSpace.set({ ...space, ratesInKopiykas: DEMO_BOOKING_RATES_IN_KOPIYKAS });
+    this.bookingStep.set({ kind: 'details', space: { ...space, ratesInKopiykas: DEMO_BOOKING_RATES_IN_KOPIYKAS } });
     this.spaceSelected.emit(spaceId);
   }
 
   protected startBooking(request: SpaceBookingRequest): void {
-    const space = this.selectedSpace();
-    if (space?.id !== request.spaceId) return;
+    const step = this.bookingStep();
+    if (step.kind !== 'details' || step.space.id !== request.spaceId) return;
 
-    this.scheduleContext.set({ space, mode: request.mode });
+    this.bookingStep.set({ kind: 'schedule', scheduleContext: { space: step.space, mode: request.mode } });
     this.bookingRequested.emit(request);
   }
 
   protected enterContacts(reservation: BookingReservation): void {
     const { schedule } = reservation;
-    const context = this.scheduleContext();
-    if (context?.space.id !== schedule.spaceId) return;
+    const step = this.bookingStep();
+    if (step.kind !== 'schedule' || step.scheduleContext.space.id !== schedule.spaceId) return;
 
-    this.contactContext.set({
+    this.bookingStep.set({
+      kind: 'contacts',
       reservation,
-      scheduleContext: { ...context, mode: schedule.mode },
+      scheduleContext: { ...step.scheduleContext, mode: schedule.mode },
     });
     this.releaseError.set('');
     this.refreshAvailability.next();
     this.scheduleSelected.emit(schedule);
   }
 
-  protected closeContacts(context: ContactContext): void {
-    this.contactContext.set(null);
-    if (this.paymentContext()?.submission.reservation !== context.reservation) {
-      this.releaseReservation(context.reservation);
-    }
-  }
-
   protected enterPayment(submission: BookingContactSubmission): void {
-    const context = this.contactContext();
-    if (context?.reservation !== submission.reservation) return;
+    const step = this.bookingStep();
+    if (step.kind !== 'contacts' || step.reservation !== submission.reservation) return;
 
-    this.paymentContext.set({ submission, scheduleContext: context.scheduleContext });
+    this.bookingStep.set({ kind: 'payment', submission, scheduleContext: step.scheduleContext });
     this.contactSubmitted.emit(submission);
   }
 
   protected confirmBooking(payment: BookingPayment): void {
-    const context = this.paymentContext();
-    if (context?.submission.reservation !== payment.reservation || this.confirmation()) return;
+    const step = this.bookingStep();
+    if (step.kind !== 'payment' || step.submission.reservation !== payment.reservation) return;
 
-    this.confirmation.set(payment.confirmation);
+    this.bookingStep.set({ kind: 'confirmation', confirmation: payment.confirmation });
     this.paymentSucceeded.emit(payment);
+    this.refreshAvailability.next();
   }
 
-  protected closePayment(reservation: BookingReservation | null): void {
-    this.paymentContext.set(null);
-    if (reservation) this.releaseReservation(reservation);
+  protected restartBooking(step: Extract<BookingStep, { kind: 'contacts' | 'payment' }>): void {
+    if (this.bookingStep() !== step) return;
+
+    this.bookingStep.set({ kind: 'schedule', scheduleContext: step.scheduleContext });
+    if (step.kind === 'contacts') this.releaseReservation(step.reservation);
     else this.refreshAvailability.next();
+  }
+
+  protected closeStep(step: BookingStep, reservation: BookingReservation | null = null): void {
+    // A dialog can close immediately after it advances the flow.
+    if (this.bookingStep() !== step) return;
+
+    this.bookingStep.set({ kind: 'idle' });
+    if (reservation) this.releaseReservation(reservation);
+    else if (step.kind === 'contacts' || step.kind === 'payment') this.refreshAvailability.next();
   }
 
   private releaseReservation(reservation: BookingReservation): void {

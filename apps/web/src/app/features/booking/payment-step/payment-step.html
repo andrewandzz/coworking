@@ -1,5 +1,7 @@
 <dialog appModalDialog #dialog="appModalDialog" class="booking-payment-dialog"
-    [class.booking-payment-notice]="showsNotice()" [appModalDialogDismissible]="!pending()"
+    [class.booking-payment-notice]="showsNotice()"
+    [appModalDialogDismissible]="!confirmingCancellation() && !pending()"
+    [appModalDialogConfirmDismissal]="phase() === 'ready'" (dismissRequested)="requestCancellation()"
     [attr.aria-labelledby]="showsNotice() ? 'booking-notice-title' : 'booking-payment-title'"
     (dialogClosed)="close()">
   @if (phase() === 'expired') {
@@ -14,7 +16,7 @@
           <app-reservation-timer class="booking-payment-timer" [expiresAt]="expiresAt()" (expired)="expire()" />
         }
         <button type="button" class="booking-payment-close grid size-11 place-items-center rounded-lg"
-            aria-label="Закрити" [disabled]="pending()" (click)="dialog.close()">
+            aria-label="Закрити" aria-haspopup="dialog" [disabled]="pending()" (click)="requestCancellation()">
           <svg lucideX size="30" strokeWidth="1.5" aria-hidden="true"></svg>
         </button>
       </header>

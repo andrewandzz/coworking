@@ -29,27 +29,26 @@
   </div>
 </main>
 
-@if (selectedSpace(); as space) {
-  <app-space-details-dialog [space]="space" (bookingRequested)="startBooking($event)"
-      (closed)="selectedSpace.set(null)" />
-}
-
-@if (scheduleContext(); as context) {
-  <app-booking-schedule [space]="context.space" [initialMode]="context.mode"
-      (continued)="enterContacts($event)" (closed)="scheduleContext.set(null)" />
-}
-
-@if (contactContext(); as context) {
-  <app-contact-form [reservation]="context.reservation" (continued)="enterPayment($event)"
-      (retryRequested)="scheduleContext.set(context.scheduleContext)" (closed)="closeContacts(context)" />
-}
-
-@if (paymentContext(); as context) {
-  <app-payment-step [space]="context.scheduleContext.space" [submission]="context.submission"
-      (paid)="confirmBooking($event)" (retryRequested)="scheduleContext.set(context.scheduleContext)"
-      (closed)="closePayment($event)" />
-}
-
-@if (confirmation(); as result) {
-  <app-booking-result [confirmation]="result" (closed)="confirmation.set(null)" />
+@let step = bookingStep();
+@switch (step.kind) {
+  @case ('details') {
+    <app-space-details-dialog [space]="step.space" (bookingRequested)="startBooking($event)"
+        (closed)="closeStep(step)" />
+  }
+  @case ('schedule') {
+    <app-booking-schedule [space]="step.scheduleContext.space" [initialMode]="step.scheduleContext.mode"
+        (continued)="enterContacts($event)" (closed)="closeStep(step)" />
+  }
+  @case ('contacts') {
+    <app-contact-form [reservation]="step.reservation" (continued)="enterPayment($event)"
+        (retryRequested)="restartBooking(step)" (closed)="closeStep(step, $event)" />
+  }
+  @case ('payment') {
+    <app-payment-step [space]="step.scheduleContext.space" [submission]="step.submission"
+        (paid)="confirmBooking($event)" (retryRequested)="restartBooking(step)"
+        (closed)="closeStep(step, $event)" />
+  }
+  @case ('confirmation') {
+    <app-booking-result [confirmation]="step.confirmation" (closed)="closeStep(step)" />
+  }
 }
