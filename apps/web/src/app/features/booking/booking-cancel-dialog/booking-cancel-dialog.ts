@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, output, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, viewChild } from '@angular/core';
 import { LucideCalendar, LucideCircleX, LucideX } from '@lucide/angular';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
 
@@ -10,6 +10,7 @@ import { ModalDialog } from '../../../shared/ui/modal-dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookingCancelDialog {
+  readonly pending = input(false);
   readonly confirmed = output();
   readonly closed = output();
 

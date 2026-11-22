@@ -1,21 +1,21 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   afterNextRender, ChangeDetectionStrategy, Component, computed, DestroyRef, ElementRef, inject, Injector, input,
   linkedSignal, output, signal, viewChild,
 } from '@angular/core';
-import type { IssueBookingPassRequest, IssuedBookingPass } from '@coworking/contracts';
 import { LucideX } from '@lucide/angular';
 import { firstValueFrom } from 'rxjs';
+import { BookingApi, bookingErrorMessage } from '../../../booking-api';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
 import type { SpaceDetails } from '../../spaces/space-details-dialog/space-details-dialog';
 import { SPACE_TYPE_LABELS } from '../../spaces/space-types';
 import { BookingCancelDialog } from '../booking-cancel-dialog/booking-cancel-dialog';
 import { formatBookingAmount, formatBookingDate, formatBookingHour } from '../booking-format';
 import { BookingNotice } from '../booking-notice/booking-notice';
-import type { BookingContactSubmission, BookingPayment } from '../booking-reservation';
+import type { BookingContactSubmission, BookingPayment, BookingReservation } from '../booking-reservation';
 import { ReservationTimer } from '../reservation-timer/reservation-timer';
 
-type PaymentPhase = 'ready' | 'payment-failed' | 'expired' | 'paid';
+type PaymentPhase = 'ready' | 'payment-failed' | 'expired' | 'paid' | 'cancelled';
 
 @Component({
   selector: 'app-payment-step',
@@ -29,17 +29,13 @@ export class PaymentStep {
   readonly submission = input.required<BookingContactSubmission>();
   readonly paid = output<BookingPayment>();
   readonly retryRequested = output();
-  readonly closed = output();
+  readonly closed = output<BookingReservation | null>();
 
   private readonly injector = inject(Injector);
-  private readonly http = inject(HttpClient);
+  private readonly bookingApi = inject(BookingApi);
   private readonly destroyRef = inject(DestroyRef);
   private readonly paymentHeading = viewChild<ElementRef<HTMLHeadingElement>>('paymentHeading');
   private readonly cancelDialog = viewChild(BookingCancelDialog);
-  private readonly passToken = Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
-    byte.toString(16).padStart(2, '0'),
-  ).join('');
-
   protected readonly expiresAt = computed(() => this.submission().reservation.expiresAt);
   protected readonly phase = linkedSignal<PaymentPhase>(() => Date.now() >= this.expiresAt() ? 'expired' : 'ready');
   protected readonly pending = signal(false);
@@ -64,26 +60,30 @@ export class PaymentStep {
     if (!this.paymentReady() || !this.keepReservation(paidAt)) return;
 
     const submission = this.submission();
-    const schedule = submission.reservation.schedule;
+    const { schedule, token } = submission.reservation;
     const { spaceId, date, startHour, endHour } = schedule;
-    const request: IssueBookingPassRequest = { token: this.passToken, phone: submission.contact.phone, spaceId, date, startHour, endHour };
     this.issueError.set('');
     this.pending.set(true);
     try {
-      const pass = await firstValueFrom(this.http.post<IssuedBookingPass>('/api/booking-passes', request, { timeout: 12_000 }));
+      const pass = await firstValueFrom(
+        this.bookingApi.confirmSpace({ token, phone: submission.contact.phone, spaceId, date, startHour, endHour }),
+      );
       if (this.destroyRef.destroyed) return;
 
       this.phase.set('paid');
       this.paid.emit({
         ...submission,
         paidAt,
-        confirmation: { bookingNumber: pass.bookingNumber, spaceLabel: pass.spaceLabel, checkInToken: this.passToken, schedule },
+        confirmation: { bookingNumber: pass.bookingNumber, spaceLabel: pass.spaceLabel, checkInToken: token, schedule },
       });
       dialog.close();
-    } catch {
+    } catch (error) {
       if (this.destroyRef.destroyed) return;
-      if (Date.now() >= this.expiresAt()) this.phase.set('expired');
-      else this.issueError.set('Не вдалося створити перепустку. Спробуйте ще раз.');
+      if ((error instanceof HttpErrorResponse && error.status === 410) || Date.now() >= this.expiresAt()) {
+        this.phase.set('expired');
+      } else {
+        this.issueError.set(bookingErrorMessage(error, 'Не вдалося підтвердити оплату. Спробуйте ще раз.'));
+      }
     } finally {
       this.pending.set(false);
     }
@@ -102,11 +102,30 @@ export class PaymentStep {
     this.keepReservation();
   }
 
-  protected confirmCancellation(dialog: ModalDialog): void {
-    if (!this.confirmingCancellation() || !this.keepReservation()) return;
+  protected async confirmCancellation(dialog: ModalDialog): Promise<void> {
+    if (!this.confirmingCancellation() || this.pending() || !this.keepReservation()) return;
 
-    this.closeCancellation();
-    dialog.close();
+    this.issueError.set('');
+    this.pending.set(true);
+    try {
+      await firstValueFrom(this.bookingApi.releaseSpace(this.submission().reservation.token));
+      if (this.destroyRef.destroyed) return;
+
+      this.phase.set('cancelled');
+      this.closeCancellation();
+      dialog.close();
+    } catch {
+      if (this.destroyRef.destroyed) return;
+      this.issueError.set('Не вдалося скасувати бронювання. Спробуйте ще раз.');
+      this.closeCancellation();
+    } finally {
+      this.pending.set(false);
+      if (this.reservationActive()) this.keepReservation();
+    }
+  }
+
+  protected close(): void {
+    this.closed.emit(this.reservationActive() ? this.submission().reservation : null);
   }
 
   protected retryPayment(): void {

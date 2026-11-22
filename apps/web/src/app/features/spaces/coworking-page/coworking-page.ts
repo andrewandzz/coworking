@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, output, signal } from '@angular/core';
-import { addCalendarDays, DEMO_BOOKING_RATES_IN_KOPIYKAS, getBookingWindow } from '@coworking/contracts';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { DEMO_BOOKING_RATES_IN_KOPIYKAS, getBookingTime } from '@coworking/contracts';
+import { Subject } from 'rxjs';
+import { BookingApi } from '../../../booking-api';
 import { CoworkingBrand } from '../../../shared/ui/coworking-brand/coworking-brand';
-import { RESERVATION_DURATION_MS } from '../../booking/booking-reservation';
 import type { BookingConfirmation, BookingContactSubmission, BookingPayment, BookingReservation } from '../../booking/booking-reservation';
 import { BookingResult } from '../../booking/booking-result/booking-result';
 import { BookingSchedule } from '../../booking/booking-schedule/booking-schedule';
-import type { BookingScheduleSelection, OccupiedBookingSlot } from '../../booking/booking-schedule/booking-schedule';
+import type { BookingScheduleSelection } from '../../booking/booking-schedule/booking-schedule';
 import { ContactForm } from '../../booking/contact-form/contact-form';
 import { PaymentStep } from '../../booking/payment-step/payment-step';
 import { FloorPlan } from '../floor-plan/floor-plan';
@@ -17,14 +19,13 @@ import { DEFAULT_SPACE_FILTERS, SpaceFilters } from '../space-filters/space-filt
 import type { SpaceFiltersValue } from '../space-filters/space-filters';
 import type { SpaceAmenity } from '../space-types';
 
-interface CoworkingSpace extends FloorPlanSpace {
+interface CoworkingSpace extends Omit<FloorPlanSpace, 'occupied'> {
   readonly amenities: readonly SpaceAmenity[];
 }
 
 interface ScheduleContext {
   readonly space: SpaceDetails;
   readonly mode: BookingMode;
-  readonly occupiedSlots: readonly OccupiedBookingSlot[];
 }
 
 interface ContactContext {
@@ -37,18 +38,18 @@ interface PaymentContext {
   readonly scheduleContext: ScheduleContext;
 }
 
-const DEMO_SPACES: readonly CoworkingSpace[] = [
-  { id: 'desk-1', type: 'desk', number: 1, occupied: false, amenities: ['generator', 'dual-monitors'] },
-  { id: 'desk-2', type: 'desk', number: 2, occupied: false, amenities: ['generator'] },
-  { id: 'desk-3', type: 'desk', number: 3, occupied: true, amenities: ['generator', 'dual-monitors'] },
-  { id: 'desk-4', type: 'desk', number: 4, occupied: true, amenities: ['quiet-zone'] },
-  { id: 'desk-5', type: 'desk', number: 5, occupied: false, amenities: ['generator', 'dual-monitors', 'quiet-zone'] },
-  { id: 'desk-6', type: 'desk', number: 6, occupied: false, amenities: ['generator', 'dual-monitors'] },
-  { id: 'meeting-room-1', type: 'meeting-room', number: 1, occupied: false, amenities: ['generator'] },
-  { id: 'meeting-room-2', type: 'meeting-room', number: 2, occupied: true, amenities: [] },
-  { id: 'skype-booth-1', type: 'skype-booth', number: 1, occupied: false, amenities: ['quiet-zone'] },
-  { id: 'skype-booth-2', type: 'skype-booth', number: 2, occupied: true, amenities: ['quiet-zone'] },
-  { id: 'skype-booth-3', type: 'skype-booth', number: 3, occupied: false, amenities: ['quiet-zone'] },
+const SPACES: readonly CoworkingSpace[] = [
+  { id: 'desk-1', type: 'desk', number: 1, amenities: ['generator', 'dual-monitors'] },
+  { id: 'desk-2', type: 'desk', number: 2, amenities: ['generator'] },
+  { id: 'desk-3', type: 'desk', number: 3, amenities: ['generator', 'dual-monitors'] },
+  { id: 'desk-4', type: 'desk', number: 4, amenities: ['quiet-zone'] },
+  { id: 'desk-5', type: 'desk', number: 5, amenities: ['generator', 'dual-monitors', 'quiet-zone'] },
+  { id: 'desk-6', type: 'desk', number: 6, amenities: ['generator', 'dual-monitors'] },
+  { id: 'meeting-room-1', type: 'meeting-room', number: 1, amenities: ['generator'] },
+  { id: 'meeting-room-2', type: 'meeting-room', number: 2, amenities: [] },
+  { id: 'skype-booth-1', type: 'skype-booth', number: 1, amenities: ['quiet-zone'] },
+  { id: 'skype-booth-2', type: 'skype-booth', number: 2, amenities: ['quiet-zone'] },
+  { id: 'skype-booth-3', type: 'skype-booth', number: 3, amenities: ['quiet-zone'] },
 ];
 
 @Component({
@@ -65,6 +66,12 @@ export class CoworkingPage {
   readonly contactSubmitted = output<BookingContactSubmission>();
   readonly paymentSucceeded = output<BookingPayment>();
 
+  private readonly bookingApi = inject(BookingApi);
+  private readonly refreshAvailability = new Subject<void>();
+  private readonly availability = toSignal(this.bookingApi.watchSpaceAvailability(undefined, this.refreshAvailability));
+
+  protected readonly availabilityFailed = computed(() => this.availability() === null);
+  protected readonly releaseError = signal('');
   protected readonly selectedSpace = signal<SpaceDetails | null>(null);
   protected readonly scheduleContext = signal<ScheduleContext | null>(null);
   protected readonly contactContext = signal<ContactContext | null>(null);
@@ -78,15 +85,21 @@ export class CoworkingPage {
 
   protected readonly planSpaces = computed(() => {
     const { type, amenities } = this.filters();
-    return DEMO_SPACES.map((space) => ({
+    const availability = this.availability();
+    const hour = availability ? Number(getBookingTime(new Date(availability.serverTime)).slice(0, 2)) : -1;
+    const occupiedSpaces = new Set(availability?.occupied
+      .filter(({ startHour, endHour }) => startHour <= hour && hour < endHour)
+      .map(({ spaceId }) => spaceId));
+    return SPACES.map((space) => ({
       ...space,
+      occupied: occupiedSpaces.has(space.id),
       matchesFilters: (type === 'all' || space.type === type)
         && amenities.every((amenity) => space.amenities.includes(amenity)),
     }));
   });
 
   protected selectSpace(spaceId: string): void {
-    const space = DEMO_SPACES.find(({ id }) => id === spaceId);
+    const space = SPACES.find(({ id }) => id === spaceId);
     if (!space) return;
 
     this.selectedSpace.set({ ...space, ratesInKopiykas: DEMO_BOOKING_RATES_IN_KOPIYKAS });
@@ -97,23 +110,29 @@ export class CoworkingPage {
     const space = this.selectedSpace();
     if (space?.id !== request.spaceId) return;
 
-    const { today } = getBookingWindow();
-    const occupiedSlots = space.id === 'desk-3'
-      ? [{ date: today, hour: 9 }, { date: addCalendarDays(today, 1), hour: 9 }]
-      : [];
-    this.scheduleContext.set({ space, mode: request.mode, occupiedSlots });
+    this.scheduleContext.set({ space, mode: request.mode });
     this.bookingRequested.emit(request);
   }
 
-  protected enterContacts(schedule: BookingScheduleSelection): void {
+  protected enterContacts(reservation: BookingReservation): void {
+    const { schedule } = reservation;
     const context = this.scheduleContext();
     if (context?.space.id !== schedule.spaceId) return;
 
     this.contactContext.set({
-      reservation: { schedule, expiresAt: Date.now() + RESERVATION_DURATION_MS },
+      reservation,
       scheduleContext: { ...context, mode: schedule.mode },
     });
+    this.releaseError.set('');
+    this.refreshAvailability.next();
     this.scheduleSelected.emit(schedule);
+  }
+
+  protected closeContacts(context: ContactContext): void {
+    this.contactContext.set(null);
+    if (this.paymentContext()?.submission.reservation !== context.reservation) {
+      this.releaseReservation(context.reservation);
+    }
   }
 
   protected enterPayment(submission: BookingContactSubmission): void {
@@ -130,5 +149,18 @@ export class CoworkingPage {
 
     this.confirmation.set(payment.confirmation);
     this.paymentSucceeded.emit(payment);
+  }
+
+  protected closePayment(reservation: BookingReservation | null): void {
+    this.paymentContext.set(null);
+    if (reservation) this.releaseReservation(reservation);
+    else this.refreshAvailability.next();
+  }
+
+  private releaseReservation(reservation: BookingReservation): void {
+    this.bookingApi.releaseSpace(reservation.token).subscribe({
+      next: () => this.refreshAvailability.next(),
+      error: () => this.releaseError.set('Не вдалося скасувати резерв. Місце звільниться після закінчення таймера.'),
+    });
   }
 }

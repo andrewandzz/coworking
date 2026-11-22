@@ -1,8 +1,8 @@
 <dialog appModalDialog class="booking-cancel-dialog" aria-labelledby="booking-cancel-title"
-    aria-describedby="booking-cancel-description" (dialogClosed)="closed.emit()">
+    aria-describedby="booking-cancel-description" [appModalDialogDismissible]="!pending()" (dialogClosed)="closed.emit()">
   <div class="booking-cancel-panel relative text-center">
     <button type="button" class="booking-cancel-close absolute grid size-11 place-items-center rounded-lg"
-        aria-label="Закрити" (click)="close()">
+        aria-label="Закрити" [disabled]="pending()" (click)="close()">
       <svg lucideX size="40" strokeWidth="1.5" aria-hidden="true"></svg>
     </button>
 
@@ -15,9 +15,9 @@
 
     <div class="booking-cancel-actions grid">
       <button type="button" class="booking-cancel-button booking-cancel-confirm font-bold"
-          (click)="confirmed.emit()">Скасувати бронювання</button>
+          [disabled]="pending()" (click)="confirmed.emit()">{{ pending() ? 'Скасовуємо…' : 'Скасувати бронювання' }}</button>
       <button type="button" class="booking-cancel-button booking-cancel-resume font-bold"
-          autofocus (click)="close()">Продовжити бронювання</button>
+          autofocus [disabled]="pending()" (click)="close()">Продовжити бронювання</button>
     </div>
   </div>
 </dialog>

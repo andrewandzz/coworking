@@ -55,6 +55,11 @@
   line-height: 1.25;
 }
 
+.coworking-plan-message {
+  margin: 0.75rem clamp(1rem, 2.26cqi, 2.5rem) 0;
+  color: #6c746a;
+}
+
 .coworking-plan-content {
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(1rem, 2.875cqi, 3.1875rem);

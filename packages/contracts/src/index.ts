@@ -6,6 +6,7 @@ export const BOOKING_DAYS_AHEAD = 30;
 export const COWORKING_OPENING_HOUR = 9;
 export const COWORKING_CLOSING_HOUR = 18;
 export const DEMO_BOOKING_RATES_IN_KOPIYKAS = { hourly: 8_000, daily: 48_000 } as const;
+export const RESERVATION_DURATION_MS = 1 * 60 * 1000;
 
 export const SPACE_TYPE_LABELS = {
   desk: { singular: 'Робочий стіл', plural: 'Робочі столи' },
@@ -18,13 +19,30 @@ export type SpaceType = keyof typeof SPACE_TYPE_LABELS;
 export const BOOKING_PASS_PREFIX = 'coworking:';
 export const BOOKING_PASS_TOKEN_PATTERN = /^[a-f0-9]{32}$/;
 
-export interface IssueBookingPassRequest {
-  token: string;
-  phone: string;
+export interface SpaceBookingRange {
   spaceId: string;
   date: string;
   startHour: number;
   endHour: number;
+}
+
+export interface ReserveSpaceRequest extends SpaceBookingRange {
+  token: string;
+}
+
+export interface ReservationDeadline {
+  expiresAt: number;
+  serverTime: number;
+}
+
+export interface SpaceAvailability {
+  date: string;
+  serverTime: number;
+  occupied: Omit<SpaceBookingRange, 'date'>[];
+}
+
+export interface IssueBookingPassRequest extends ReserveSpaceRequest {
+  phone: string;
 }
 
 export interface IssuedBookingPass {
@@ -134,6 +152,18 @@ const kyivDateFormatter = new Intl.DateTimeFormat('en-GB', {
   month: '2-digit',
   day: '2-digit',
 });
+
+const kyivTimeFormatter = new Intl.DateTimeFormat('en-GB', {
+  timeZone: BOOKING_TIME_ZONE,
+  hourCycle: 'h23',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+});
+
+export function getBookingTime(now: Date): string {
+  return kyivTimeFormatter.format(now);
+}
 
 export function addCalendarDays(date: string, numberOfDays: number): string {
   const calendarDate = new Date(`${date}T00:00:00Z`);

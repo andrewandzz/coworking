@@ -1,9 +1,11 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 export const BOOKING_PASS_TOKEN_INDEX = 'UQ_booking_passes_token_hash';
+export const BOOKING_PASS_DATE_SPACE_INDEX = 'IX_booking_passes_date_space';
 
 @Entity('booking_passes')
 @Index(BOOKING_PASS_TOKEN_INDEX, ['tokenHash'], { unique: true })
+@Index(BOOKING_PASS_DATE_SPACE_INDEX, ['date', 'spaceId'])
 export class BookingPassEntity {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -25,6 +27,9 @@ export class BookingPassEntity {
 
   @Column({ type: 'varchar', length: 12, nullable: true })
   phone!: string | null;
+
+  @Column({ name: 'hold_expires_at', type: 'varchar', length: 24, nullable: true })
+  holdExpiresAt!: string | null;
 
   @Column({ name: 'used_at', type: 'varchar', length: 24, nullable: true })
   usedAt!: string | null;

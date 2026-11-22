@@ -1,8 +1,7 @@
 import type { BookingScheduleSelection } from './booking-schedule/booking-schedule';
 
-export const RESERVATION_DURATION_MS = 5 * 60 * 1000;
-
 export interface BookingReservation {
+  readonly token: string;
   readonly schedule: BookingScheduleSelection;
   readonly expiresAt: number;
 }

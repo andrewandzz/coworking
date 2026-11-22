@@ -1,7 +1,7 @@
 <dialog appModalDialog #dialog="appModalDialog" class="booking-payment-dialog"
     [class.booking-payment-notice]="showsNotice()" [appModalDialogDismissible]="!pending()"
     [attr.aria-labelledby]="showsNotice() ? 'booking-notice-title' : 'booking-payment-title'"
-    (dialogClosed)="closed.emit()">
+    (dialogClosed)="close()">
   @if (phase() === 'expired') {
     <app-booking-notice kind="expired" (actionRequested)="retryBooking(dialog)" (dismissed)="dialog.close()" />
   } @else {
@@ -46,5 +46,5 @@
 </dialog>
 
 @if (confirmingCancellation()) {
-  <app-booking-cancel-dialog (confirmed)="confirmCancellation(dialog)" (closed)="resumeBooking()" />
+  <app-booking-cancel-dialog [pending]="pending()" (confirmed)="confirmCancellation(dialog)" (closed)="resumeBooking()" />
 }
