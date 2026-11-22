@@ -139,10 +139,18 @@
   margin-block-start: clamp(0.75rem, 3.375cqi, 1.6875rem);
 }
 
-.booking-unavailable {
+.booking-unavailable,
+.booking-availability-loading {
   margin-block-start: 0.75rem;
-  color: #a3273b;
   font-size: 0.9375rem;
+}
+
+.booking-unavailable {
+  color: #a3273b;
+}
+
+.booking-availability-loading {
+  color: #6c746a;
 }
 
 .booking-schedule-continue {

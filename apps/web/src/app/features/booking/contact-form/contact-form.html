@@ -24,7 +24,7 @@
           <div>
             <label class="block font-bold" for="booking-contact-first-name">Ім’я <span aria-hidden="true">*</span></label>
             <input id="booking-contact-first-name" class="booking-contact-input block w-full" name="firstName"
-                type="text" autocomplete="given-name" required placeholder="Введіть Ваше ім’я"
+                type="text" autocomplete="given-name" required [maxLength]="nameMaxLength" placeholder="Введіть Ваше ім’я"
                 [attr.aria-invalid]="errors().firstName ? 'true' : null"
                 [attr.aria-describedby]="errors().firstName ? 'booking-contact-first-name-error' : null"
                 (input)="clearError('firstName')">
@@ -36,7 +36,7 @@
           <div>
             <label class="block font-bold" for="booking-contact-last-name">Прізвище <span aria-hidden="true">*</span></label>
             <input id="booking-contact-last-name" class="booking-contact-input block w-full" name="lastName"
-                type="text" autocomplete="family-name" required placeholder="Введіть Ваше прізвище"
+                type="text" autocomplete="family-name" required [maxLength]="nameMaxLength" placeholder="Введіть Ваше прізвище"
                 [attr.aria-invalid]="errors().lastName ? 'true' : null"
                 [attr.aria-describedby]="errors().lastName ? 'booking-contact-last-name-error' : null"
                 (input)="clearError('lastName')">

@@ -1,3 +1,4 @@
+import { BOOKING_NAME_MAX_LENGTH } from '@coworking/contracts';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 export const BOOKING_PASS_TOKEN_INDEX = 'UQ_booking_passes_token_hash';
@@ -27,6 +28,15 @@ export class BookingPassEntity {
 
   @Column({ type: 'varchar', length: 12, nullable: true })
   phone!: string | null;
+
+  @Column({ name: 'customer_name', type: 'nvarchar', length: BOOKING_NAME_MAX_LENGTH * 2 + 1, nullable: true })
+  customerName!: string | null;
+
+  @Column({ name: 'amount_in_kopiykas', type: 'int', nullable: true })
+  amountInKopiykas!: number | null;
+
+  @Column({ name: 'cancelled_at', type: 'varchar', length: 24, nullable: true })
+  cancelledAt!: string | null;
 
   @Column({ name: 'hold_expires_at', type: 'varchar', length: 24, nullable: true })
   holdExpiresAt!: string | null;

@@ -6,7 +6,10 @@ export const BOOKING_DAYS_AHEAD = 30;
 export const COWORKING_OPENING_HOUR = 9;
 export const COWORKING_CLOSING_HOUR = 18;
 export const DEMO_BOOKING_RATES_IN_KOPIYKAS = { hourly: 8_000, daily: 48_000 } as const;
+export const BOOKING_NAME_MAX_LENGTH = 100;
 export const RESERVATION_DURATION_MS = 5 * 60 * 1000;
+
+export type BookingMode = keyof typeof DEMO_BOOKING_RATES_IN_KOPIYKAS;
 
 export const SPACE_TYPE_LABELS = {
   desk: { singular: 'Робочий стіл', plural: 'Робочі столи' },
@@ -43,6 +46,8 @@ export interface SpaceAvailability {
 
 export interface IssueBookingPassRequest extends ReserveSpaceRequest {
   phone: string;
+  customerName?: string;
+  mode?: BookingMode;
 }
 
 export interface IssuedBookingPass {
@@ -110,8 +115,8 @@ export type ManagerBookingStatus = (typeof MANAGER_BOOKING_STATUSES)[number];
 
 export interface ManagerBookingSummary {
   bookingNumber: string;
-  customerName: string;
-  phone: string;
+  customerName: string | null;
+  phone: string | null;
   date: string;
   startHour: number;
   endHour: number;
@@ -120,7 +125,7 @@ export interface ManagerBookingSummary {
 
 export interface ManagerBookingDetails extends ManagerBookingSummary {
   spaceLabel: string;
-  amountInKopiykas: number;
+  amountInKopiykas: number | null;
 }
 
 export interface ManagerBookingsResult {
@@ -146,6 +151,7 @@ export interface ManagerRevenueReport {
   pageSize: number;
   total: number;
   totalRevenueInKopiykas: number;
+  hasUnknownAmounts: boolean;
 }
 
 const kyivDateFormatter = new Intl.DateTimeFormat('en-GB', {

@@ -96,6 +96,8 @@ export class ManagerCheckInPage {
         this.error.set('Перепустку не знайдено.');
       } else if (status === 409) {
         this.error.set('Цю перепустку вже використано.');
+      } else if (status === 410) {
+        this.error.set('Це бронювання скасовано.');
       } else {
         this.error.set('Не вдалося перевірити перепустку. Спробуйте ще раз.');
       }

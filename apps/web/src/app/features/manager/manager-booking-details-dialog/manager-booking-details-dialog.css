@@ -77,6 +77,11 @@
   color: var(--manager-accent, #346831);
 }
 
+.manager-booking-details-pill[data-status='booked'] {
+  background: #e7e4df;
+  color: var(--manager-muted);
+}
+
 .manager-booking-details-pill[data-status='cancelled'] {
   background: #f6e2dd;
   color: #c8453a;

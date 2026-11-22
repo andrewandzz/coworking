@@ -61,12 +61,15 @@ export class PaymentStep {
 
     const submission = this.submission();
     const { schedule, token } = submission.reservation;
-    const { spaceId, date, startHour, endHour } = schedule;
+    const { spaceId, date, startHour, endHour, mode } = schedule;
+    const { firstName, lastName, phone } = submission.contact;
     this.issueError.set('');
     this.pending.set(true);
     try {
       const pass = await firstValueFrom(
-        this.bookingApi.confirmSpace({ token, phone: submission.contact.phone, spaceId, date, startHour, endHour }),
+        this.bookingApi.confirmSpace({
+          token, phone, customerName: `${firstName} ${lastName}`, spaceId, date, startHour, endHour, mode,
+        }),
       );
       if (this.destroyRef.destroyed) return;
 

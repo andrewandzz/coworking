@@ -20,13 +20,13 @@
 }
 
 .space-details-panel {
-  padding: clamp(1rem, 5.05cqi, 2.25rem) clamp(1rem, 6.6cqi, 2.9375rem)
+  padding: clamp(1rem, 3.375cqi, 1.6875rem) clamp(1rem, 6.6cqi, 2.9375rem)
     clamp(1rem, 4.375cqi, 1.9375rem);
 }
 
 .space-details-title {
+  align-self: center;
   margin-inline-start: 0.3125rem;
-  padding-inline-end: 3rem;
   font-size: clamp(1.375rem, 4.5cqi, 2rem);
   line-height: 1.25;
 }
@@ -36,9 +36,8 @@
 }
 
 .space-details-close {
-  inset-block-start: clamp(0.75rem, 3.5cqi, 1.5rem);
-  inset-inline-end: clamp(0.75rem, 4cqi, 1.75rem);
-  color: #6c746a;
+  margin-inline-end: -0.75rem;
+  color: #777c73;
 }
 
 .space-details-features {
@@ -111,9 +110,5 @@
 @container (min-width: 34rem) {
   .space-details-actions {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  }
-
-  .space-details-close:not(:focus-visible) {
-    clip-path: inset(50%);
   }
 }

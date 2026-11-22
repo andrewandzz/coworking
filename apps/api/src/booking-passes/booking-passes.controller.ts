@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Header, Headers, HttpCode, Post, Query, UseGuards } from '@nestjs/common';
 import {
-  BOOKING_PASS_TOKEN_PATTERN, COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR, normalizeUkrainianPhone,
+  BOOKING_NAME_MAX_LENGTH, BOOKING_PASS_TOKEN_PATTERN, COWORKING_CLOSING_HOUR, COWORKING_OPENING_HOUR,
+  normalizeUkrainianPhone,
 } from '@coworking/contracts';
 import type {
   BookingCheckIn, IssueBookingPassRequest, IssuedBookingPass, ReservationDeadline, ReserveSpaceRequest, SpaceAvailability,
@@ -8,6 +9,7 @@ import type {
 import { z } from 'zod';
 import { ManagerSessionGuard } from '../manager-auth/manager-session.guard.js';
 import { requireJson } from '../manager-auth/require-json.js';
+import { isWholeWorkday } from './booking-pass-summary.js';
 import { BookingPassesService } from './booking-passes.service.js';
 
 const token = z.string().regex(BOOKING_PASS_TOKEN_PATTERN);
@@ -23,6 +25,11 @@ const reserveSchema = z.strictObject({
 const issueSchema = reserveSchema.safeExtend({
   phone: z.string().max(64).transform((value) => normalizeUkrainianPhone(value) ?? '')
     .pipe(z.string().min(1, 'Вкажіть дійсний український номер телефону.')),
+  customerName: z.string().trim().min(1).max(BOOKING_NAME_MAX_LENGTH * 2 + 1).optional(),
+  mode: z.enum(['hourly', 'daily']).optional(),
+}).refine((request) => request.mode !== 'daily' || isWholeWorkday(request), {
+  path: ['mode'],
+  message: 'Денний тариф діє на весь робочий день.',
 });
 const checkInSchema = z.strictObject({ token });
 

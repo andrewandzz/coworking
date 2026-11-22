@@ -1,7 +1,11 @@
 <main class="coworking-page min-h-dvh">
   <div class="coworking-content mx-auto">
     <header>
-      <app-coworking-brand class="coworking-brand" />
+      <div class="flex items-center justify-between gap-2">
+        <app-coworking-brand class="coworking-brand shrink-0" />
+        <a class="coworking-manager-login inline-flex items-center justify-center text-center font-bold"
+            routerLink="/manager/login">Вхід менеджера</a>
+      </div>
       <div class="coworking-intro">
         <h1 class="font-extrabold">Знайди свій простір для роботи</h1>
         <p>Обирай місце на карті та бронюй у зручний час</p>

@@ -1,6 +1,10 @@
 :host {
-  display: flex;
+  display: block;
   inline-size: fit-content;
+}
+
+.brand-link {
+  display: flex;
   align-items: center;
   gap: 0.125rem;
   color: #080a08;
@@ -8,6 +12,10 @@
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.06em;
+}
+
+.brand-link:focus-visible {
+  outline-color: #346831;
 }
 
 .mark {

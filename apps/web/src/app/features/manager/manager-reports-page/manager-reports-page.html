@@ -68,13 +68,15 @@
             @for (booking of revenue.bookings; track booking.bookingNumber) {
               <tr role="row">
                 <td class="manager-booking-number" role="cell">{{ booking.bookingNumber }}</td>
-                <td class="manager-booking-customer" role="cell">{{ booking.customerName }}</td>
+                <td class="manager-booking-customer" role="cell">{{ booking.customerName ?? '—' }}</td>
                 <td class="manager-booking-phone" role="cell">{{ booking.phone | ukrainianPhone }}</td>
                 <td class="manager-booking-date" role="cell">
                   <time class="block" [attr.datetime]="booking.date">{{ formatBookingDate(booking.date) }}</time>
                   <span class="whitespace-nowrap">{{ formatBookingHour(booking.startHour) }} – {{ formatBookingHour(booking.endHour) }}</span>
                 </td>
-                <td class="manager-report-price" role="cell">{{ formatBookingAmount(booking.amountInKopiykas) }} грн</td>
+                <td class="manager-report-price" role="cell">
+                  {{ booking.amountInKopiykas === null ? '—' : formatBookingAmount(booking.amountInKopiykas) + ' грн' }}
+                </td>
               </tr>
             }
           </tbody>
@@ -87,7 +89,9 @@
       }
 
       <div class="manager-report-total" aria-live="polite">
-        <span class="manager-report-total-label">Загальний дохід за період</span>
+        <span class="manager-report-total-label">
+          {{ revenue.hasUnknownAmounts ? 'Дохід за бронюваннями з відомою вартістю' : 'Загальний дохід за період' }}
+        </span>
         <strong class="manager-report-total-amount">{{ formatBookingAmount(revenue.totalRevenueInKopiykas) }} грн</strong>
       </div>
     } @else {

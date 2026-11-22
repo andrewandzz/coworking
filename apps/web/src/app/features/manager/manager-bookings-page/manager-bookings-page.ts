@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { MANAGER_BOOKING_STATUSES } from '@coworking/contracts';
 import type { ManagerBookingDetails, ManagerBookingsResult, ManagerBookingStatus } from '@coworking/contracts';
 import { LucideChevronDown, LucideSearch } from '@lucide/angular';
-import { debounceTime, firstValueFrom } from 'rxjs';
+import { debounceTime, firstValueFrom, interval } from 'rxjs';
 import { UkrainianPhonePipe } from '../../../shared/ukrainian-phone.pipe';
 import { formatBookingDate, formatBookingHour } from '../../booking/booking-format';
 import { ManagerBookingDetailsDialog } from '../manager-booking-details-dialog/manager-booking-details-dialog';
@@ -91,6 +91,10 @@ export class ManagerBookingsPage {
   });
 
   constructor() {
+    interval(5_000).pipe(takeUntilDestroyed()).subscribe(() => {
+      if (!this.bookings.isLoading()) this.bookings.reload();
+    });
+
     toObservable(this.pendingSearch).pipe(debounceTime(200), takeUntilDestroyed()).subscribe((query) => {
       if (query !== null && query === this.pendingSearch() && query !== this.searchQuery()) {
         this.pagination.setPage(1, { queryParams: { q: query || null }, replaceUrl: true });

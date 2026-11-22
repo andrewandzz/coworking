@@ -57,7 +57,7 @@
                     [attr.aria-label]="'Деталі бронювання ' + booking.bookingNumber"
                     (click)="openDetails(booking.bookingNumber)">{{ booking.bookingNumber }}</button>
                 </td>
-                <td class="manager-booking-customer" role="cell">{{ booking.customerName }}</td>
+                <td class="manager-booking-customer" role="cell">{{ booking.customerName ?? '—' }}</td>
                 <td class="manager-booking-phone" role="cell">{{ booking.phone | ukrainianPhone }}</td>
                 <td class="manager-booking-date" role="cell">
                   <time class="block" [attr.datetime]="booking.date">{{ formatBookingDate(booking.date) }}</time>

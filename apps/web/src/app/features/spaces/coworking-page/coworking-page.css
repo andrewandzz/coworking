@@ -39,8 +39,24 @@
 }
 
 .coworking-filters,
+.coworking-manager-login,
 app-floor-plan-legend {
   font-size: clamp(0.9375rem, 1.1cqi, 1.125rem);
+}
+
+.coworking-manager-login {
+  min-inline-size: 0;
+  min-block-size: 2.75rem;
+  padding: 0.25rem clamp(0.5rem, 1cqi, 1.125rem);
+  border: 1px solid #a6a29a;
+  border-radius: 0.75rem;
+  background-color: #fff;
+  color: #346831;
+  line-height: 1.25;
+}
+
+.coworking-manager-login:focus-visible {
+  outline-color: #346831;
 }
 
 .coworking-filters {

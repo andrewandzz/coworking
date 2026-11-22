@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, viewChild } from '@angular/core';
+import type { BookingMode } from '@coworking/contracts';
 import { LucideX } from '@lucide/angular';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
 import { formatBookingAmount } from '../../booking/booking-format';
 import { SPACE_AMENITIES, SPACE_TYPE_LABELS } from '../space-types';
 import type { SpaceAmenity, SpaceType } from '../space-types';
 
-export type BookingMode = 'hourly' | 'daily';
+export type { BookingMode } from '@coworking/contracts';
 
 export interface SpaceDetails {
   readonly id: string;

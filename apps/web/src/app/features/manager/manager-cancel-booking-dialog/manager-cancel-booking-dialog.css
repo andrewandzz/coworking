@@ -67,22 +67,9 @@
   line-height: 1.25;
 }
 
-.manager-cancel-booking-confirm {
-  background: var(--manager-accent, #346831);
-  color: #fff;
-}
-
-.manager-cancel-booking-confirm:enabled:hover {
-  background: #285326;
-}
-
 .manager-cancel-booking-dismiss {
   border-color: var(--manager-line, #a6a29a);
   color: var(--manager-muted, #6c746a);
-}
-
-.manager-cancel-booking-dismiss:enabled:hover {
-  background: #f6f1eb;
 }
 
 .manager-cancel-booking-panel button:disabled {

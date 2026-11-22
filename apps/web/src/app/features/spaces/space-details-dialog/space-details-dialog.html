@@ -1,11 +1,13 @@
 <dialog appModalDialog #dialog="appModalDialog" class="space-details-dialog"
     aria-labelledby="space-details-title" (dialogClosed)="closed.emit()">
-  <div class="space-details-panel relative">
-    <h2 id="space-details-title" class="space-details-title font-bold" tabindex="-1" autofocus>{{ title() }}</h2>
-    <button type="button" class="space-details-close absolute grid size-11 place-items-center rounded-lg"
-        aria-label="Закрити" (click)="dialog.close()">
-      <svg lucideX size="22" strokeWidth="1.5" aria-hidden="true"></svg>
-    </button>
+  <div class="space-details-panel">
+    <header class="flex items-start justify-between gap-3">
+      <h2 id="space-details-title" class="space-details-title font-bold" tabindex="-1" autofocus>{{ title() }}</h2>
+      <button type="button" class="space-details-close grid size-11 shrink-0 place-items-center rounded-lg"
+          aria-label="Закрити" (click)="dialog.close()">
+        <svg lucideX size="30" strokeWidth="1.5" aria-hidden="true"></svg>
+      </button>
+    </header>
 
     <ul class="space-details-features grid" role="list">
       <li>{{ typeLabel() }}</li>

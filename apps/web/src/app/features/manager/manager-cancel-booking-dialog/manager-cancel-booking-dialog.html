@@ -16,7 +16,7 @@
     }
 
     <div class="manager-cancel-booking-actions grid" [attr.aria-busy]="pending()">
-      <button type="button" class="manager-cancel-booking-button manager-cancel-booking-confirm font-bold"
+      <button type="button" class="manager-cancel-booking-button booking-cancel-confirm font-bold"
         [disabled]="pending()" (click)="confirmed.emit()">
         {{ pending() ? 'Скасовуємо…' : 'Скасувати бронювання' }}
       </button>

@@ -3,29 +3,18 @@ import {
   BadRequestException, ConflictException, GoneException, Injectable, NotFoundException, ServiceUnavailableException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getBookingTime, getBookingWindow, RESERVATION_DURATION_MS, SPACE_TYPE_LABELS } from '@coworking/contracts';
+import { getBookingTime, getBookingWindow, RESERVATION_DURATION_MS } from '@coworking/contracts';
 import type {
   BookingCheckIn, IssueBookingPassRequest, IssuedBookingPass, ReservationDeadline,
-  ReserveSpaceRequest, SpaceAvailability, SpaceBookingRange, SpaceType,
+  ReserveSpaceRequest, SpaceAvailability, SpaceBookingRange,
 } from '@coworking/contracts';
 import { IsNull, LessThan, LessThanOrEqual, MoreThan, Not, Or, QueryFailedError, Repository } from 'typeorm';
 import { BOOKING_PASS_TOKEN_INDEX, BookingPassEntity } from './booking-pass.entity.js';
+import { calculateBookingAmount, describeBookingPass } from './booking-pass-summary.js';
+import { tryLockBookingSpace } from './space-lock.js';
 
 function hashToken(token: string): string {
   return createHash('sha256').update(token, 'hex').digest('hex');
-}
-
-function describe(pass: BookingPassEntity): IssuedBookingPass {
-  const numberStart = pass.spaceId.lastIndexOf('-');
-  const type = pass.spaceId.slice(0, numberStart) as SpaceType;
-  const number = pass.spaceId.slice(numberStart + 1);
-  return {
-    bookingNumber: `CW-${String(pass.id).padStart(4, '0')}`,
-    spaceLabel: `${SPACE_TYPE_LABELS[type].singular} ${number}`,
-    date: pass.date,
-    startHour: pass.startHour,
-    endHour: pass.endHour,
-  };
 }
 
 function matchesRange(pass: BookingPassEntity, range: SpaceBookingRange): boolean {
@@ -52,7 +41,7 @@ export class BookingPassesService {
     const date = requestedDate ?? getBookingWindow(now).today;
     const occupied = await this.passes.find({
       select: { spaceId: true, startHour: true, endHour: true },
-      where: { date, holdExpiresAt: activeBooking(now.toISOString()) },
+      where: { date, cancelledAt: IsNull(), holdExpiresAt: activeBooking(now.toISOString()) },
     });
     return { date, serverTime: now.getTime(), occupied };
   }
@@ -79,7 +68,8 @@ export class BookingPassesService {
 
       const { spaceId, date, startHour, endHour } = range;
       if (await passes.existsBy({
-        spaceId, date, startHour: LessThan(endHour), endHour: MoreThan(startHour), holdExpiresAt: activeBooking(nowIso),
+        spaceId, date, startHour: LessThan(endHour), endHour: MoreThan(startHour),
+        cancelledAt: IsNull(), holdExpiresAt: activeBooking(nowIso),
       })) {
         throw new ConflictException('Обраний час уже зайнято. Виберіть інший проміжок.');
       }
@@ -104,23 +94,28 @@ export class BookingPassesService {
   }
 
   async issue(request: IssueBookingPassRequest): Promise<IssuedBookingPass> {
-    const { token, phone, ...schedule } = request;
+    const { token, phone, customerName, mode, ...schedule } = request;
     const tokenHash = hashToken(token);
+    const amountInKopiykas = calculateBookingAmount(schedule, mode);
     return this.withSpaceLock(schedule.spaceId, async (passes) => {
       const pass = await passes.findOneBy({ tokenHash });
       if (!pass) throw expiredReservation();
-      if (!matchesRange(pass, schedule) || (pass.phone !== null && pass.phone !== phone)) {
+      if (pass.cancelledAt !== null) throw new GoneException('Це бронювання скасовано.');
+      if (!matchesRange(pass, schedule)
+        || (pass.phone !== null && pass.phone !== phone)
+        || (pass.customerName !== null && customerName !== undefined && pass.customerName !== customerName)
+        || (pass.amountInKopiykas !== null && amountInKopiykas !== null && pass.amountInKopiykas !== amountInKopiykas)) {
         throw new ConflictException('Цей запит уже використано для іншого бронювання.');
       }
 
       if (pass.holdExpiresAt !== null) {
         const confirmed = await passes.update(
           { tokenHash, holdExpiresAt: MoreThan(new Date().toISOString()) },
-          { phone, holdExpiresAt: null },
+          { phone, customerName: customerName ?? null, amountInKopiykas, holdExpiresAt: null },
         );
         if (!confirmed.affected) throw expiredReservation();
       }
-      return describe(pass);
+      return describeBookingPass(pass);
     });
   }
 
@@ -129,12 +124,15 @@ export class BookingPassesService {
     const usedAt = new Date().toISOString();
     // The condition keeps simultaneous scans from using the same pass twice.
     const confirmed = { tokenHash, holdExpiresAt: IsNull() };
-    const update = await this.passes.update({ ...confirmed, usedAt: IsNull() }, { usedAt });
+    const update = await this.passes.update({ ...confirmed, usedAt: IsNull(), cancelledAt: IsNull() }, { usedAt });
     const pass = await this.passes.findOneBy(confirmed);
     if (!pass) throw new NotFoundException('Перепустку не знайдено.');
-    if (!update.affected) throw new ConflictException('Цю перепустку вже використано.');
+    if (!update.affected) {
+      if (pass.cancelledAt !== null) throw new GoneException('Це бронювання скасовано.');
+      throw new ConflictException('Цю перепустку вже використано.');
+    }
 
-    return { ...describe(pass), usedAt };
+    return { ...describeBookingPass(pass), usedAt };
   }
 
   private withSpaceLock<T>(
@@ -144,13 +142,7 @@ export class BookingPassesService {
     const manager = this.passes.manager;
     if (manager.dataSource.options.type === 'mssql') {
       return manager.transaction(async (transaction) => {
-        const [lock] = await transaction.query<{ status: number }[]>(`
-          DECLARE @status int;
-          EXEC @status = sys.sp_getapplock
-            @Resource = @0, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 5000;
-          SELECT @status AS status;
-        `, [`coworking:space:${spaceId}`]);
-        if (!lock || lock.status < 0) {
+        if (!await tryLockBookingSpace(transaction, spaceId)) {
           throw new ServiceUnavailableException('Не вдалося перевірити доступність. Спробуйте ще раз.');
         }
         return write(transaction.getRepository(BookingPassEntity));

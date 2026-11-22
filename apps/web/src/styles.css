@@ -35,6 +35,10 @@
 }
 
 @layer components {
+  .booking-cancel-confirm:disabled {
+    opacity: 0.65;
+  }
+
   .app-shell {
     @apply grid min-h-dvh lg:grid-cols-[15rem_minmax(0,1fr)];
   }
@@ -197,7 +201,8 @@
     @apply border-line bg-white text-accent-dark enabled:hover:border-accent enabled:hover:bg-accent-soft;
   }
 
-  .button-danger {
+  .button-danger,
+  .booking-cancel-confirm {
     @apply bg-danger text-white enabled:hover:bg-[#7e1b2d];
   }
 

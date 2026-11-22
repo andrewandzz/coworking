@@ -51,6 +51,7 @@
 
 .manager-login-fields input::placeholder {
   color: #a6a29a;
+  font-size: clamp(1.0625rem, 1.1vw, 1.125rem);
 }
 
 .manager-login-action {

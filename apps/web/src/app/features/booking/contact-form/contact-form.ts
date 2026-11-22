@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output, signal } from '@angular/core';
-import { normalizeUkrainianPhone } from '@coworking/contracts';
+import { BOOKING_NAME_MAX_LENGTH, normalizeUkrainianPhone } from '@coworking/contracts';
 import { LucideX } from '@lucide/angular';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
 import { formatUkrainianPhone } from '../../../shared/ukrainian-phone.pipe';
@@ -24,6 +24,7 @@ export class ContactForm {
   readonly retryRequested = output();
   readonly closed = output();
 
+  protected readonly nameMaxLength = BOOKING_NAME_MAX_LENGTH;
   protected readonly expired = linkedSignal(() => Date.now() >= this.reservation().expiresAt);
   protected readonly errors = signal<ContactErrors>({});
 

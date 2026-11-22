@@ -52,25 +52,23 @@
         <p><strong>Тривалість:</strong> {{ duration() }} год</p>
         <p><strong>Вартість:</strong> {{ price() }} грн</p>
       </div>
-      @if (availabilityReady() && !hoursAvailable()) {
-        <p class="booking-unavailable" role="status">На цю дату немає вільних годин.</p>
-      }
     } @else {
       <div class="booking-day-summary">
         <p><strong>Робочий день:</strong> {{ workday }}</p>
         <p><strong>Вартість:</strong> {{ price() }} грн</p>
       </div>
-      @if (availabilityReady() && !dayAvailable()) {
-        <p class="booking-unavailable" role="status">Повний день на цю дату недоступний.</p>
-      }
     }
 
     @if (reserveError(); as message) {
       <p class="booking-unavailable" role="alert">{{ message }}</p>
-    } @else if (availabilityFailed()) {
-      <p class="booking-unavailable" role="status">Не вдалося перевірити доступність. Спробуємо оновити її.</p>
+    } @else if (availabilityLoading()) {
+      <p class="booking-availability-loading" role="status">Перевіряємо доступність…</p>
     } @else if (!availabilityReady()) {
-      <p class="booking-unavailable" role="status">Перевіряємо доступність…</p>
+      <p class="booking-unavailable" role="status">Не вдалося перевірити доступність. Спробуємо оновити її.</p>
+    } @else if (mode() === 'hourly' && !hoursAvailable()) {
+      <p class="booking-unavailable" role="status">На цю дату немає вільних годин.</p>
+    } @else if (mode() === 'daily' && !dayAvailable()) {
+      <p class="booking-unavailable" role="status">Повний день на цю дату недоступний.</p>
     }
     <button type="button" class="booking-schedule-continue w-full font-bold"
         [disabled]="!selection() || reserving()" (click)="continue(dialog)">

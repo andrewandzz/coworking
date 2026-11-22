@@ -1,13 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, linkedSignal, output, signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { rxResource } from '@angular/core/rxjs-interop';
 import {
   addCalendarDays, COWORKING_CLOSING_HOUR as CLOSING_HOUR,
   COWORKING_OPENING_HOUR as OPENING_HOUR, getBookingTime, getBookingWindow,
 } from '@coworking/contracts';
 import type { SpaceBookingRange } from '@coworking/contracts';
 import { LucideCalendarDays, LucideX } from '@lucide/angular';
-import { firstValueFrom, Subject, switchMap } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { BookingApi, bookingErrorMessage } from '../../../booking-api';
 import { ModalDialog } from '../../../shared/ui/modal-dialog';
 import { showDatePicker } from '../../../shared/ui/native-date-picker';
@@ -60,13 +60,18 @@ export class BookingSchedule {
     return getBookingTime(this.openedAt) <= `${formatBookingHour(latestStart)}:00`
       ? this.today : addCalendarDays(this.today, 1);
   });
-  private readonly availability = toSignal(toObservable(this.date).pipe(
-    switchMap((date) => this.bookingApi.watchSpaceAvailability(date, this.refreshAvailability)),
-  ));
+  private readonly availability = rxResource({
+    params: () => ({ date: this.date() }),
+    stream: ({ params }) => this.bookingApi.watchSpaceAvailability(params.date, this.refreshAvailability),
+  });
+  private readonly availableDay = computed(() => {
+    const day = this.availability.hasValue() ? this.availability.value() : undefined;
+    return day?.date === this.date() ? day : undefined;
+  });
   protected readonly reserving = signal(false);
   protected readonly reserveError = signal('');
-  protected readonly availabilityReady = computed(() => this.availability()?.date === this.date());
-  protected readonly availabilityFailed = computed(() => this.availability() === null);
+  protected readonly availabilityLoading = this.availability.isLoading;
+  protected readonly availabilityReady = computed(() => this.availableDay() !== undefined);
   protected readonly dateLabel = computed(() => formatBookingDate(this.date()));
   protected readonly title = computed(() => {
     const { type, number } = this.space();
@@ -74,8 +79,8 @@ export class BookingSchedule {
   });
   protected readonly workday = `${formatBookingHour(OPENING_HOUR)} - ${formatBookingHour(CLOSING_HOUR)} (${WORKDAY_HOURS} год)`;
   protected readonly slots = computed(() => {
-    const day = this.availability();
-    if (!day || day.date !== this.date()) return TIME_SLOTS.map((slot) => ({ ...slot, available: false }));
+    const day = this.availableDay();
+    if (!day) return TIME_SLOTS.map((slot) => ({ ...slot, available: false }));
 
     const now = new Date(day.serverTime);
     const { today } = getBookingWindow(now);

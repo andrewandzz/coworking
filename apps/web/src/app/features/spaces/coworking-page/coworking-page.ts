@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { DEMO_BOOKING_RATES_IN_KOPIYKAS, getBookingTime } from '@coworking/contracts';
 import { Subject } from 'rxjs';
 import { BookingApi } from '../../../booking-api';
@@ -54,7 +55,10 @@ const SPACES: readonly CoworkingSpace[] = [
 
 @Component({
   selector: 'app-coworking-page',
-  imports: [CoworkingBrand, SpaceFilters, FloorPlan, FloorPlanLegend, SpaceDetailsDialog, BookingSchedule, ContactForm, PaymentStep, BookingResult],
+  imports: [
+    RouterLink, CoworkingBrand, SpaceFilters, FloorPlan, FloorPlanLegend,
+    SpaceDetailsDialog, BookingSchedule, ContactForm, PaymentStep, BookingResult,
+  ],
   templateUrl: './coworking-page.html',
   styleUrl: './coworking-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

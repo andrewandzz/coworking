@@ -15,7 +15,7 @@
     } @else if (booking(); as details) {
       <dl class="manager-booking-details-data">
         <div class="manager-booking-details-row">
-          <dt>Користувач</dt><dd>{{ details.customerName }}</dd>
+          <dt>Користувач</dt><dd>{{ details.customerName ?? '—' }}</dd>
         </div>
         <div class="manager-booking-details-row">
           <dt>Телефон</dt><dd>{{ details.phone | ukrainianPhone }}</dd>
@@ -31,7 +31,8 @@
           </dd>
         </div>
         <div class="manager-booking-details-row">
-          <dt>Вартість</dt><dd>{{ formatBookingAmount(details.amountInKopiykas) }} грн</dd>
+          <dt>Вартість</dt>
+          <dd>{{ details.amountInKopiykas === null ? '—' : formatBookingAmount(details.amountInKopiykas) + ' грн' }}</dd>
         </div>
         <div class="manager-booking-details-row manager-booking-details-status-row">
           <dt>Статус</dt>

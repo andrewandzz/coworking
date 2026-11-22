@@ -27,7 +27,7 @@ export class ManagerBookingDetailsDialog {
   protected readonly formatBookingAmount = formatBookingAmount;
   protected readonly formatBookingDate = formatBookingDate;
   protected readonly formatBookingHour = formatBookingHour;
-  protected readonly statusLabels = { ...MANAGER_BOOKING_STATUS_LABELS, booked: 'Оплачено' };
+  protected readonly statusLabels = MANAGER_BOOKING_STATUS_LABELS;
 
   focusHeading(): void {
     this.heading().nativeElement.focus();
