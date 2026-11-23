@@ -9,12 +9,12 @@
   --marker-icon-width: clamp(1rem, 24cqi, 1.75rem);
   --space-icon-stroke: clamp(1px, 1.25cqi, 1.5px);
   background-color: var(--space-status-fill);
-  color: #222821;
+  color: var(--theme-text);
   line-height: 1;
 }
 
 .space-marker:focus-visible {
-  outline: 3px solid #346831;
+  outline: 3px solid var(--theme-accent);
   outline-offset: -4px;
 }
 

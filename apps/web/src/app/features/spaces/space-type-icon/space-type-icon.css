@@ -89,7 +89,7 @@
   inset: auto 0 0;
   block-size: 48%;
   border-radius: 50% 50% 0.125rem 0.125rem;
-  background-color: var(--space-status-fill, #fff);
+  background-color: var(--space-status-fill, var(--theme-surface));
 }
 
 .booth-icon {

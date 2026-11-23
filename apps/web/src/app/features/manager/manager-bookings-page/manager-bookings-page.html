@@ -6,13 +6,13 @@
       <span class="sr-only">Пошук за ім’ям або номером телефону</span>
       <svg lucideSearch size="24" strokeWidth="1.75" class="manager-search-icon pointer-events-none absolute"
         aria-hidden="true"></svg>
-      <input #searchInput class="manager-bookings-control manager-bookings-search block w-full" type="search"
+      <input #searchInput class="manager-bookings-control manager-bookings-search field-control block w-full" type="search"
         placeholder="Пошук за ім’ям або номером телефону" maxlength="120" [value]="searchText()"
         (input)="searchText.set(searchInput.value)" />
     </label>
     <label class="relative block min-w-0">
       <span class="sr-only">Статус бронювання</span>
-      <select #statusSelect class="manager-bookings-control manager-bookings-status block w-full appearance-none"
+      <select #statusSelect class="manager-bookings-control manager-bookings-status field-control block w-full appearance-none"
         (change)="selectStatus(statusSelect.value)">
         <option value="all" [selected]="status() === 'all'">Усі статуси</option>
         @for (option of statuses; track option) {

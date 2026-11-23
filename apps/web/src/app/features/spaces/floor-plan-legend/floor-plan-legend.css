@@ -7,11 +7,9 @@
 }
 
 .floor-plan-legend {
-  --legend-border: #a6a29a;
   padding: clamp(0.75rem, 5.5cqi, 1rem);
-  border-color: var(--legend-border);
+  border-color: var(--theme-border);
   border-radius: 1rem;
-  color: #222821;
 }
 
 .legend-title {
@@ -45,7 +43,7 @@
 .legend-divider {
   margin-block: 0.625rem;
   border: 0;
-  border-block-start: 1px solid var(--legend-border);
+  border-block-start: 1px solid var(--theme-border);
 }
 
 .legend-type-icon {
@@ -73,6 +71,6 @@
     align-self: stretch;
     margin: 0;
     border: 0;
-    border-inline-start: 1px solid var(--legend-border);
+    border-inline-start: 1px solid var(--theme-border);
   }
 }

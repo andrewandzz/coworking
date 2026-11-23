@@ -43,7 +43,7 @@
       </dl>
 
       @if (details.status === 'booked') {
-        <button type="button" class="manager-booking-details-action" aria-haspopup="dialog"
+        <button type="button" class="manager-booking-details-action button-primary" aria-haspopup="dialog"
           (click)="cancelRequested.emit(details.bookingNumber)">Скасувати бронювання</button>
       }
     } @else {

@@ -16,18 +16,12 @@
 
 .manager-bookings-control {
   min-block-size: clamp(3.125rem, 4.64cqi, 4.125rem);
-  border: 1px solid var(--manager-line);
   border-radius: 0.9375rem;
-  background: #fff;
   font-size: clamp(1rem, 1.41cqi, 1.25rem);
 }
 
 .manager-bookings-search {
   padding-inline: clamp(2.625rem, 4.2cqi, 3.6875rem) 0.875rem;
-}
-
-.manager-bookings-search::placeholder {
-  color: #928e85;
 }
 
 .manager-bookings-status {
@@ -43,16 +37,11 @@
 
 .manager-search-icon {
   inset-inline-start: clamp(0.75rem, 1.41cqi, 1.25rem);
-  color: #9f9b92;
+  color: var(--theme-muted);
 }
 
 .manager-status-icon {
   inset-inline-end: clamp(0.75rem, 1.72cqi, 1.5rem);
-}
-
-.manager-bookings-control:focus-visible,
-.manager-bookings-notice button:focus-visible {
-  outline-color: var(--manager-accent);
 }
 
 .manager-bookings-results {
@@ -69,14 +58,13 @@
   align-items: center;
   text-align: start;
   text-decoration: underline;
-  text-decoration-color: var(--manager-line);
+  text-decoration-color: var(--theme-border);
   text-underline-offset: 0.2em;
 }
 
 .manager-booking-number-button:hover,
 .manager-booking-number-button:focus-visible {
-  color: var(--manager-accent);
-  outline-color: var(--manager-accent);
+  color: var(--theme-accent);
   text-decoration-color: currentColor;
 }
 
@@ -93,18 +81,18 @@
 }
 
 .manager-status-pill[data-status='booked'] {
-  background: #e7e4df;
-  color: var(--manager-muted);
+  background: var(--theme-filtered-fill);
+  color: var(--theme-muted);
 }
 
 .manager-status-pill[data-status='completed'] {
-  background: var(--manager-accent-soft);
-  color: var(--manager-accent);
+  background: var(--theme-selected);
+  color: var(--theme-accent);
 }
 
 .manager-status-pill[data-status='cancelled'] {
-  background: #f6e2dd;
-  color: #c8453a;
+  background: var(--theme-occupied-fill);
+  color: var(--theme-error);
 }
 
 .manager-bookings-pagination {
@@ -113,12 +101,12 @@
 
 .manager-bookings-notice {
   padding-block: 1.25rem;
-  color: var(--manager-muted);
+  color: var(--theme-muted);
 }
 
 .manager-bookings-notice button {
   min-block-size: 2.75rem;
-  color: var(--manager-accent);
+  color: var(--theme-accent);
   font-weight: 700;
   text-decoration: underline;
 }

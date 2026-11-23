@@ -32,7 +32,7 @@
         <p class="booking-payment-issue-error" role="alert">{{ message }}</p>
       }
       <div class="booking-payment-actions grid">
-        <button type="button" class="booking-payment-button booking-payment-primary font-bold"
+        <button type="button" class="booking-payment-button booking-payment-primary button-primary font-bold"
             [disabled]="pending()" (click)="pay(dialog)">{{ pending() ? 'Створюємо перепустку…' : 'Оплатити ' + price() + ' грн' }}</button>
         <button type="button" class="booking-payment-button booking-payment-secondary booking-payment-cancel font-bold"
             aria-haspopup="dialog" [disabled]="pending()" (click)="requestCancellation()">Скасувати бронювання</button>

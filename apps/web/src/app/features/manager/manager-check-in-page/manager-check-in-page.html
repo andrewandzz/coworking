@@ -3,7 +3,7 @@
 
   <form class="manager-check-in-form" (submit)="checkIn($event, codeInput)" [attr.aria-busy]="busy()">
     <label class="manager-check-in-label font-bold" for="manager-check-in-code">Код перепустки</label>
-    <input #codeInput id="manager-check-in-code" class="manager-check-in-input" type="text" autocomplete="off"
+    <input #codeInput id="manager-check-in-code" class="manager-check-in-input field-control" type="text" autocomplete="off"
       autocapitalize="off" spellcheck="false" maxlength="128" placeholder="Вставте або відскануйте код"
       [value]="code()" [readOnly]="busy()" (input)="updateCode(codeInput.value)" />
 
@@ -13,7 +13,7 @@
         <svg lucideQrCode size="22" strokeWidth="1.75" aria-hidden="true"></svg>
         {{ readingImage() ? 'Зчитуємо QR…' : 'Зчитати QR із зображення' }}
       </label>
-      <button class="manager-check-in-button manager-check-in-submit font-bold" type="submit" [disabled]="busy() || !code().trim()">
+      <button class="manager-check-in-button manager-check-in-submit button-primary font-bold" type="submit" [disabled]="busy() || !code().trim()">
         {{ submitting() ? 'Перевіряємо…' : 'Підтвердити вхід' }}
       </button>
     </div>

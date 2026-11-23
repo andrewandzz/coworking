@@ -7,16 +7,16 @@
       <div class="manager-login-fields grid">
         <div>
           <label for="manager-email">Логін</label>
-          <input id="manager-email" name="email" type="email" autocomplete="username"
+          <input id="manager-email" class="field-control" name="email" type="email" autocomplete="username"
             placeholder="Введіть Ваш email" maxlength="254" required [readOnly]="pending()" />
         </div>
         <div>
           <label for="manager-password">Пароль</label>
-          <input id="manager-password" name="password" type="password" autocomplete="current-password"
+          <input id="manager-password" class="field-control" name="password" type="password" autocomplete="current-password"
             placeholder="Введіть Ваш пароль" maxlength="256" required [readOnly]="pending()" />
         </div>
       </div>
-      <button class="manager-login-action w-full font-bold" type="submit" [disabled]="pending()">
+      <button class="manager-login-action button-primary w-full font-bold" type="submit" [disabled]="pending()">
         {{ pending() ? 'Входимо…' : 'Увійти' }}
       </button>
     </form>

@@ -7,7 +7,7 @@
         <legend class="sr-only">Період</legend>
         <span class="manager-report-period-label" aria-hidden="true">Період</span>
         <div class="manager-report-range grid min-w-0 items-center">
-          <label class="manager-report-date relative">
+          <label class="manager-report-date field-control relative">
             <span class="sr-only">Початкова дата</span>
             <input #fromInput class="manager-report-date-input absolute inset-0 size-full cursor-pointer"
               type="date" lang="uk" required min="0001-01-01" max="9999-12-31"
@@ -19,7 +19,7 @@
               aria-hidden="true"></svg>
           </label>
           <span class="manager-report-range-separator" aria-hidden="true">–</span>
-          <label class="manager-report-date relative">
+          <label class="manager-report-date field-control relative">
             <span class="sr-only">Кінцева дата</span>
             <input #toInput class="manager-report-date-input absolute inset-0 size-full cursor-pointer"
               type="date" lang="uk" required min="0001-01-01" max="9999-12-31"
@@ -32,7 +32,7 @@
           </label>
         </div>
       </fieldset>
-      <button class="manager-report-generate font-bold" type="submit">Згенерувати звіт</button>
+      <button class="manager-report-generate button-primary font-bold" type="submit">Згенерувати звіт</button>
     </div>
     @if (periodError(); as error) {
       <p class="manager-report-form-error" id="manager-report-period-error" role="alert">{{ error.message }}</p>

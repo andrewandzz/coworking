@@ -1,18 +1,18 @@
 [data-state='available'] {
-  --space-status-fill: color-mix(in srgb, #d9e8ca, var(--coworking-brand-green));
-  --space-status-border: color-mix(in srgb, #80b746, var(--coworking-brand-dark-green));
-  --space-status-indicator: color-mix(in srgb, #346831, var(--coworking-brand-dark-green));
+  --space-status-fill: var(--theme-available-fill);
+  --space-status-border: var(--theme-available-border);
+  --space-status-indicator: var(--theme-accent);
 }
 
 [data-state='occupied'] {
-  --space-status-fill: #f5e2de;
-  --space-status-border: #ff5145;
-  --space-status-indicator: #d4574e;
+  --space-status-fill: var(--theme-occupied-fill);
+  --space-status-border: var(--theme-occupied-border);
+  --space-status-indicator: var(--theme-error);
 }
 
 [data-state='filtered'] {
-  --space-status-fill: #e7e4df;
-  --space-status-border: #a6a29a;
-  --space-status-indicator: #222821;
+  --space-status-fill: var(--theme-filtered-fill);
+  --space-status-border: var(--theme-filtered-border);
+  --space-status-indicator: var(--theme-text);
   opacity: 0.6;
 }

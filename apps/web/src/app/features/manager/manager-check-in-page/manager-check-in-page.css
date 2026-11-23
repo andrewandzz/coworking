@@ -12,13 +12,13 @@
 .manager-check-in-result {
   inline-size: min(100%, 52rem);
   padding: clamp(1rem, 2.25cqi, 2rem);
-  border: 1px solid var(--manager-line);
+  border: 1px solid var(--theme-border);
   border-radius: 1.25rem;
 }
 
 .manager-check-in-form {
   margin-block-start: clamp(1.25rem, 3.03cqi, 2.6875rem);
-  background: #fff;
+  background: var(--theme-surface);
 }
 
 .manager-check-in-label {
@@ -31,14 +31,8 @@
   inline-size: 100%;
   min-block-size: 3.4375rem;
   padding-inline: 0.875rem;
-  border: 1px solid var(--manager-line);
   border-radius: 0.9375rem;
-  background: #fff;
   font-size: clamp(1rem, 1.4cqi, 1.25rem);
-}
-
-.manager-check-in-input::placeholder {
-  color: var(--manager-muted);
 }
 
 .manager-check-in-actions {
@@ -62,53 +56,41 @@
 }
 
 .manager-check-in-upload {
-  border-color: var(--manager-line);
-  color: var(--manager-accent);
+  border-color: var(--theme-border);
+  color: var(--theme-accent);
   cursor: pointer;
 }
 
 .manager-check-in-upload:not(:has(:disabled)):hover {
-  background: var(--manager-page);
+  background: var(--theme-surface-subtle);
 }
 
-.manager-check-in-submit {
-  background: var(--manager-accent);
-  color: #fff;
-}
-
-.manager-check-in-submit:enabled:hover {
-  background: #285326;
-}
-
-.manager-check-in-button:disabled,
 .manager-check-in-upload:has(:disabled) {
   opacity: 0.6;
   cursor: default;
 }
 
-.manager-check-in-input:focus-visible,
-.manager-check-in-submit:focus-visible,
 .manager-check-in-upload:has(:focus-visible) {
-  outline: 3px solid var(--manager-accent);
+  outline: 3px solid var(--theme-accent);
   outline-offset: 3px;
 }
 
 .manager-check-in-error {
   margin-block-start: 1rem;
-  color: #a3273b;
+  color: var(--theme-error);
 }
 
 .manager-check-in-result {
   margin-block-start: 1.25rem;
   border-color: transparent;
-  background: var(--manager-accent-soft);
+  background: var(--theme-selected);
 }
 
 .manager-check-in-result-heading {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  color: var(--manager-accent);
+  color: var(--theme-accent);
   font-size: clamp(1.25rem, 1.69cqi, 1.5rem);
 }
 

@@ -1,15 +1,6 @@
 .manager-layout {
-  --manager-page: #f6f1eb;
-  --manager-ink: #222821;
-  --manager-muted: #6c746a;
-  --manager-line: #a6a29a;
-  --manager-accent: #346831;
-  --manager-accent-soft: #d9e7c8;
-
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr;
-  background: var(--manager-page);
-  color: var(--manager-ink);
 }
 
 .manager-sidebar {
@@ -18,7 +9,7 @@
   align-items: center;
   gap: 0.75rem 0.5rem;
   padding: 1rem;
-  border-block-end: 1px solid var(--manager-line);
+  border-block-end: 1px solid var(--theme-border);
 }
 
 .manager-brand {
@@ -47,7 +38,7 @@
 }
 
 .manager-nav-active {
-  background: var(--manager-accent-soft);
+  background: var(--theme-selected);
   font-weight: 800;
 }
 
@@ -58,18 +49,18 @@
 .manager-sign-out {
   min-block-size: 2.75rem;
   padding-inline: 0.5rem;
-  color: var(--manager-muted);
+  color: var(--theme-muted);
   font-weight: 700;
 }
 
 .manager-sign-out:enabled:hover {
-  color: var(--manager-accent);
+  color: var(--theme-accent);
   text-decoration: underline;
 }
 
 .manager-sign-out-error {
   max-inline-size: 15rem;
-  color: #a3273b;
+  color: var(--theme-error);
   font-size: 0.875rem;
 }
 
@@ -96,7 +87,7 @@
       clamp(1rem, calc(1.93 * var(--layout-vw)), 2.3125rem)
       1.25rem clamp(1rem, calc(2.24 * var(--layout-vw)), 2.6875rem);
     border-block-end: 0;
-    border-inline-end: 2px solid var(--manager-line);
+    border-inline-end: 2px solid var(--theme-border);
   }
 
   .manager-brand {

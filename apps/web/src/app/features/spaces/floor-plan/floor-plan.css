@@ -9,7 +9,7 @@
 }
 
 .floor-plan-scroll:focus-visible {
-  outline: 3px solid #346831;
+  outline: 3px solid var(--theme-accent);
   outline-offset: -3px;
 }
 
@@ -17,7 +17,7 @@
   /* The mockup uses a 1253-by-451 coordinate system, including the outer walls. */
   --plan-unit: max(1px, calc(100cqi / 1253));
   --wall-width: calc(10 * var(--plan-unit));
-  --wall-color: #a6a29a;
+  --wall-color: var(--theme-border);
   box-sizing: border-box;
   width: calc(1253 * var(--plan-unit));
   height: calc(451 * var(--plan-unit));

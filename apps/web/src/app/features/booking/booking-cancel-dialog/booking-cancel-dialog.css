@@ -1,7 +1,4 @@
 .booking-cancel-dialog {
-  --booking-cancel-accent: #346831;
-  --booking-cancel-amber: #bd8c51;
-  --booking-cancel-amber-soft: #fff1dc;
   position: fixed;
   inset: 0;
   inline-size: min(calc(100% - 2rem), 27.8125rem);
@@ -11,13 +8,13 @@
   overflow: auto;
   overscroll-behavior: contain;
   border-radius: 1.5625rem;
-  background: #f6f1eb;
-  color: #222821;
+  background: var(--theme-surface);
+  color: var(--theme-text);
   container-type: inline-size;
 }
 
 .booking-cancel-dialog::backdrop {
-  background: rgb(34 40 33 / 36%);
+  background: var(--theme-backdrop-confirmation);
 }
 
 .booking-cancel-panel {
@@ -28,15 +25,15 @@
 .booking-cancel-close {
   inset-block-start: 0.8125rem;
   inset-inline-end: clamp(0.5rem, 2.58cqi, 0.75rem);
-  color: #97938c;
+  color: var(--theme-muted);
 }
 
 .booking-cancel-icon {
   inline-size: clamp(3.625rem, 16cqi, 4.4375rem);
   aspect-ratio: 1;
-  border: 2px solid #c9995c;
-  background: var(--booking-cancel-amber-soft);
-  color: var(--booking-cancel-amber);
+  border: 2px solid var(--theme-warning);
+  background: var(--theme-warning-fill);
+  color: var(--theme-warning);
 }
 
 .booking-cancel-calendar {
@@ -51,7 +48,7 @@
   inline-size: 41%;
   block-size: auto;
   border-radius: 50%;
-  background: var(--booking-cancel-amber-soft);
+  background: var(--theme-warning-fill);
 }
 
 .booking-cancel-title {
@@ -62,7 +59,7 @@
 
 .booking-cancel-description {
   margin-block-start: clamp(0.875rem, 5.17cqi, 1.4375rem);
-  color: #6c746a;
+  color: var(--theme-muted);
   line-height: 1.375;
 }
 
@@ -81,11 +78,6 @@
 }
 
 .booking-cancel-resume {
-  border-color: #a6a29a;
-  color: #6c746a;
-}
-
-.booking-cancel-panel button:focus-visible {
-  outline: 3px solid var(--booking-cancel-accent);
-  outline-offset: 3px;
+  border-color: var(--theme-border);
+  color: var(--theme-muted);
 }

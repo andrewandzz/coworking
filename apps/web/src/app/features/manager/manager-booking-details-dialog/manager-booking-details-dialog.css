@@ -8,13 +8,13 @@
   overflow: auto;
   overscroll-behavior: contain;
   border-radius: 1.5625rem;
-  background: #fff;
-  color: var(--manager-ink, #222821);
+  background: var(--theme-surface);
+  color: var(--theme-text);
   container-type: inline-size;
 }
 
 .manager-booking-details-dialog::backdrop {
-  background: rgb(34 40 33 / 48%);
+  background: var(--theme-backdrop);
 }
 
 .manager-booking-details-panel {
@@ -35,12 +35,12 @@
 .manager-booking-details-close {
   inset-block-start: clamp(0.75rem, 4.58cqi, 2.125rem);
   inset-inline-end: clamp(0.625rem, 4.58cqi, 2.125rem);
-  color: #97938c;
+  color: var(--theme-muted);
 }
 
 .manager-booking-details-close:hover {
-  background: #f6f1eb;
-  color: var(--manager-ink, #222821);
+  background: var(--theme-surface-subtle);
+  color: var(--theme-text);
 }
 
 .manager-booking-details-data {
@@ -56,7 +56,7 @@
   gap: 0.25rem 0.875rem;
   min-block-size: clamp(2.75rem, 7.61cqi, 3.53125rem);
   padding-block: 0.375rem;
-  border-block-end: 2px solid var(--manager-line, #a6a29a);
+  border-block-end: 2px solid var(--theme-border);
   overflow-wrap: anywhere;
 }
 
@@ -73,18 +73,18 @@
   display: inline-block;
   padding: clamp(0.3125rem, 0.88cqi, 0.4375rem) clamp(0.75rem, 2.82cqi, 1.3125rem);
   border-radius: 9999px;
-  background: var(--manager-accent-soft, #d9e7c8);
-  color: var(--manager-accent, #346831);
+  background: var(--theme-selected);
+  color: var(--theme-accent);
 }
 
 .manager-booking-details-pill[data-status='booked'] {
-  background: #e7e4df;
-  color: var(--manager-muted);
+  background: var(--theme-filtered-fill);
+  color: var(--theme-muted);
 }
 
 .manager-booking-details-pill[data-status='cancelled'] {
-  background: #f6e2dd;
-  color: #c8453a;
+  background: var(--theme-occupied-fill);
+  color: var(--theme-error);
 }
 
 .manager-booking-details-action {
@@ -95,30 +95,20 @@
   margin-inline: auto;
   padding: 0.5rem 0.75rem;
   border-radius: 0.75rem;
-  background: var(--manager-accent, #346831);
-  color: #fff;
   font-size: clamp(1rem, 2.69cqi, 1.25rem);
   font-weight: 700;
 }
 
-.manager-booking-details-action:hover {
-  background: #285326;
-}
-
 .manager-booking-details-notice {
   margin-block-start: 1.25rem;
-  color: var(--manager-muted, #6c746a);
+  color: var(--theme-muted);
 }
 
 .manager-booking-details-retry {
   min-block-size: 2.75rem;
-  color: var(--manager-accent, #346831);
+  color: var(--theme-accent);
   font-weight: 700;
   text-decoration: underline;
-}
-
-.manager-booking-details-panel button:focus-visible {
-  outline-color: var(--manager-accent, #346831);
 }
 
 @container (max-width: 29rem) {

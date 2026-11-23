@@ -5,15 +5,12 @@
 }
 
 .space-filters {
-  --filter-border: #a6a29a;
-  --filter-accent: #346831;
   --filter-control-height: clamp(2.75rem, 2.65cqi, 3rem);
   --filter-column-gap: clamp(0.75rem, 1.5cqi, 1.5rem);
   gap: 0.625rem var(--filter-column-gap);
   padding: clamp(0.625rem, 0.75cqi, 0.875rem) clamp(0.75rem, 1.25cqi, 1.5rem);
-  border-color: var(--filter-border);
+  border-color: var(--theme-border);
   border-radius: 1.125rem;
-  color: #222821;
   line-height: 1.25;
 }
 
@@ -23,9 +20,7 @@
 
 .filter-control {
   min-block-size: var(--filter-control-height);
-  border: 1px solid var(--filter-border);
   border-radius: 0.75rem;
-  background: #fff;
 }
 
 .space-type-select {
@@ -52,9 +47,9 @@
 .amenity-mark {
   inline-size: 1.25rem;
   block-size: 1.25rem;
-  border: 1px solid var(--filter-border);
+  border: 1px solid var(--theme-border);
   border-radius: 0.3125rem;
-  color: #fff;
+  color: var(--theme-button-text);
 }
 
 .amenity-check-icon {
@@ -62,8 +57,8 @@
 }
 
 .amenity-input:checked + .amenity-mark {
-  border-color: var(--filter-accent);
-  background: var(--filter-accent);
+  border-color: var(--theme-button);
+  background: var(--theme-button);
 }
 
 .amenity-input:checked + .amenity-mark .amenity-check-icon {
@@ -73,14 +68,12 @@
 .filter-reset {
   min-block-size: var(--filter-control-height);
   justify-self: end;
-  color: var(--filter-accent);
+  color: var(--theme-accent);
   text-align: start;
 }
 
-.space-type-select:focus-visible,
-.filter-reset:focus-visible,
 .amenity-input:focus-visible + .amenity-mark {
-  outline: 3px solid var(--filter-accent);
+  outline: 3px solid var(--theme-accent);
   outline-offset: 3px;
 }
 
@@ -131,7 +124,7 @@
     inset-block: 0.4375rem 0;
     inset-inline-end: 0;
     inline-size: 1px;
-    background: var(--filter-border);
+    background: var(--theme-border);
     content: '';
   }
 

@@ -9,7 +9,7 @@
 }
 
 .pagination-range {
-  color: var(--manager-muted);
+  color: var(--theme-muted);
 }
 
 .pagination-controls {
@@ -29,18 +29,14 @@
 }
 
 .pagination-controls .pagination-arrow {
-  border-color: var(--manager-line);
+  border-color: var(--theme-border);
 }
 
 .pagination-controls button[aria-current='page'],
 .pagination-controls button:enabled:hover {
-  background: var(--manager-accent-soft);
+  background: var(--theme-selected);
 }
 
 .pagination-controls button:disabled {
-  color: var(--manager-line);
-}
-
-.pagination-controls button:focus-visible {
-  outline-color: var(--manager-accent);
+  color: var(--theme-inactive);
 }

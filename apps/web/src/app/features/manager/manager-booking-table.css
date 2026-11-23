@@ -32,7 +32,7 @@
 
 .manager-bookings-table th {
   block-size: clamp(3.125rem, 5.7cqi, 5.0625rem);
-  background: #f2ebe3;
+  background: var(--theme-surface-subtle);
   font-weight: 800;
 }
 
@@ -49,7 +49,7 @@
 .manager-bookings-table td {
   block-size: var(--manager-table-row-height, clamp(4rem, 6.37cqi, 5.65625rem));
   padding-block: 0.5rem;
-  border-block-end: 2px solid var(--manager-line);
+  border-block-end: 2px solid var(--theme-border);
 }
 
 @container (max-width: 46rem) {
@@ -77,7 +77,7 @@
     align-items: center;
     gap: 0.375rem 0.625rem;
     padding: 0.75rem 0.25rem;
-    border-block-end: 1px solid var(--manager-line);
+    border-block-end: 1px solid var(--theme-border);
   }
 
   .manager-bookings-table tbody td {

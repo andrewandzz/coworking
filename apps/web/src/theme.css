@@ -1,0 +1,126 @@
+@layer base {
+  :root {
+    color-scheme: light;
+    --theme-page: #f8f4ef;
+    --theme-surface: #ffffff;
+    --theme-text: #242923;
+    --theme-muted: #6f746d;
+    --theme-inactive: #a7a39c;
+    --theme-error: #d65a52;
+    --theme-border: #a7a39c;
+    --theme-border-disabled: #d8d5d0;
+    /* Keep the field borders distinct at the application's reduced scale. */
+    --theme-border-width: calc(1px / var(--app-scale));
+    --theme-error-border-width: calc(2px / var(--app-scale));
+    --theme-button: #356b32;
+    --theme-button-hover: #285626;
+    --theme-button-disabled: #d8d5d0;
+    --theme-button-text: #ffffff;
+    --theme-button-text-disabled: var(--theme-muted);
+    --theme-field: #ffffff;
+    --theme-field-disabled: #f0eeeb;
+    --theme-field-error: var(--theme-field);
+    --theme-field-placeholder: var(--theme-inactive);
+    --theme-available-fill: #dce9ca;
+    --theme-available-border: #83b54e;
+    --theme-occupied-fill: #f6e3df;
+    --theme-occupied-border: #e75a4e;
+    --theme-filtered-fill: #e8e5e1;
+    --theme-filtered-border: #a7a39c;
+
+    --theme-accent: var(--theme-button);
+    --theme-selected: var(--theme-available-fill);
+    --theme-surface-subtle: color-mix(in srgb, var(--theme-page), var(--theme-border) 10%);
+    --theme-backdrop: rgb(34 40 33 / 48%);
+    --theme-backdrop-confirmation: rgb(34 40 33 / 36%);
+    --theme-danger-button: #a3273b;
+    --theme-danger-button-hover: #7e1b2d;
+    --theme-warning: #a26428;
+    --theme-warning-fill: #fff1dc;
+    --theme-brand-text: #080a08;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --theme-page: #1e231f;
+      --theme-surface: #2b322c;
+      --theme-text: #f8f4ef;
+      --theme-muted: #b6bdb3;
+      --theme-inactive: #828980;
+      --theme-error: #f08a82;
+      --theme-border: #828980;
+      --theme-border-disabled: #505850;
+      --theme-button-hover: #43823f;
+      --theme-button-disabled: #505850;
+      --theme-field: #2b322c;
+      --theme-field-disabled: #343b35;
+      --theme-field-placeholder: var(--theme-muted);
+      --theme-available-fill: #344d35;
+      --theme-available-border: #90bc82;
+      --theme-occupied-fill: #543632;
+      --theme-occupied-border: #f08a82;
+      --theme-filtered-fill: #383d39;
+      --theme-filtered-border: #828980;
+
+      --theme-accent: var(--theme-available-border);
+      --theme-backdrop: rgb(0 0 0 / 56%);
+      --theme-backdrop-confirmation: rgb(0 0 0 / 42%);
+      --theme-danger-button-hover: #b63c4b;
+      --theme-warning: #e8b47a;
+      --theme-warning-fill: #45362a;
+      --theme-brand-text: var(--theme-text);
+    }
+  }
+}
+
+@layer components {
+  .field-control {
+    border: var(--theme-border-width) solid var(--theme-border);
+    background-color: var(--theme-field);
+    color: var(--theme-text);
+  }
+
+  .field-control::placeholder {
+    color: var(--theme-field-placeholder);
+    opacity: 1;
+  }
+
+  .field-control:is(:disabled, [readonly]),
+  .field-control:has(> input:disabled) {
+    border-color: var(--theme-border-disabled);
+    background-color: var(--theme-field-disabled);
+    color: var(--theme-inactive);
+  }
+
+  .field-control:is([aria-invalid='true'], :user-invalid),
+  .field-control:has(> input[aria-invalid='true']) {
+    border-width: var(--theme-error-border-width);
+    border-color: var(--theme-error);
+    background-color: var(--theme-field-error);
+  }
+
+  .button-primary {
+    background-color: var(--theme-button);
+    color: var(--theme-button-text);
+  }
+
+  .button-primary:where(:enabled, a):hover {
+    background-color: var(--theme-button-hover);
+  }
+
+  :is(.button-danger, .booking-cancel-confirm) {
+    background-color: var(--theme-danger-button);
+    color: var(--theme-button-text);
+  }
+
+  :is(.button-danger, .booking-cancel-confirm):enabled:hover {
+    background-color: var(--theme-danger-button-hover);
+  }
+
+  :is(.button-primary, .button-danger, .booking-cancel-confirm):disabled {
+    border-color: var(--theme-border-disabled);
+    background-color: var(--theme-button-disabled);
+    color: var(--theme-button-text-disabled);
+  }
+}

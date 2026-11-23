@@ -2,11 +2,6 @@
   display: block;
 }
 
-.coworking-page {
-  background-color: #f6f1eb;
-  color: #222821;
-}
-
 .coworking-content {
   inline-size: min(calc(100% - clamp(1.5rem, calc(5 * var(--layout-vw)), 6rem)), 115rem);
   padding-block: clamp(1rem, calc(1.9 * var(--layout-vw)), 2.375rem)
@@ -34,7 +29,7 @@
 
 .coworking-intro p {
   margin-block-start: 0.5rem;
-  color: #6c746a;
+  color: var(--theme-muted);
   font-size: clamp(1rem, 1.36cqi, 1.5rem);
   line-height: 1.3;
 }
@@ -49,15 +44,11 @@ app-floor-plan-legend {
   min-inline-size: 0;
   min-block-size: 2.75rem;
   padding: 0.25rem clamp(0.5rem, 1cqi, 1.125rem);
-  border: 1px solid #a6a29a;
+  border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  background-color: #fff;
-  color: #346831;
+  background-color: var(--theme-surface);
+  color: var(--theme-accent);
   line-height: 1.25;
-}
-
-.coworking-manager-login:focus-visible {
-  outline-color: #346831;
 }
 
 .coworking-filters {
@@ -68,7 +59,7 @@ app-floor-plan-legend {
   --plan-gutter: clamp(0.625rem, 1.5cqi, 1.75rem);
   margin-block-start: clamp(0.75rem, 1.2cqi, 1.375rem);
   padding-block: clamp(0.875rem, 1.2cqi, 1.375rem) clamp(1rem, 1.6cqi, 1.875rem);
-  border-color: #a6a29a;
+  border-color: var(--theme-border);
   border-radius: 1.5625rem;
 }
 
@@ -80,7 +71,7 @@ app-floor-plan-legend {
 
 .coworking-plan-message {
   margin: 0.75rem var(--plan-gutter) 0;
-  color: #6c746a;
+  color: var(--theme-muted);
 }
 
 .coworking-plan-content {

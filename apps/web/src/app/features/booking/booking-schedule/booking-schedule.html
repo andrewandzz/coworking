@@ -26,7 +26,7 @@
 
     <div class="booking-schedule-date">
       <label class="booking-field-label block font-bold" for="booking-schedule-date">Дата</label>
-      <div class="booking-date-control relative">
+      <div class="booking-date-control field-control relative">
         <input #dateInput class="booking-date-input absolute inset-0 size-full cursor-pointer" id="booking-schedule-date"
             type="date" lang="uk" required [min]="today" max="9999-12-31" [value]="date()" [disabled]="reserving()"
             (click)="showDatePicker(dateInput)" (change)="selectDate(dateInput)">
@@ -70,7 +70,7 @@
         <p class="booking-unavailable" role="status">Повний день на цю дату недоступний.</p>
       }
     }
-    <button type="button" class="booking-schedule-continue w-full font-bold"
+    <button type="button" class="booking-schedule-continue button-primary w-full font-bold"
         [disabled]="!selection() || reserving()" (click)="continue(dialog)">
       {{ reserving() ? 'Резервуємо…' : 'Продовжити' }}
     </button>

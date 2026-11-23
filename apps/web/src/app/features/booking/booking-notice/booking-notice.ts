@@ -34,7 +34,7 @@ const NOTICES = {
         {{ notice().title }}
       </h2>
       <p class="booking-notice-message mx-auto">{{ notice().message }}</p>
-      <button type="button" class="booking-notice-action w-full font-bold" (click)="actionRequested.emit()">
+      <button type="button" class="booking-notice-action button-primary w-full font-bold" (click)="actionRequested.emit()">
         {{ notice().action }}
       </button>
     </div>

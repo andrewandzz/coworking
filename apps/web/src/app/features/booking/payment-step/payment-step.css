@@ -1,6 +1,4 @@
 .booking-payment-dialog {
-  --payment-accent: #346831;
-  --payment-border: #a6a29a;
   position: fixed;
   inset: 0;
   inline-size: min(calc(100% - 2rem), 41.3125rem);
@@ -10,13 +8,13 @@
   overflow: auto;
   overscroll-behavior: contain;
   border-radius: 1.5625rem;
-  background: #f6f1eb;
-  color: #222821;
+  background: var(--theme-surface);
+  color: var(--theme-text);
   container-type: inline-size;
 }
 
 .booking-payment-dialog::backdrop {
-  background: rgb(34 40 33 / 48%);
+  background: var(--theme-backdrop);
 }
 
 .booking-payment-dialog.booking-payment-notice {
@@ -53,7 +51,7 @@
 .booking-payment-close {
   grid-column: 3;
   margin-inline-end: clamp(-1.375rem, -3.33cqi, -0.5rem);
-  color: #777c73;
+  color: var(--theme-muted);
 }
 
 .booking-payment-space {
@@ -79,29 +77,19 @@
   font-size: clamp(1rem, 3.03cqi, 1.25rem);
 }
 
-.booking-payment-primary {
-  background: var(--payment-accent);
-  color: #fff;
-}
-
 .booking-payment-secondary {
-  border-color: var(--payment-border);
-  color: #626b61;
+  border-color: var(--theme-border);
+  color: var(--theme-muted);
 }
 
-.booking-payment-panel button:disabled {
+.booking-payment-panel button:disabled:not(.button-primary) {
   opacity: 0.65;
 }
 
 .booking-payment-issue-error {
   margin-block-start: 1rem;
-  color: #a3273b;
+  color: var(--theme-error);
   font-size: 1rem;
-}
-
-.booking-payment-panel button:focus-visible {
-  outline: 3px solid var(--payment-accent);
-  outline-offset: 3px;
 }
 
 @container (max-width: 30rem) {

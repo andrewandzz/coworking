@@ -1,5 +1,4 @@
 .booking-result-dialog {
-  --result-border: #a6a29a;
   position: fixed;
   inset: 0;
   inline-size: min(calc(100% - 2rem), 41.375rem);
@@ -9,13 +8,13 @@
   overflow: auto;
   overscroll-behavior: contain;
   border-radius: 1.5625rem;
-  background: #f6f1eb;
-  color: #222821;
+  background: var(--theme-surface);
+  color: var(--theme-text);
   container-type: inline-size;
 }
 
 .booking-result-dialog::backdrop {
-  background: rgb(34 40 33 / 48%);
+  background: var(--theme-backdrop);
 }
 
 .booking-result-panel {
@@ -25,15 +24,15 @@
 .booking-result-close {
   inset-block-start: clamp(0.625rem, 3.2cqi, 1.3125rem);
   inset-inline-end: clamp(0.625rem, 3cqi, 1.25rem);
-  color: #777c73;
+  color: var(--theme-muted);
 }
 
 .booking-result-icon {
   inline-size: clamp(4rem, 14.36cqi, 5.9375rem);
   block-size: clamp(4rem, 14.36cqi, 5.9375rem);
-  border: 2px solid #80b746;
-  background: #d9e8ca;
-  color: #76a244;
+  border: 2px solid var(--theme-available-border);
+  background: var(--theme-available-fill);
+  color: var(--theme-accent);
 }
 
 .booking-result-check {
@@ -53,7 +52,7 @@
 
 .booking-result-message {
   margin-block-start: 0.25rem;
-  color: #626b61;
+  color: var(--theme-muted);
   font-size: clamp(1rem, 3.03cqi, 1.25rem);
   line-height: 1.35;
 }
@@ -69,7 +68,7 @@
   inline-size: 100%;
   aspect-ratio: 181 / 176;
   overflow: hidden;
-  border: 1px solid var(--result-border);
+  border: 1px solid var(--theme-border);
   border-radius: 1rem;
 }
 
@@ -77,6 +76,10 @@
   inline-size: 94%;
   aspect-ratio: 1;
   image-rendering: pixelated;
+}
+
+.booking-result-qr:has(> .booking-result-qr-image) {
+  background: #fff;
 }
 
 .booking-result-data {
@@ -89,20 +92,15 @@
   min-block-size: clamp(2.75rem, 10.43cqi, 4.3125rem);
   margin-block-start: clamp(1.125rem, 4.4cqi, 1.8125rem);
   padding: 0.5rem 0.875rem;
-  border: 1px solid var(--result-border);
+  border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  color: #626b61;
+  color: var(--theme-muted);
   font-size: clamp(1rem, 3.03cqi, 1.25rem);
-}
-
-.booking-result-panel button:focus-visible {
-  outline: 3px solid #346831;
-  outline-offset: 3px;
 }
 
 .booking-result-qr-error,
 .booking-result-download-error {
-  color: #a3273b;
+  color: var(--theme-error);
   font-size: 0.9375rem;
 }
 

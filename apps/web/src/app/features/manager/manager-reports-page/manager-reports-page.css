@@ -54,13 +54,7 @@
   min-inline-size: 0;
   align-items: center;
   padding-inline: clamp(0.625rem, 1.125cqi, 1rem) 2.625rem;
-  border: 1px solid var(--manager-line);
   border-radius: 0.9375rem;
-  background: #fff;
-}
-
-.manager-report-date:has([aria-invalid='true']) {
-  border-color: #a3273b;
 }
 
 .manager-report-date-input {
@@ -71,7 +65,6 @@
 
 .manager-report-date-input:focus-visible {
   opacity: 1;
-  outline-color: var(--manager-accent);
 }
 
 .manager-report-date-input:focus-visible ~ :is(.manager-report-date-label, .manager-report-date-icon) {
@@ -97,22 +90,11 @@
   min-block-size: var(--report-control-height);
   padding: 0.375rem 0.75rem;
   border-radius: 0.75rem;
-  background: var(--manager-accent);
-  color: #fff;
-}
-
-.manager-report-generate:hover {
-  background: #285326;
-}
-
-.manager-report-generate:focus-visible,
-.manager-report-notice button:focus-visible {
-  outline-color: var(--manager-accent);
 }
 
 .manager-report-form-error {
   margin-block-start: 0.625rem;
-  color: #a3273b;
+  color: var(--theme-error);
   font-size: 1rem;
 }
 
@@ -142,8 +124,7 @@
   margin-block-start: clamp(1rem, 2.32cqi, 2.0625rem);
   padding: 0.75rem clamp(1rem, 3.374cqi, 3rem) 0.75rem clamp(1rem, 2.812cqi, 2.5rem);
   border-radius: 1rem;
-  background: var(--manager-accent-soft);
-  color: #11170e;
+  background: var(--theme-selected);
 }
 
 .manager-report-total-label {
@@ -160,12 +141,12 @@
 
 .manager-report-notice {
   padding-block: 0.75rem;
-  color: var(--manager-muted);
+  color: var(--theme-muted);
 }
 
 .manager-report-notice button {
   min-block-size: 2.75rem;
-  color: var(--manager-accent);
+  color: var(--theme-accent);
   font-weight: 700;
   text-decoration: underline;
 }

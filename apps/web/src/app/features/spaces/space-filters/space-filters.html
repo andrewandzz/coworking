@@ -1,8 +1,8 @@
-<div class="space-filters grid border bg-white" role="group" aria-label="Фільтри просторів">
+<div class="space-filters grid border bg-surface" role="group" aria-label="Фільтри просторів">
   <label class="type-filter relative block min-w-0">
     <span class="filter-label block font-bold">Тип простору</span>
     <span class="relative block">
-      <select #typeSelect class="filter-control space-type-select block w-full appearance-none"
+      <select #typeSelect class="filter-control field-control space-type-select block w-full appearance-none"
           (change)="selectType(typeSelect.value)">
         <option value="all" [selected]="filters().type === 'all'">Усі простори</option>
         @for (type of spaceTypes; track type) {
@@ -20,7 +20,7 @@
     <legend class="filter-label font-bold">Зручності</legend>
     <div class="amenity-options flex flex-wrap">
       @for (amenity of amenities; track amenity.id) {
-        <label class="filter-control amenity-option inline-flex max-w-full cursor-pointer items-center">
+        <label class="filter-control field-control amenity-option inline-flex max-w-full cursor-pointer items-center">
           <input #amenityInput class="amenity-input sr-only" type="checkbox"
               [checked]="filters().amenities.includes(amenity.id)"
               (change)="toggleAmenity(amenity.id, amenityInput.checked)">

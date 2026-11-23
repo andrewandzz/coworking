@@ -1,5 +1,6 @@
 @import "@fontsource-variable/manrope";
 @import "tailwindcss";
+@import "./theme.css";
 
 @theme {
   --font-sans: "Manrope Variable", system-ui, sans-serif;
@@ -7,15 +8,17 @@
   --breakpoint-sm: 32rem;
   --breakpoint-lg: 51.2rem;
   --breakpoint-xl: 64rem;
-  --color-page: #f6f8fc;
-  --color-ink: #172238;
-  --color-muted: #56637b;
-  --color-line: #e1e7f1;
-  --color-accent: #304bc4;
-  --color-accent-dark: #243aa1;
-  --color-accent-soft: #edf1ff;
-  --color-success: #11654e;
-  --color-danger: #a3273b;
+}
+
+@theme inline {
+  --color-page: var(--theme-page);
+  --color-surface: var(--theme-surface);
+  --color-ink: var(--theme-text);
+  --color-muted: var(--theme-muted);
+  --color-line: var(--theme-border);
+  --color-accent: var(--theme-accent);
+  --color-accent-soft: var(--theme-selected);
+  --color-danger: var(--theme-error);
 }
 
 @layer base {
@@ -27,6 +30,7 @@
     --layout-viewport-height: calc(100 * var(--layout-dvh));
     --coworking-brand-green: #90c846;
     --coworking-brand-dark-green: #16531c;
+    background: var(--theme-page);
     zoom: var(--app-scale);
   }
 
@@ -35,7 +39,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid var(--color-accent);
+    outline: 3px solid var(--theme-accent);
     outline-offset: 3px;
   }
 
@@ -45,16 +49,12 @@
 }
 
 @layer components {
-  .booking-cancel-confirm:disabled {
-    opacity: 0.65;
-  }
-
   .app-shell {
     @apply grid min-h-(--layout-viewport-height) lg:grid-cols-[15rem_minmax(0,1fr)];
   }
 
   .app-sidebar {
-    @apply flex flex-col gap-4 border-b border-line bg-white px-4 pt-5 sm:px-6
+    @apply flex flex-col gap-4 border-b border-line bg-surface px-4 pt-5 sm:px-6
       lg:sticky lg:top-0 lg:h-(--layout-viewport-height) lg:gap-11 lg:border-r lg:border-b-0 lg:px-5 lg:py-8;
   }
 
@@ -63,7 +63,9 @@
   }
 
   .brand-mark {
-    @apply grid size-9 shrink-0 place-items-center rounded-xl bg-accent text-white;
+    @apply grid size-9 shrink-0 place-items-center rounded-xl;
+    background: var(--theme-button);
+    color: var(--theme-button-text);
   }
 
   .main-nav {
@@ -72,12 +74,12 @@
 
   .main-nav a {
     @apply flex min-h-12 items-center gap-2.5 rounded-t-lg border-b-2 border-transparent
-      px-2 py-2 text-sm font-bold text-muted transition-colors hover:bg-accent-soft/60 hover:text-accent-dark
+      px-2 py-2 text-sm font-bold text-muted transition-colors hover:bg-accent-soft/60 hover:text-accent
       sm:px-3 lg:rounded-xl lg:border-b-0;
   }
 
   .main-nav a.nav-active {
-    @apply border-accent bg-accent-soft text-accent-dark;
+    @apply border-accent bg-accent-soft text-accent;
   }
 
   .app-content {
@@ -97,7 +99,7 @@
   }
 
   .surface {
-    @apply rounded-2xl border border-line bg-white shadow-[0_2px_5px_#17223808];
+    @apply rounded-2xl border border-line bg-surface shadow-[0_2px_5px_rgb(0_0_0/8%)];
   }
 
   .calendar-panel {
@@ -110,7 +112,7 @@
 
   .calendar-icon,
   .booking-date {
-    @apply grid size-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent-dark;
+    @apply grid size-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent;
   }
 
   .calendar-icon {
@@ -119,7 +121,7 @@
 
   .icon-button {
     @apply grid size-9 shrink-0 place-items-center rounded-lg text-muted transition-colors
-      enabled:hover:bg-accent-soft enabled:hover:text-accent-dark disabled:opacity-40;
+      enabled:hover:bg-accent-soft enabled:hover:text-accent disabled:opacity-40;
   }
 
   .icon-button.bordered {
@@ -142,11 +144,17 @@
   }
 
   .date-button.date-active {
-    @apply border-accent bg-accent text-white enabled:hover:bg-accent-dark;
+    @apply border-accent;
+    background: var(--theme-button);
+    color: var(--theme-button-text);
+  }
+
+  .date-button.date-active:enabled:hover {
+    background: var(--theme-button-hover);
   }
 
   .date-active strong {
-    @apply text-white;
+    color: var(--theme-button-text);
   }
 
   .today-indicator {
@@ -154,7 +162,7 @@
   }
 
   .availability-total {
-    @apply rounded-full bg-[#e8f5ee] px-3 py-1 text-sm font-extrabold text-success;
+    @apply rounded-full bg-accent-soft px-3 py-1 text-sm font-extrabold text-accent;
   }
 
   .filter-row {
@@ -162,12 +170,12 @@
   }
 
   .filter-row button {
-    @apply rounded-lg border border-line bg-white px-3 py-2.5 text-sm font-bold text-muted
-      transition-colors hover:border-accent hover:text-accent-dark;
+    @apply rounded-lg border border-line bg-surface px-3 py-2.5 text-sm font-bold text-muted
+      transition-colors hover:border-accent hover:text-accent;
   }
 
   .filter-row button.filter-active {
-    @apply border-[#bfcbfa] bg-accent-soft text-accent-dark;
+    @apply border-accent bg-accent-soft text-accent;
   }
 
   .desk-grid {
@@ -179,41 +187,35 @@
   }
 
   .desk-icon {
-    @apply grid size-12 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent-dark;
-  }
-
-  .desk-icon[data-zone="quiet"] {
-    @apply bg-[#f1edfc] text-[#6247a8];
+    @apply grid size-12 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent;
   }
 
   .desk-icon[data-zone="window"] {
-    @apply bg-[#fff3dc] text-[#926100];
+    background: var(--theme-warning-fill);
+    color: var(--theme-warning);
   }
 
   .desk-status {
-    @apply rounded-full bg-[#eff1f5] px-2.5 py-1 text-sm font-bold text-muted;
+    @apply rounded-full px-2.5 py-1 text-sm font-bold text-muted;
+    background: var(--theme-filtered-fill);
   }
 
   .desk-status.desk-free {
-    @apply bg-[#e8f5ee] text-success;
+    @apply bg-accent-soft text-accent;
   }
 
   .button {
     @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-transparent
-      px-4 py-2 text-center text-sm font-extrabold transition-colors disabled:opacity-45;
-  }
-
-  .button-primary {
-    @apply bg-accent text-white hover:bg-accent-dark;
+      px-4 py-2 text-center text-sm font-extrabold transition-colors;
   }
 
   .button-secondary {
-    @apply border-line bg-white text-accent-dark enabled:hover:border-accent enabled:hover:bg-accent-soft;
+    @apply border-line bg-surface text-accent enabled:hover:border-accent enabled:hover:bg-accent-soft;
   }
 
-  .button-danger,
-  .booking-cancel-confirm {
-    @apply bg-danger text-white enabled:hover:bg-[#7e1b2d];
+  .button-secondary:disabled {
+    border-color: var(--theme-border-disabled);
+    color: var(--theme-inactive);
   }
 
   .empty-state {
@@ -225,11 +227,12 @@
   }
 
   .success-notice {
-    @apply bg-[#e8f5ee] text-success;
+    @apply bg-accent-soft text-accent;
   }
 
   .error-notice {
-    @apply bg-[#fceef0] text-danger;
+    @apply text-danger;
+    background: var(--theme-occupied-fill);
   }
 
   .booking-row {
@@ -242,11 +245,11 @@
 
   .confirm-dialog {
     @apply m-auto max-h-[calc(var(--layout-viewport-height)-2rem)] w-[calc(100%-2rem)] max-w-md rounded-2xl
-      border border-line bg-white p-5 text-ink shadow-xl sm:p-6;
+      border border-line bg-surface p-5 text-ink shadow-xl sm:p-6;
   }
 
   .confirm-dialog::backdrop {
-    background: rgb(23 34 56 / 48%);
+    background: var(--theme-backdrop);
   }
 
   .dialog-actions {
